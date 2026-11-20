@@ -1,0 +1,217 @@
+/* Only what is special to על הציר. Paper, ink, type, buttons, dialogs, the end panel and the toast
+   come from shared/base.css; the accent comes from [data-game="tzir"]. */
+
+/* Stamps start large before they land; they must not widen the page. */
+.app { overflow-x: clip; }
+
+/* ---------- the event in hand, pinned above the scrolling timeline ---------- */
+
+.dock {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  margin-top: -12px; /* swallow the grid gap so the pinned block sits flush under the header rule */
+  padding: 10px 0 8px;
+  background: var(--paper) var(--grain);
+  border-bottom: 1px solid var(--rule-strong);
+}
+.dock-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 22px; }
+.dock-row p { margin: 0; }
+.kicker { font-variant-numeric: tabular-nums; }
+
+.lives { display: flex; gap: 4px; }
+.lives svg { width: 20px; height: 20px; fill: var(--close); stroke: var(--close); stroke-width: 1.8; stroke-linejoin: round; filter: drop-shadow(0 1px 1px rgba(46, 38, 20, .3)); }
+.lives svg.spent { fill: var(--desk); stroke: var(--rule-strong); filter: none; }
+.lives svg.lost { animation: tzir-heart .5s var(--ease); }
+@keyframes tzir-heart { from { fill: var(--close); stroke: var(--close); transform: scale(1.5); } }
+
+/* An index card held just above the desk: a coloured top edge, a slight lean, a long shadow. */
+.card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 72px;
+  margin-top: 10px;
+  padding: 15px 14px 10px;
+  border-radius: 7px;
+  background: var(--sheet) var(--grain);
+  box-shadow: var(--shadow-raised), var(--edge);
+  rotate: -.5deg;
+  /* The card is a drag handle: the browser must not scroll or select while a finger moves it. */
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  transition: opacity .2s, scale .2s var(--ease);
+}
+.card::before { content: ""; position: absolute; inset: 0 0 auto; height: 6px; border-radius: 7px 7px 0 0; background: var(--accent); }
+.card-text { flex: 1; margin: 0; font-family: var(--display); font-size: 21px; font-weight: 700; line-height: 1.2; text-wrap: balance; }
+.card .grip { width: 14px; height: 22px; flex: none; fill: var(--rule-strong); }
+/* Each new event is dealt onto the dock. */
+.card.fresh { animation: tzir-deal .5s var(--ease-spring); }
+@keyframes tzir-deal { from { opacity: 0; transform: translateY(-22px) rotate(5deg); } }
+/* While its copy is being carried, the card's place on the dock is an empty outline. */
+.card.lifted { opacity: .3; scale: .98; box-shadow: none; }
+.card.ghost {
+  position: fixed;
+  z-index: 40;
+  top: 0;
+  left: 0;
+  margin: 0;
+  rotate: none;
+  pointer-events: none;
+  opacity: .92; /* the gap being aimed at stays visible through the card */
+  cursor: grabbing;
+  transition: none;
+}
+body.dragging { cursor: grabbing; }
+
+.feedback { margin: 8px 0 0; min-height: 21px; font-size: 14px; color: var(--ink-soft); }
+.feedback b { font-family: var(--display); font-size: 16px; font-variant-numeric: tabular-nums; }
+.feedback.right { color: var(--found); font-weight: 700; }
+.feedback.wrong { color: var(--close); font-weight: 700; }
+
+/* ---------- the timeline: cards pinned along a rail, earliest at the top ---------- */
+
+.axis { --year: 3.3em; --spine: 24px; }
+.axis-end {
+  margin: 0;
+  padding-inline-start: calc(var(--year) + var(--spine) + 8px);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--ink-soft);
+}
+.timeline { position: relative; margin: 4px 0; padding: 0; list-style: none; }
+/* The rail itself, running the full height behind the pins. */
+.timeline::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc(var(--year) + var(--spine) / 2 - 1.5px);
+  width: 3px;
+  border-radius: 2px;
+  background: var(--ink);
+  box-shadow: var(--shadow-rest);
+}
+.timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--year) var(--spine) minmax(0, 1fr);
+  align-items: center;
+  column-gap: 0;
+  /* Rows are scrolled into view after a move; keep them clear of the pinned card. */
+  scroll-margin-top: calc(var(--dock-h, 160px) + 10px);
+  scroll-margin-bottom: 16px;
+}
+
+.event { min-height: 50px; padding: 4px 0; }
+.event .year { font-family: var(--display); font-size: 21px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; text-align: start; }
+/* The event itself is a small card lying next to its pin. */
+.event .text {
+  margin-inline-start: 8px;
+  padding: 9px 12px;
+  border-radius: 7px;
+  background: var(--sheet) var(--grain);
+  box-shadow: var(--shadow-rest), var(--edge);
+  font-size: 15px;
+  line-height: 1.3;
+}
+/* The pin: a round head with a highlight, standing on the rail. */
+.event .mark {
+  justify-self: center;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 0 0 3px var(--paper), inset 0 2px 1px rgba(255, 255, 255, .28), inset 0 -2px 2px rgba(0, 0, 0, .22), 0 3px 4px rgba(0, 0, 0, .3);
+}
+.event .mark .icon { width: 14px; height: 14px; stroke-width: 3; }
+.event.anchor .mark { width: 14px; height: 14px; }
+.event.right .mark { background: var(--found); color: var(--on-color); }
+.event.right .year { color: var(--found); }
+.event.wrong .mark { background: var(--close); color: var(--on-color); }
+.event.wrong .year { color: var(--close); }
+.event.missed .mark { width: 12px; height: 12px; background: var(--paper); border: 2px solid var(--rule-strong); box-shadow: 0 0 0 3px var(--paper); }
+.event.missed .year, .event.missed .text { color: var(--ink-soft); }
+.event.missed .text { background: none; box-shadow: none; outline: 1.5px dashed var(--rule-strong); outline-offset: -1.5px; }
+
+/* A move, played back: the card drops into its slot, the pin goes in, then the year is stamped. A card
+   put in the wrong place shakes where it was dropped and slides along the rail to where it belongs
+   (--from-y is that distance, set from the script). Nothing waits for any of it. */
+.event.just { z-index: 3; }
+.event.just .text { animation: tzir-drop .5s var(--ease-spring) backwards; transform-origin: 100% 50%; }
+.event.just .mark { animation: pop .3s var(--ease-spring) .22s backwards; }
+.event.just .year { animation: fx-stamp .42s cubic-bezier(.2, .9, .3, 1.25) .34s backwards; }
+.event.just.wrong { animation: tzir-slide .95s var(--ease) backwards; }
+.event.just.wrong .text { animation: none; }
+.event.just.wrong .mark { animation-delay: .8s; }
+.event.just.wrong .year { animation-delay: .9s; }
+@keyframes tzir-drop { from { opacity: 0; transform: translateY(-30px) rotate(-4deg) scale(1.07); } }
+@keyframes tzir-slide {
+  0% { transform: translate(0, var(--from-y, 0)); }
+  8% { transform: translate(7px, var(--from-y, 0)); }
+  16% { transform: translate(-7px, var(--from-y, 0)); }
+  24% { transform: translate(4px, var(--from-y, 0)); }
+  34% { transform: translate(0, var(--from-y, 0)); }
+}
+
+/* A gap is one big button the full width of the row; what is drawn inside is an empty slot cut into
+   the desk, the size of a card. */
+.gap-btn {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: center;
+  min-height: 48px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  text-align: start;
+}
+.gap-btn .here {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 38px;
+  margin-inline-start: 8px;
+  border: 1.5px dashed color-mix(in srgb, var(--accent) 60%, transparent);
+  border-radius: 7px;
+  background: var(--desk);
+  box-shadow: var(--shadow-pressed);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 15px;
+  transition: background .15s, color .15s, transform .15s var(--ease), box-shadow .15s;
+}
+.gap-btn .tick { grid-column: 2; justify-self: center; width: 10px; height: 2px; background: var(--ink); }
+.gap-btn:focus-visible .here, .gap-btn.over .here { background: var(--accent); color: var(--on-accent); border-style: solid; border-color: var(--accent); box-shadow: var(--shadow-rest); }
+/* Hover only where there is a real pointer: on a touch screen it would stick to the gap just tapped. */
+@media (hover: hover) {
+  .gap-btn:hover .here { background: var(--accent); color: var(--on-accent); border-style: solid; border-color: var(--accent); box-shadow: var(--shadow-rest); }
+}
+.gap-btn:active .here { transform: translateY(1px) scale(.985); }
+.gap-btn.over .here { transform: scale(1.02); }
+.gap-btn:focus-visible { outline: none; }
+.gap-btn:focus-visible .here { outline: 2px solid var(--ink); outline-offset: 2px; }
+/* Where the player dropped an event that belonged elsewhere: a brief red flash, nothing that must finish. */
+.gap-btn.missed-here .here { animation: wrong-flash 1.4s var(--ease); }
+@keyframes wrong-flash {
+  0%, 55% { border-color: var(--close); color: var(--close); background: color-mix(in srgb, var(--close) 14%, var(--desk)); }
+}
+
+/* ---------- the end: a sheet of its own, stamped with the score ---------- */
+
+
+/* The game's emblem heads the rules, as it heads its card on the front page. */
+.sheet > .emblem { --emblem-size: 72px; margin: -4px auto 8px; }
+
+.practice-offer { margin: 4px 0 0; text-align: center; font-size: 14px; color: var(--ink-soft); }
+.practice-offer .link { min-height: 44px; }
+.foot p { margin: 0 0 6px; }

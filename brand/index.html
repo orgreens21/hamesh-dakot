@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>שפת המותג – חמש דקות</title>
+  <meta name="description" content="שפת המותג של חמש דקות: סמל, צבעים, סמלי המשחקים, טיפוגרפיה, רכיבים ותנועה.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#e5dac2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0f13" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../shared/fonts.css">
+  <link rel="stylesheet" href="../shared/base.css">
+  <link rel="stylesheet" href="../shared/hub.css">
+  <style>
+    /* The brand sheet is a document, so it gets a wider measure than a game. Everything it shows is the
+       real thing: live tokens read from base.css, real components, the real kit from fx.js. */
+    .brand-page { max-width: 1000px; margin: 0 auto; padding: 0 20px 60px; }
+    .brand-top { display: grid; gap: 14px; padding: 34px 0 26px; border-bottom: 2px solid var(--ink); }
+    .brand-top .back { justify-self: start; font-size: 14px; color: var(--ink); text-underline-offset: 3px; }
+    .brand-top .nameplate { grid-area: auto; justify-content: flex-start; }
+    .brand-top h1 { margin: 0; font-family: var(--display); font-size: clamp(50px, 13vw, 84px); font-weight: 900; line-height: 1; letter-spacing: -.02em; }
+    .brand-top p { margin: 0; max-width: 62ch; font-size: 17px; }
+    .brand-page section { padding: 34px 0 6px; }
+    .brand-page h2 { margin: 0 0 6px; font-family: var(--display); font-size: 34px; font-weight: 900; line-height: 1.1; }
+    .brand-page h3 { margin: 26px 0 10px; font-size: 15px; font-weight: 700; }
+    .brand-page .note { margin: 0 0 18px; max-width: 66ch; color: var(--ink); opacity: .85; }
+    .brand-page code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: .86em; direction: ltr; unicode-bidi: isolate; }
+
+    .principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 28px; margin: 18px 0 0; padding: 0; list-style: none; }
+    .principles li { padding: 12px 0; border-top: 1px solid color-mix(in srgb, var(--ink) 30%, transparent); }
+    .principles b { display: block; font-family: var(--display); font-size: 21px; font-weight: 900; }
+
+    .logo-row { display: flex; flex-wrap: wrap; gap: 14px; }
+    .logo-tile { display: grid; place-items: center; gap: 10px; padding: 22px 26px 14px; font-size: 13px; }
+    .logo-tile .logo { width: 84px; height: 84px; margin: 0; }
+    .logo-tile.on-ink { background: #1e2328; color: #f1ead9; }
+    .logo-tile.on-ink .logo-face { fill: none; }
+    .logo-tile.on-ink .logo-ring { stroke: #f1ead9; }
+    .logo-tile.on-ink .logo-wedge { fill: #ee5548; stroke: #ee5548; }
+    .logo-tile.small .logo { width: 32px; height: 32px; }
+
+    .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .swatch { overflow: hidden; font-size: 13px; line-height: 1.35; }
+    .swatch .chips { display: grid; grid-template-columns: 1fr 1fr; height: 62px; }
+    .swatch .chips span { display: grid; place-items: end start; padding: 5px 7px; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; direction: ltr; }
+    .swatch .meta { padding: 8px 10px 10px; }
+    .swatch .meta b { display: block; direction: ltr; text-align: end; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; }
+    .legend { display: flex; gap: 18px; margin: 0 0 12px; font-size: 13px; }
+
+    .accents { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+    .accent-card { display: grid; justify-items: center; gap: 6px; width: 100%; padding: 18px 14px 14px; border: 0; text-align: center; color: var(--ink); --emblem-size: 128px; --emblem-depth: 16px; }
+    .accent-card .emblem { margin-bottom: 6px; }
+    .accent-card b { font-family: var(--display); font-size: 24px; font-weight: 900; line-height: 1.1; }
+    .accent-card .hint { font-size: 13px; color: var(--ink-soft); }
+    .accent-card .hexes { display: flex; gap: 6px; direction: ltr; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; }
+    .accent-card .hexes span { padding: 2px 7px; border-radius: 4px; }
+    .accent-card .brand-mark { width: 26px; height: 26px; }
+
+    .type-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--ink) 26%, transparent); }
+    .type-row small { font-size: 12.5px; line-height: 1.4; }
+    .type-row p { margin: 0; overflow-wrap: anywhere; }
+    @media (max-width: 560px) { .type-row { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+    .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; align-items: start; }
+    .part { padding: 16px; min-width: 0; }
+    .part > h3 { margin: 0 0 12px; font-size: 13px; }
+    .part .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .part .row + .row { margin-top: 10px; }
+    .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .part .games { gap: 10px; }
+    .part .game { --emblem-size: 54px; --emblem-depth: 7px; }
+    .part-wide { grid-column: 1 / -1; }
+    .shadows { display: flex; flex-wrap: wrap; gap: 18px; padding: 6px 4px 12px; }
+    .shadows div { display: grid; place-items: center; width: 132px; height: 84px; border-radius: 10px; background: var(--sheet) var(--grain); font-size: 12.5px; text-align: center; line-height: 1.3; }
+
+    .demos { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 16px; }
+    .demo { display: grid; grid-template-rows: auto 1fr auto; gap: 12px; padding: 16px; min-width: 0; }
+    .demo h3 { margin: 0; font-family: var(--display); font-size: 22px; font-weight: 900; }
+    .demo .use { margin: 0; font-size: 13px; line-height: 1.5; color: var(--ink-soft); }
+    .demo .stage { display: grid; place-items: center; min-height: 150px; padding: 8px; border-radius: 8px; background: var(--desk) var(--grain); box-shadow: var(--shadow-pressed); }
+    .tilt-card { display: grid; place-items: center; width: 190px; height: 116px; --emblem-size: 76px; --emblem-depth: 12px; }
+    .flip-card { width: 128px; height: 128px; padding: 0; border: 0; background: none; font-family: var(--display); font-size: 22px; font-weight: 900; color: var(--ink); }
+    .flip-card .fx-face { display: grid; place-items: center; border-radius: 10px; border: 1.5px solid var(--ink); background: var(--sheet) var(--grain); box-shadow: var(--shadow-rest); }
+    .flip-card .fx-back { background: var(--brand); border-color: var(--brand); color: #fff; }
+    .stamp-pad { display: grid; place-items: center; width: 210px; height: 110px; }
+    .count-number { font-family: var(--display); font-size: 64px; font-weight: 900; line-height: 1; }
+    .enter-list { display: grid; gap: 6px; width: 190px; margin: 0; padding: 0; list-style: none; }
+    .enter-list li { padding: 6px 10px; border-radius: 6px; background: var(--sheet); box-shadow: var(--shadow-rest); font-size: 14px; }
+    .brand-foot { margin-top: 34px; padding-top: 14px; border-top: 2px solid var(--ink); font-size: 13px; }
+  </style>
+  <script type="module" src="../shared/pwa.js"></script>
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body class="desk" data-game="nekuda">
+  <div class="brand-page">
+    <header class="brand-top">
+      <a class="back" href="../">חזרה לחמש דקות</a>
+      <div class="nameplate">
+        <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><circle class="logo-face" cx="32" cy="32" r="25"/><path class="logo-wedge" d="M32 32V7a25 25 0 0 1 12.5 3.35Z"/><circle class="logo-ring" cx="32" cy="32" r="25"/></svg>
+        <h1>חמש דקות</h1>
+      </div>
+      <p>שפת המותג כפי שהיא באתר עכשיו. כל מה שבעמוד הזה חי: הצבעים נקראים מ־<code>shared/base.css</code>, הרכיבים הם הרכיבים האמיתיים, והתנועה מגיעה מ־<code>shared/fx.js</code>.</p>
+    </header>
+
+    <section id="idea">
+      <h2>הרעיון</h2>
+      <p class="note">עמוד החידות של עיתון מודפס, מונח על שולחן. נייר שמנת, דיו שחור, אות עיתונאית כבדה, וצבע אחד לכל משחק. מה שנוגעים בו מתנהג כמו נייר: מתרומם, נלחץ, מתהפך ומקבל חותמת.</p>
+      <ul class="principles">
+        <li><b>נייר ודיו</b>בלי זכוכית, בלי זוהר ובלי מעברי צבע על טקסט. עומק בא מצל של דף שמונח על שולחן.</li>
+        <li><b>צבע אחד למשחק</b>כל השאר שחור, שמנת וקווים דקים. הצבע מסמן איפה אתם.</li>
+        <li><b>חותמת, לא זיקוקים</b>תוצאה מוטבעת בדיו. חגיגה היא פיסות נייר וטיפות דיו.</li>
+        <li><b>חמש דקות</b>הכול מהיר וקצר, כולל האנימציות. מי שביקש פחות תנועה מקבל עמוד גמור בלי תנועה.</li>
+      </ul>
+    </section>
+
+    <section id="logo">
+      <h2>שם וסמל</h2>
+      <p class="note">הסמל הוא לוח שעון שחמש הדקות הראשונות בו צבועות. השם תמיד ב־Frank Ruhl Libre במשקל 900.</p>
+      <div class="logo-row">
+        <div class="logo-tile fx-paper"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><circle class="logo-face" cx="32" cy="32" r="25"/><path class="logo-wedge" d="M32 32V7a25 25 0 0 1 12.5 3.35Z"/><circle class="logo-ring" cx="32" cy="32" r="25"/></svg>על נייר</div>
+        <div class="logo-tile fx-paper on-ink"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><circle class="logo-face" cx="32" cy="32" r="25"/><path class="logo-wedge" d="M32 32V7a25 25 0 0 1 12.5 3.35Z"/><circle class="logo-ring" cx="32" cy="32" r="25"/></svg>על דיו (סמל האפליקציה)</div>
+        <div class="logo-tile fx-paper small"><svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><circle class="logo-face" cx="32" cy="32" r="25"/><path class="logo-wedge" d="M32 32V7a25 25 0 0 1 12.5 3.35Z"/><circle class="logo-ring" cx="32" cy="32" r="25"/></svg>32 פיקסלים</div>
+      </div>
+    </section>
+
+    <section id="color">
+      <h2>צבעים</h2>
+      <p class="note">בכל משבצת: מימין הערך בעיצוב הבהיר, משמאל הערך בעיצוב הכהה ("אותו עמוד תחת מנורה עמומה"). האתר עובר ביניהם לבד לפי הגדרת המכשיר.</p>
+      <ul class="swatches" id="swatches"></ul>
+    </section>
+
+    <section id="games">
+      <h2>שבעת המשחקים</h2>
+      <p class="note">לכל משחק צבע משלו וסמל מצויר בשלוש שכבות, שרומז על מה שעושים בו. הזיזו את העכבר מעל סמל (או געו בו) כדי לראות את העומק ואת התנועה הקטנה שלו. מתחת: הסימן הקטן שמופיע בכותרת המשחק, והצבע בבהיר ובכהה.</p>
+      <ul class="accents" id="accents"></ul>
+    </section>
+
+    <section id="type">
+      <h2>טיפוגרפיה</h2>
+      <p class="note">שתי משפחות. Frank Ruhl Libre לכותרות ולתוכן שהשחקן מסתכל עליו, Heebo לממשק.</p>
+      <div class="type-row"><small>שם האתר<br>Frank Ruhl Libre 900, 50–84</small><p style="font: 900 clamp(44px, 11vw, 68px)/1 var(--display); letter-spacing: -.02em">חמש דקות</p></div>
+      <div class="type-row"><small>כותרת סיום<br>Frank Ruhl Libre 900, 31</small><p style="font: 900 31px/1.1 var(--display)">כל הכבוד, מצאתם!</p></div>
+      <div class="type-row"><small>שם משחק<br>Frank Ruhl Libre 900, 21–31</small><p style="font: 900 25px/1.1 var(--display)">ארבע על ארבע</p></div>
+      <div class="type-row"><small>תוכן משחק, אריח<br>Frank Ruhl Libre 700, 19</small><p style="font: 700 19px/1.15 var(--display)">מצפה רמון · 142 ק"מ · דרום</p></div>
+      <div class="type-row"><small>טקסט<br>Heebo 400, 16</small><p>לפניכם 16 מילים. מסתתרות בהן ארבע קבוצות של ארבע, ולכל קבוצה יש מכנה משותף.</p></div>
+      <div class="type-row"><small>כפתור, מצב<br>Heebo 700, 12.5–16</small><p style="font-weight: 700">שיתוף התוצאה · חדש היום · רצף 4</p></div>
+      <div class="type-row"><small>הערה<br>Heebo 400, 12–14</small><p class="muted" style="margin: 0">ההתקדמות והסטטיסטיקה נשמרות רק בדפדפן שלכם.</p></div>
+      <div class="type-row"><small>מספרים<br>tabular-nums</small><p style="font: 900 32px/1.1 var(--display); font-variant-numeric: tabular-nums" dir="ltr">07:41:19 · 3/6 · 87%</p></div>
+    </section>
+
+    <section id="parts">
+      <h2>רכיבים</h2>
+      <p class="note">הרכיבים המשותפים לכל המשחקים, כפי שהם מוגדרים ב־<code>shared/base.css</code>.</p>
+      <div class="parts">
+        <div class="part fx-paper">
+          <h3>כפתורים</h3>
+          <div class="row"><button class="btn primary" type="button">ראשי</button><button class="btn accent" type="button">בצבע המשחק</button><button class="btn whatsapp" type="button">וואטסאפ</button></div>
+          <div class="row"><button class="btn ghost" type="button">משני</button></div>
+          <div class="row"><button class="btn primary small" type="button">קטן</button><button class="btn primary" type="button" disabled>לא זמין</button><button class="link" type="button">קישור</button></div>
+        </div>
+        <div class="part fx-paper">
+          <h3>אריחים</h3>
+          <div class="tiles">
+            <button class="tile fx-press" type="button">רגיל</button>
+            <button class="tile fx-press" type="button" aria-pressed="true">נבחר</button>
+            <button class="tile right" type="button">נכון</button>
+            <button class="tile wrong" type="button">שגוי</button>
+          </div>
+        </div>
+        <div class="part fx-paper">
+          <h3>שדה ורמזים</h3>
+          <div class="search" style="z-index: 0"><svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg><input type="text" placeholder="חפשו יישוב" aria-label="שדה לדוגמה"></div>
+          <ul class="hints" style="margin-top: 12px"><li>מחוז<b>דרום</b></li><li class="open">תושבים<b>5,300</b></li><li>נוסד<b>?</b></li></ul>
+        </div>
+        <div class="part fx-paper">
+          <h3>חותמות ומצבים</h3>
+          <div class="row" style="gap: 14px; padding: 6px 0"><span class="fx-stamp" data-tone="found">נפתר 3/6</span><span class="fx-stamp" data-tone="ink">לא הפעם X/4</span><span class="fx-stamp" data-tone="close">טעות</span><span class="fx-stamp" data-tone="accent">שיא חדש</span></div>
+          <div class="row" style="padding: 10px 0 4px"><span class="fx-stamp big" data-tone="found">נפתר</span></div>
+        </div>
+        <div class="part fx-paper">
+          <h3>סוף משחק</h3>
+          <section id="end-sample"></section>
+        </div>
+        <div class="part">
+          <h3>צללים: נייר על שולחן</h3>
+          <div class="shadows">
+            <div style="box-shadow: var(--shadow-rest), var(--edge)">מונח<br><code>--shadow-rest</code></div>
+            <div style="box-shadow: var(--shadow-raised), var(--edge)">מורם<br><code>--shadow-raised</code></div>
+            <div style="box-shadow: var(--shadow-pressed); background: var(--desk)">לחוץ<br><code>--shadow-pressed</code></div>
+          </div>
+          <p class="muted" style="margin: 4px 0 0">שכבות צפות (חלונות, הודעות) משתמשות ב־<code>--lift</code>.</p>
+        </div>
+        <div class="part part-wide" style="padding: 0">
+          <h3>כרטיס משחק בדף הבית, בכל המצבים</h3>
+          <ol class="games" id="card-samples" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))"></ol>
+        </div>
+      </div>
+    </section>
+
+    <section id="motion">
+      <h2>תנועה ועומק</h2>
+      <p class="note">הערכה שב־<code>shared/fx.js</code>. משחק מאמץ כל אפקט במחלקה אחת או בקריאה אחת; ההסבר המלא בראש הקובץ וב־<code>games/README.md</code>.</p>
+      <div class="demos">
+        <div class="demo fx-paper">
+          <h3>הטיה</h3>
+          <div class="stage"><div class="tilt-card fx-paper fx-tilt" id="demo-tilt" data-game="tzir"></div></div>
+          <p class="use">המשטח נוטה אחרי העכבר, ובטלפון אחרי הטיית המכשיר. <code>tilt(el, { gyro: true })</code> עם <code>.fx-tilt</code></p>
+        </div>
+        <div class="demo fx-paper">
+          <h3>היפוך קלף</h3>
+          <div class="stage">
+            <button class="fx-flip flip-card" id="demo-flip" type="button" aria-pressed="false" aria-label="קלף לדוגמה: לחצו כדי להפוך">
+              <span class="fx-flip-inner"><span class="fx-face fx-front">לחצו</span><span class="fx-face fx-back">הפוך</span></span>
+            </button>
+          </div>
+          <p class="use"><code>.fx-flip</code> עם שני צדדים; <code>flip(el)</code> הופך.</p>
+        </div>
+        <div class="demo fx-paper">
+          <h3>לחיצה</h3>
+          <div class="stage"><div class="row" style="display: flex; gap: 10px"><button class="btn accent" type="button">לחצו והחזיקו</button><button class="tile fx-press" type="button" style="min-width: 86px">אריח</button></div></div>
+          <p class="use">הכפתור שוקע לתוך הדף. מובנה בכפתורים המלאים; לכל דבר אחר: <code>.fx-press</code></p>
+        </div>
+        <div class="demo fx-paper">
+          <h3>חותמת</h3>
+          <div class="stage"><div class="stamp-pad" id="demo-stamp-pad"></div></div>
+          <div class="row" style="display: flex; gap: 8px; align-items: center"><button class="btn primary small" id="demo-stamp" type="button">להטביע</button><p class="use"><code>stamp(target, { text, tone, big })</code></p></div>
+        </div>
+        <div class="demo fx-paper">
+          <h3>חגיגה</h3>
+          <div class="stage"><button class="btn accent" id="demo-celebrate" type="button">ניצחון</button></div>
+          <p class="use">עיגולי ניקוב, פיסות נייר וטיפות דיו על קנבס אחד. <code>celebrate({ origin })</code></p>
+        </div>
+        <div class="demo fx-paper">
+          <h3>מספר שנספר</h3>
+          <div class="stage"><span class="count-number" id="demo-count">87</span></div>
+          <div class="row" style="display: flex; gap: 8px; align-items: center"><button class="btn primary small" id="demo-count-btn" type="button">לספור</button><p class="use"><code>countUp(el, 87)</code></p></div>
+        </div>
+        <div class="demo fx-paper">
+          <h3>כניסה</h3>
+          <div class="stage"><ul class="enter-list fx-enter" id="demo-enter"><li>שורה ראשונה</li><li>שורה שנייה</li><li>שורה שלישית</li></ul></div>
+          <div class="row" style="display: flex; gap: 8px; align-items: center"><button class="btn primary small" id="demo-enter-btn" type="button">שוב</button><p class="use"><code>.fx-enter</code> על המכל; <code>enter(el)</code> מנגן שוב</p></div>
+        </div>
+        <div class="demo fx-paper">
+          <h3>מעבר בין עמודים</h3>
+          <div class="stage"><button class="btn ghost" id="demo-leave" type="button" style="width: auto">לדף הבית</button></div>
+          <p class="use">דף נייר גדל מהנקודה שנלחצה ומכסה את המסך, והעמוד הבא מופיע עליו. <code>leaveTo(url, { origin })</code></p>
+        </div>
+        <div class="demo fx-paper">
+          <h3>דף, הרמה ופינה מקופלת</h3>
+          <div class="stage"><div class="fx-paper fx-lift fx-corner" style="--fx-corner-bg: var(--desk); display: grid; place-items: center; width: 190px; height: 96px; font-size: 14px">עברו מעליי עם העכבר</div></div>
+          <p class="use"><code>.fx-paper</code>, <code>.fx-lift</code>, <code>.fx-corner</code></p>
+        </div>
+      </div>
+    </section>
+
+    <p class="brand-foot">חמש דקות · שפת המותג · העמוד הזה לשימוש פנימי.</p>
+  </div>
+
+  <script type="module" src="brand.js"></script>
+</body>
+</html>

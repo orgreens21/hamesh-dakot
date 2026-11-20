@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="_template">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>מספר היום – חמש דקות</title>
+  <meta name="description" content="משחק לדוגמה: נחשו את המספר היומי בשלושה ניסיונות.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="מספר היום – חמש דקות">
+  <meta property="og:description" content="נחשו את המספר היומי בשלושה ניסיונות.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/_template/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+      <p class="tries" id="tries" aria-live="polite"></p>
+      <div class="board" id="board" role="group" aria-label="בחרו מספר"></div>
+      <ol class="log" id="log" aria-label="הניסיונות שלך"></ol>
+      <section id="end" hidden aria-live="polite"></section>
+    </main>
+
+    <footer class="foot"><a href="../../">חמש דקות – כל המשחקים</a></footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>כל יום מסתתר מספר אחד בין 1 ל-10. יש לכם <b>שלושה ניסיונות</b> למצוא אותו.</p>
+    <p>אחרי כל ניסיון תדעו אם המספר הנסתר <b>גדול יותר</b> או <b>קטן יותר</b>.</p>
+    <p class="muted">חידה חדשה כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

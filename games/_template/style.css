@@ -1,0 +1,28 @@
+/* Only what is special to this game. Paper, ink, type, buttons, dialogs, the end panel and
+   the toast all come from shared/base.css. */
+
+/* A real game gets its accent from the [data-game="<slug>"] rules in base.css and sets nothing here.
+   The template is not in the registry, so it brings its own pair. */
+:root { --accent: #4a5a2a; --on-accent: #ffffff; }
+@media (prefers-color-scheme: dark) {
+  :root { --accent: #b5c77e; --on-accent: #12171c; }
+}
+
+.tries { margin: 0; font-size: 14px; color: var(--ink-soft); text-align: center; }
+
+.board { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.board .tile { min-height: 60px; font-size: 26px; font-variant-numeric: tabular-nums; }
+
+.log { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule-strong); }
+.try {
+  display: grid;
+  grid-template-columns: 2ch 20px 1fr;
+  align-items: center;
+  gap: 10px;
+  min-height: 46px;
+  border-bottom: 1px solid var(--rule-strong);
+  animation: reveal .45s var(--ease);
+}
+.try b { font-family: var(--display); font-size: 22px; text-align: center; font-variant-numeric: tabular-nums; }
+.try .icon { color: var(--accent); }
+.try.right .icon { color: var(--found); }

@@ -1,0 +1,260 @@
+/* בערך: a shelf tag hanging from a pin, and the till receipt that prints under it.
+   Paper, ink, type, depth and all shared components come from shared/base.css. */
+:root {
+  --g-bull: var(--found);
+  --g-near: var(--mid);
+  --g-mid: var(--near);
+  --g-far: var(--close);
+  /* Stamp inks for the two middle grades: amber and orange darkened until they read as text on paper. */
+  --ink-near: #86590a;
+  --ink-mid: #a8440f;
+  --receipt-shadow: drop-shadow(0 1px 1px rgba(46, 38, 20, .16)) drop-shadow(0 3px 4px rgba(46, 38, 20, .14));
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink-near: var(--mid);
+    --ink-mid: var(--near);
+    --receipt-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, .5)) drop-shadow(0 3px 4px rgba(0, 0, 0, .45));
+  }
+}
+
+/* A stamp starts large and the tag swings; neither may widen the page. */
+.app { overflow-x: clip; }
+
+.sq { display: inline-block; width: 14px; height: 14px; border-radius: 3px; flex: none; background: var(--rule-strong); }
+.sq.bull { background: var(--g-bull); }
+.sq.near { background: var(--g-near); }
+.sq.mid { background: var(--g-mid); }
+.sq.far { background: var(--g-far); }
+
+/* ---------- progress: five stubs. Waiting ones are wells in the desk; a priced one is a paper stub
+   with its score, edged in the colour the share text uses ---------- */
+
+.steps { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.steps li {
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--desk);
+  box-shadow: var(--shadow-pressed);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.steps li.now { background: var(--sheet) var(--grain); box-shadow: var(--shadow-rest), var(--edge), inset 0 0 0 1.5px var(--ink); color: var(--ink); }
+.steps li.done { background: var(--sheet) var(--grain); box-shadow: var(--shadow-rest), var(--edge), inset 0 -6px 0 var(--g); color: var(--ink); padding-bottom: 5px; }
+.steps li.bull { --g: var(--g-bull); }
+.steps li.near { --g: var(--g-near); }
+.steps li.mid { --g: var(--g-mid); }
+.steps li.far { --g: var(--g-far); }
+/* The stub of the product just priced jumps as its score is stamped on the tag. It is never hidden while it waits. */
+.steps li.fresh { animation: step-land .45s 1.25s var(--ease-spring); }
+
+/* ---------- the product: a hanging tag ---------- */
+
+.card { display: grid; grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
+.tag-hang { position: relative; padding-top: 16px; transform-origin: 50% 6px; }
+.tag-hang.swing { animation: tag-swing 1.1s var(--ease) backwards; }
+.string { position: absolute; z-index: 2; top: 0; left: calc(50% - 12px); width: 24px; height: 40px; pointer-events: none; }
+.string path { fill: none; stroke: var(--ink-soft); stroke-width: 1.4; }
+.string circle { fill: var(--ink); stroke: var(--sheet); stroke-width: 1.5; }
+
+.tag-tilt { --fx-max: 6deg; }
+.tag-face {
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 12px;
+  min-height: 204px;
+  padding: 38px 16px 14px;
+  border-radius: 26px 26px 10px 10px;
+  background: var(--sheet) var(--grain);
+  box-shadow: var(--shadow-rest), var(--edge);
+  /* Lets the drawing float above the paper when the tag leans. */
+  transform-style: preserve-3d;
+}
+.tag.is-flipped .tag-face { box-shadow: var(--shadow-raised), var(--edge); }
+/* Going back to the front for the next product is a new tag, not the old one turning round. */
+.tag.no-turn > .fx-flip-inner, .tag.no-turn .fx-face { transition: none; }
+/* The punched hole: the desk shows through. */
+.hole {
+  position: absolute;
+  top: 12px;
+  left: calc(50% - 8px);
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--paper) var(--grain);
+  box-shadow: var(--shadow-pressed), 0 0 0 2.5px color-mix(in srgb, var(--accent) 55%, var(--sheet));
+}
+
+.item { display: grid; grid-template-columns: 92px minmax(0, 1fr); column-gap: 14px; align-items: center; transform-style: preserve-3d; }
+.art {
+  --fx-z: 22px;
+  width: 92px;
+  height: 92px;
+  border-radius: 8px;
+  background: var(--accent-pale);
+  display: grid;
+  place-items: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.art svg { width: 76px; height: 76px; fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.art .a { fill: color-mix(in srgb, var(--accent) 42%, var(--sheet)); stroke: none; }
+.art .p { fill: var(--accent-pale); stroke: none; }
+
+.what { min-width: 0; }
+.product { margin: 4px 0 0; font-family: var(--display); font-size: 24px; font-weight: 700; line-height: 1.15; text-wrap: balance; overflow-wrap: anywhere; }
+.size { margin: 5px 0 0; font-size: 16px; color: var(--ink-soft); }
+
+/* The price window, still blank. */
+.slot { margin: 0; padding-top: 10px; border-top: 1.5px dashed var(--rule-strong); display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 13px; color: var(--ink-soft); }
+.slot b { font-family: var(--display); font-size: 30px; font-weight: 900; line-height: 1; color: var(--accent); }
+
+/* ---------- the back of the tag: the real price ---------- */
+
+.reveal { display: grid; justify-items: center; align-content: space-between; gap: 4px; height: 100%; text-align: center; }
+.back-name { margin: 0; max-width: 100%; font-size: 13px; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.real { margin: 0; display: grid; gap: 0; }
+.real-label { font-size: 13px; font-weight: 700; letter-spacing: .04em; color: var(--accent); }
+.real b { font-family: var(--display); font-size: clamp(44px, 14.5vw, 56px); font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.result { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px 14px; min-height: 40px; }
+.verdict { margin: 0; font-family: var(--display); font-size: 24px; font-weight: 900; line-height: 1.1; }
+.verdict.bull { color: var(--found); }
+.points { margin: 0; font-size: 18px; font-variant-numeric: tabular-nums; --stamp-angle: -6deg; }
+.points.near { --stamp-color: var(--ink-near); }
+.points.mid { --stamp-color: var(--ink-mid); }
+.points.far { --stamp-color: var(--close); }
+
+/* ---------- the guess ---------- */
+
+.guess-form { display: grid; gap: 8px; }
+.ask { font-size: 14px; font-weight: 700; }
+.price-field { position: relative; }
+.price-field .shekel {
+  position: absolute;
+  inset-block: 0;
+  left: 16px;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  pointer-events: none;
+}
+.price-field .field {
+  width: 100%;
+  height: 64px;
+  padding: 0 16px 0 48px;
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+  direction: ltr;
+}
+.price-field .field[aria-invalid="true"] { border-color: var(--close); }
+.error { margin: 0; min-height: 20px; font-size: 14px; font-weight: 500; color: var(--close); }
+.guess-form .btn { min-height: 56px; font-size: 18px; }
+
+/* ---------- after the guess: where it fell ---------- */
+
+.after { display: grid; gap: 10px; animation: fx-rise .5s .25s var(--ease) backwards; }
+.gauge { padding: 24px 26px 0; }
+.track { position: relative; height: 10px; border-radius: 5px; background: var(--desk); box-shadow: var(--shadow-pressed); }
+/* A guess between half and one and a half times the price is worth something; the dark middle is "בול". */
+.zone { position: absolute; inset-block: 0; left: 25%; width: 50%; background: color-mix(in srgb, var(--accent) 30%, transparent); }
+.zone.bull { left: 47.5%; width: 5%; background: var(--accent); }
+.mark { position: absolute; inset: 0; pointer-events: none; }
+.mark b { position: absolute; left: var(--at, 50%); translate: -50% 0; font-size: 12px; font-weight: 700; line-height: 1; white-space: nowrap; }
+.mark::before { content: ""; position: absolute; left: var(--at, 50%); translate: -50% 0; }
+.mark.real::before { top: -3px; width: 2px; height: 16px; background: var(--ink); }
+.mark.real b { top: 17px; color: var(--ink-soft); }
+.mark.you::before { top: -9px; width: 14px; height: 14px; border-radius: 50% 50% 50% 0; rotate: -45deg; translate: -50% -3px; background: var(--ink); box-shadow: var(--shadow-rest); }
+.mark.you b { top: -26px; }
+.mark.you.fresh { animation: mark-drop .5s .55s var(--ease-spring) backwards; }
+.ends { margin: 14px -18px 0; display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-soft); }
+.diff { margin: 0; text-align: center; font-size: 16px; color: var(--ink-soft); }
+.diff b { color: var(--ink); font-weight: 700; }
+.after .btn { min-height: 52px; font-size: 17px; }
+
+/* ---------- the end sheet ---------- */
+
+#end.fx-paper { margin-top: 2px; padding: 18px 16px 16px; border-top: 0; }
+.end-stamp { margin: 0 0 12px; min-height: 44px; display: grid; place-items: center; }
+.end-stamp .fx-stamp { --stamp-angle: -4deg; font-variant-numeric: tabular-nums; }
+.end-sub b { font-variant-numeric: tabular-nums; }
+
+/* ---------- the receipt: items already priced ---------- */
+
+.log-wrap { filter: var(--receipt-shadow); }
+.log-wrap[hidden] { display: none; }
+.receipt {
+  --tooth: 12px;
+  margin-inline: 10px;
+  padding: 18px 14px 20px;
+  background: var(--sheet) var(--grain);
+  /* Torn off the roll: saw teeth along the top and the bottom. */
+  -webkit-mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--tooth) 51% repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--tooth) 51% repeat-x;
+  mask:
+    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--tooth) 51% repeat-x,
+    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--tooth) 51% repeat-x;
+}
+/* At the end the till prints it line by line. */
+.receipt.printing { animation: print 1.1s steps(11, end) backwards; }
+.log-title { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1.5px dashed var(--rule-strong); text-align: center; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--ink-soft); }
+.log { margin: 0; padding: 0; list-style: none; }
+.row {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--rule-strong);
+}
+.row .body { min-width: 0; display: grid; gap: 1px; }
+.row .name { font-family: var(--display); font-size: 17px; font-weight: 700; line-height: 1.2; overflow-wrap: anywhere; }
+.row .name small { font-family: var(--text); font-size: 13px; font-weight: 400; color: var(--ink-soft); }
+.row .yours { font-size: 13px; color: var(--ink-soft); }
+.row .nums { display: grid; justify-items: end; gap: 0; }
+.row .price { font-family: var(--display); font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.row .score { font-size: 13px; font-weight: 700; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.log-total { margin: 0; padding-top: 9px; border-top: 1.5px solid var(--ink); display: flex; align-items: baseline; justify-content: space-between; font-size: 14px; font-weight: 700; }
+.log .row:last-child { border-bottom: 0; }
+.log-total b { font-family: var(--display); font-size: 24px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.receipt-foot { margin: 14px 0 0; display: grid; justify-items: center; gap: 6px; font-size: 12px; color: var(--ink-soft); }
+.barcode {
+  width: 58%;
+  height: 26px;
+  background: repeating-linear-gradient(to right, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 8px, var(--ink) 8px 11px, transparent 11px 13px, var(--ink) 13px 14px, transparent 14px 18px);
+  opacity: .85;
+}
+
+/* ---------- help ---------- */
+
+.legend { margin: 0 0 12px; padding: 0; list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; font-size: 14px; }
+.legend li { display: flex; align-items: center; gap: 8px; }
+
+/* display: grid above would otherwise win over the hidden attribute */
+.card[hidden], .guess-form[hidden], .after[hidden], .reveal[hidden] { display: none; }
+
+@media (min-width: 760px) {
+  .tag-face { min-height: 212px; }
+}
+
+@keyframes tag-swing {
+  from { opacity: 0; transform: translateY(-18px) rotate(-9deg); }
+  22% { opacity: 1; }
+  38% { transform: rotate(5deg); }
+  60% { transform: rotate(-2.6deg); }
+  80% { transform: rotate(1.1deg); }
+}
+@keyframes step-land { from { transform: translateY(-5px) scale(1.12); } }
+@keyframes mark-drop { from { opacity: 0; transform: translateY(-16px); } }
+@keyframes print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }

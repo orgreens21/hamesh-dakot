@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "חמש דקות – משחקים יומיים קצרים בעברית",
+  "short_name": "חמש דקות",
+  "description": "שבעה משחקים קצרים בעברית. חידה חדשה בכל משחק, כל יום בחצות.",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#bfe3f0",
+  "theme_color": "#e5dac2",
+  "categories": ["games", "education", "entertainment"],
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "שחקו את חידות היום", "short_name": "חידות היום", "url": "./?next=1", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "נקודת ציון", "url": "games/nekuda/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "ארבע על ארבע", "url": "games/arba/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "המתחזה", "short_name": "המתחזה", "url": "games/mitchaze/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

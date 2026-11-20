@@ -1,0 +1,189 @@
+/* Only what is special to יותר או פחות. Paper, ink, type, buttons, dialogs, the end panel and
+   the toast all come from shared/base.css. */
+
+/* The play area fills the screen so the two answer buttons land under the thumb. */
+.app > main { display: flex; flex-direction: column; }
+
+.brief { text-align: center; }
+.theme-title { margin: 2px 0 0; font-family: var(--display); font-size: clamp(24px, 7.4vw, 30px); font-weight: 900; line-height: 1.1; text-wrap: balance; }
+
+/* ---------- progress: ten holes punched in the page; each answer drops a counter into one ---------- */
+
+.pips { display: grid; grid-template-columns: repeat(10, 1fr); justify-items: center; gap: 4px; margin: 0; padding: 2px 0; list-style: none; }
+.pips li { width: 16px; height: 16px; border-radius: 50%; background: var(--desk); box-shadow: var(--shadow-pressed); }
+.pips li.now { background: var(--sheet); box-shadow: 0 0 0 2px var(--ink), var(--shadow-rest); }
+.pips li.right, .pips li.wrong { box-shadow: var(--shadow-rest), var(--edge); }
+/* Only the counter that has just been dropped in bounces. */
+.pips li:is(.right, .wrong):has(+ .now) { animation: pop .35s var(--ease-spring); }
+.pips li.right { background: var(--found); }
+.pips li.wrong { background: var(--close); }
+
+.run { margin: 0; text-align: center; font-size: 14px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.run b { font-family: var(--display); font-size: 20px; color: var(--ink); }
+
+/* ---------- the two cards: the known one lies on the desk, the hidden one is held above it ---------- */
+
+/* Stamps start large before they land; they must not widen the page. */
+.app { overflow-x: clip; }
+
+.duel { --fx-max: 3.5deg; position: relative; flex: 1; display: grid; grid-template-rows: 1fr 1fr; gap: 10px; min-height: 252px; max-height: 440px; }
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  padding: 14px 14px 12px;
+  text-align: center;
+  transition: background-color .25s;
+}
+/* The coloured edge of an index card. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 5px;
+  border-radius: 10px 10px 0 0;
+  background: var(--rule-strong);
+  transition: background-color .25s;
+}
+#card-hidden { box-shadow: var(--shadow-raised), var(--edge); }
+#card-hidden::before { background: var(--accent); }
+.card-name { margin: 0; font-family: var(--display); font-size: clamp(24px, 7.6vw, 32px); font-weight: 900; line-height: 1.08; text-wrap: balance; overflow-wrap: anywhere; }
+.card-name.long { font-size: clamp(19px, 5.8vw, 24px); }
+.card-value { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 7px; font-size: 15px; color: var(--ink-soft); }
+.card-value .num { font-family: var(--display); font-size: clamp(30px, 9.6vw, 40px); font-weight: 700; line-height: 1.1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.card-value .num.unknown { color: var(--accent); }
+
+.card.right { background-color: color-mix(in srgb, var(--found) 10%, var(--sheet)); }
+.card.right::before, #card-hidden.right::before { background: var(--found); }
+.card.right .num { color: var(--found); }
+.card.wrong { background-color: color-mix(in srgb, var(--close) 10%, var(--sheet)); }
+.card.wrong::before, #card-hidden.wrong::before { background: var(--close); }
+.card.wrong .num { color: var(--close); }
+
+/* The ruling, stamped in the bottom corner of the card it is about. */
+.card-stamp { position: absolute; inset-block-end: 10px; inset-inline-end: 10px; z-index: 3; pointer-events: none; }
+.card-stamp .fx-stamp.big { font-size: clamp(19px, 5.6vw, 23px); }
+/* On a short screen the cards are low and a long unit ("1,050,151 תושבים") runs into that corner.
+   The stamp is decoration there: the badge between the cards, the tint and the coloured number
+   already give the ruling, so it steps aside rather than cover the answer. */
+@media (max-height: 740px) { .card-stamp { display: none; } }
+
+/* The number rolls in like an odometer: one strip of digits per column, each turning once. */
+.odo { display: inline-flex; direction: ltr; }
+.odo-col { display: inline-block; height: 1.1em; overflow: hidden; }
+.odo-strip {
+  display: flex;
+  flex-direction: column;
+  transition: transform .62s cubic-bezier(.22, .9, .3, 1) var(--delay, 0ms);
+  will-change: transform;
+}
+.odo-strip span { height: 1.1em; }
+.odo.go .odo-strip { transform: translateY(calc(var(--to) * -1.1em)); }
+
+/* A paper dot sitting on the seam between the cards: "או" while guessing, then a tick or a cross. */
+.verdict {
+  --fx-z: 26px;
+  position: absolute;
+  inset-inline-start: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0;
+  margin-inline-start: -23px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--paper) var(--grain);
+  box-shadow: var(--shadow-raised), var(--edge);
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+.verdict .icon { width: 24px; height: 24px; stroke-width: 2.8; }
+.verdict.right { background: var(--found); color: var(--on-color); animation: yoter-dot .4s var(--ease-spring); }
+.verdict.wrong { background: var(--close); color: var(--on-color); animation: yoter-no .4s var(--ease); }
+@keyframes yoter-dot { from { transform: translateZ(26px) scale(.6); } }
+@keyframes yoter-no { 20% { transform: translateZ(26px) translateX(6px); } 40% { transform: translateZ(26px) translateX(-6px); } 60% { transform: translateZ(26px) translateX(4px); } 80% { transform: translateZ(26px) translateX(-4px); } }
+
+/* Moving on: the old card leaves over the top, the revealed one climbs into its slot, and a new one
+   swings up from under the desk edge. */
+.card.leaving { position: absolute; inset: 0 0 auto; z-index: 1; pointer-events: none; animation: yoter-leave .5s var(--ease) forwards; }
+.duel.advance #card-known { animation: yoter-climb .55s var(--ease); }
+.duel.advance #card-hidden { animation: yoter-arrive .62s var(--ease) backwards; transform-origin: 50% 100%; }
+@keyframes yoter-leave { to { opacity: 0; transform: translateY(-38%) translateZ(-120px) rotateX(22deg); } }
+@keyframes yoter-climb { from { transform: translateY(calc(100% + 10px)); } }
+@keyframes yoter-arrive { from { opacity: 0; transform: translateY(55%) translateZ(-140px) rotateX(-32deg); } }
+
+/* ---------- answer buttons: two keys ---------- */
+
+.answer-bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.answer { min-height: 66px; padding: 6px 8px; border-radius: 10px; font-size: clamp(16px, 4.9vw, 19px); line-height: 1.15; }
+.answer svg { width: 24px; height: 24px; stroke-width: 2.6; }
+.answer:disabled { background: transparent; }
+/* The answer just given stays pressed in while its number rolls. */
+.answer.picked:disabled {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  transform: translateY(2px);
+  box-shadow: var(--shadow-pressed);
+}
+
+.practice-link { align-self: center; min-height: 44px; padding: 0 8px; font-size: 14px; color: var(--ink-soft); }
+
+/* ---------- practice banner ---------- */
+
+.mode-banner { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; justify-items: center; }
+.mode-banner p { margin: 0; }
+.theme-pick { display: flex; align-items: center; gap: 8px; width: 100%; min-width: 0; font-size: 14px; }
+.theme-pick select {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding-inline: 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--sheet);
+  font-size: 15px;
+  font-weight: 500;
+}
+.mode-banner .link { min-height: 44px; }
+
+/* ---------- the end: a sheet of its own, stamped with the score ---------- */
+
+
+/* ---------- after the game: the whole chain with its numbers ---------- */
+
+.recap { padding: 12px 14px 4px; border-radius: 10px; background: var(--sheet) var(--grain); box-shadow: var(--shadow-rest), var(--edge); }
+.recap h3 { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+.recap ol { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--rule-strong); }
+.recap li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-height: 42px; padding: 4px 0; border-bottom: 1px solid var(--rule); }
+.recap li:last-child { border-bottom: 0; }
+.recap li .icon { width: 20px; height: 20px; stroke-width: 2.6; }
+.recap li.right .icon { color: var(--found); }
+.recap li.wrong .icon { color: var(--close); }
+.recap li b { font-family: var(--display); font-size: 18px; line-height: 1.15; }
+.recap li span { font-size: 15px; font-variant-numeric: tabular-nums; color: var(--ink-soft); white-space: nowrap; }
+
+/* A practice run ends without share buttons, so its first button needs its own breathing room. */
+.end > .end-sub + .btn { margin-top: 16px; }
+
+.foot p { margin: 0 0 8px; }
+
+/* Short screens: keep both buttons above the fold. */
+@media (max-height: 700px) {
+  .duel { min-height: 216px; }
+  .card { padding: 10px 12px 8px; }
+  /* Room for the paper dot that overlaps the top of the lower card. */
+  #card-hidden { padding-top: 22px; }
+  .answer { min-height: 58px; }
+}
+
+/* The game's emblem heads the rules, as it heads its card on the front page. */
+.sheet > .emblem { --emblem-size: 72px; margin: -4px auto 8px; }

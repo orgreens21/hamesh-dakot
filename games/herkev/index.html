@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="herkev">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>צומת – חמש דקות</title>
+  <meta name="description" content="רשת יומית של 3×3 על נושא אחר בכל יום: מדינות, קולנוע וטלוויזיה, מוזיקה ישראלית, יישובים וכדורגל. מצאו לכל משבצת תשובה שמתאימה גם לשורה וגם לעמודה. תשעה ניחושים.">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="צומת – חמש דקות">
+  <meta property="og:description" content="נושא חדש כל יום, תשע משבצות: מה מתאים גם לשורה וגם לעמודה? תשעה ניחושים.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/herkev/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+
+      <p class="topic" id="topic"></p>
+
+      <div class="grid" id="grid" role="group" aria-label="רשת המשבצות"></div>
+
+      <ol class="tokens" id="tokens" role="img"></ol>
+
+      <div class="under-grid" id="under-grid">
+        <button type="button" class="link" id="giveup-btn">סיימתי, הראו לי תשובות</button>
+        <button type="button" class="link" id="archive-btn" hidden>רשתות קודמות</button>
+      </div>
+
+      <section id="end" class="paper" hidden aria-live="polite"></section>
+
+      <section class="answers" id="answers" hidden aria-labelledby="answers-title">
+        <h2 class="answers-title" id="answers-title">מי עוד התאים?</h2>
+        <ol class="answers-list" id="answers-list"></ol>
+        <p class="muted answers-note">לפי ויקינתונים. בכל משבצת מוצגות עד חמש תשובות מוכרות.</p>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <p>הנתונים: <a href="https://www.wikidata.org" target="_blank" rel="noopener">ויקינתונים</a> (רישיון CC0), נכון ל־<span class="retrieved"></span>. המאגר אינו שלם.<span id="kit-note"><br>
+      צבעי המועדונים: צבעי המדים לפי ויקיפדיה, להמחשה בלבד.</span></p>
+      <a href="../../">חמש דקות – כל המשחקים</a>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>בכל יום יש <b>נושא</b>: מדינות העולם, קולנוע וטלוויזיה, מוזיקה ישראלית, יישובים בישראל או כדורגל ישראלי. לכל שורה ולכל עמודה יש תנאי. בחרו משבצת וכתבו <b>תשובה שמתאימה גם לשורה וגם לעמודה</b>, למשל מדינה באירופה שיש אדום בדגל שלה.</p>
+    <p class="help-today" id="help-today"></p>
+    <p>יש לכם <b>תשעה ניחושים</b> בסך הכול. כל ניחוש, נכון או שגוי, יורד מהמניין, וכל תשובה יכולה לשבת רק במשבצת אחת.</p>
+    <p>מחמש משבצות ומעלה היום נחשב הצלחה ושומר על הרצף.</p>
+    <p class="muted">חשוב לדעת: התשובות נבדקות מול מאגר ויקינתונים, נכון ל־<span class="retrieved"></span>. המאגר אינו שלם ולפעמים אינו מדויק, ולכן ייתכן שתשובה נכונה לא תתקבל. אנחנו בוחרים רק משבצות שיש להן לפחות עשר תשובות, כדי שזה יקרה כמה שפחות.</p>
+    <p class="muted">רשת חדשה ונושא חדש כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <dialog id="guess-dialog" class="sheet" aria-labelledby="guess-title">
+    <p class="kicker" id="guess-title">מי מתאים למשבצת?</p>
+    <ul class="guess-criteria" id="guess-criteria"></ul>
+    <div class="search" id="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+      <input id="player-input" type="text" inputmode="search" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false"
+             placeholder="הקלידו שם…" role="combobox" aria-expanded="false" aria-controls="suggestions" aria-autocomplete="list" aria-label="התשובה">
+    </div>
+    <ul id="suggestions" class="suggestions" role="listbox" aria-label="תוצאות החיפוש" hidden></ul>
+    <p class="guess-note" id="guess-note" role="status" aria-live="polite"></p>
+    <p class="muted guess-tried" id="guess-tried" hidden></p>
+    <form method="dialog"><button class="btn ghost" id="guess-cancel">ביטול</button></form>
+  </dialog>
+
+  <dialog id="archive-dialog" class="sheet" aria-labelledby="archive-title">
+    <h2 id="archive-title">רשתות קודמות</h2>
+    <p class="muted">אפשר לשחק ברשתות של הימים האחרונים. הן לא נספרות בסטטיסטיקה ולא משפיעות על הרצף.</p>
+    <ul class="archive-list" id="archive-list"></ul>
+    <form method="dialog"><button class="btn ghost">סגירה</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

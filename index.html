@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>חמש דקות – משחקים יומיים קצרים בעברית</title>
+  <meta name="description" content="שבעה משחקים קצרים בעברית: גיאוגרפיה, מילים, מחירים, היסטוריה וכדורגל. חידה חדשה בכל משחק, כל יום בחצות.">
+  <meta name="theme-color" content="#e5dac2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f2440" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="חמש דקות – משחקים יומיים קצרים בעברית">
+  <meta property="og:description" content="שבעה משחקים קצרים בעברית. חידה חדשה בכל משחק, כל יום בחצות.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="shared/fonts.css">
+  <link rel="stylesheet" href="shared/hub.css">
+  <link rel="modulepreload" href="shared/ui.js">
+  <link rel="modulepreload" href="shared/hub-map.js">
+  <script type="module" src="shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body class="hub">
+  <header class="bar" id="bar">
+    <div class="bar-name">
+      <h1>חמש דקות</h1>
+      <p class="bar-date" id="dateline"></p>
+    </div>
+    <div class="bar-stats">
+      <p class="chip" id="progress"><span class="chip-ring" aria-hidden="true"></span><span id="progress-text">0/6 היום</span></p>
+      <p class="chip" id="streak" hidden></p>
+    </div>
+  </header>
+
+  <main class="sea">
+    <section class="intro" aria-labelledby="intro-title">
+      <h2 class="intro-title" id="intro-title">שש חידות קצרות, מהחרמון עד אילת</h2>
+      <p class="intro-lede" id="intro-lede">חידה חדשה בכל תחנה, כל יום בחצות.</p>
+      <button class="cta" id="stories-btn" type="button" aria-haspopup="dialog">
+        <svg class="cta-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5Z"/></svg>
+        <span id="stories-label">שחקו את חידות היום</span>
+      </button>
+      <section class="install-card" id="install" hidden aria-labelledby="install-title">
+        <svg class="install-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M12 7.5v7M9 11.5l3 3 3-3"/></svg>
+        <div class="install-text">
+        <h2 id="install-title">חמש דקות כאפליקציה</h2>
+        <p>אייקון במסך הבית, פתיחה מהירה, ומשחק גם בלי אינטרנט.</p>
+        </div>
+        <button class="install-btn" id="install-btn" type="button">התקנה</button>
+      </section>
+    </section>
+
+    <div class="map" id="map">
+      <svg class="map-art" id="map-art" aria-hidden="true" focusable="false"></svg>
+      <h2 class="visually-hidden">המשחקים על המפה, מצפון לדרום</h2>
+      <ol class="pins" id="games"></ol>
+      <noscript><p class="noscript">כדי לשחק צריך להפעיל JavaScript בדפדפן.</p></noscript>
+    </div>
+
+    <section class="next-card" aria-label="החידות הבאות">
+      <svg class="next-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+      <p>חידות חדשות בעוד <span id="countdown" dir="ltr">--:--:--</span></p>
+    </section>
+  </main>
+
+  <footer class="foot">ההתקדמות והסטטיסטיקה נשמרות רק בדפדפן שלכם.</footer>
+
+  <dialog class="ios-sheet" id="ios-sheet" aria-labelledby="ios-title">
+    <h2 id="ios-title">התקנה באייפון</h2>
+    <ol>
+      <li>לוחצים על כפתור השיתוף של ספארי
+        <svg class="ios-glyph" viewBox="0 0 24 24" aria-label="כפתור שיתוף" role="img"><path d="M12 3v12M8 7l4-4 4 4M6 11v9h12v-9"/></svg>
+        (בתחתית המסך, או למעלה באייפד).</li>
+      <li>גוללים ובוחרים <b>״הוספה למסך הבית״</b>.</li>
+      <li>לוחצים <b>״הוספה״</b>. זהו, האייקון מחכה לכם במסך הבית.</li>
+    </ol>
+    <p class="ios-note">צריך לפתוח את האתר בספארי. מתוך וואטסאפ: ⋯ ואז ״פתיחה בספארי״.</p>
+    <form method="dialog"><button class="install-btn wide" type="submit">הבנתי</button></form>
+  </dialog>
+
+  <dialog class="deck" id="deck" aria-labelledby="deck-title">
+    <div class="deck-top">
+      <ol class="deck-bars" id="deck-bars" aria-hidden="true"></ol>
+      <div class="deck-head">
+        <h2 class="deck-title" id="deck-title">חידות היום</h2>
+        <p class="deck-count" id="deck-count"></p>
+        <button class="deck-close" id="deck-close" type="button" aria-label="סגירה וחזרה למפה">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="deck-intro" id="deck-intro" hidden></p>
+    <div class="deck-stage" id="deck-stage" aria-live="polite"></div>
+    <div class="deck-nav">
+      <button class="deck-step" id="deck-prev" type="button" aria-label="החידה הקודמת">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg>
+      </button>
+      <p class="deck-hint" id="deck-hint"></p>
+      <button class="deck-step" id="deck-next" type="button" aria-label="החידה הבאה">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 5-7 7 7 7"/></svg>
+      </button>
+    </div>
+  </dialog>
+
+  <script type="module" src="shared/hub.js"></script>
+  <script type="module" src="shared/hub-install.js"></script>
+</body>
+</html>

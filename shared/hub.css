@@ -1,0 +1,601 @@
+/* The hub: an illustrated map on a sky-blue sea. Thick navy outlines, solid offset "sticker" shadows,
+   Secular One for display and Heebo for text. Self-contained: the hub does not load shared/base.css.
+   The story deck (shared/hub-stories.js) is styled at the bottom. */
+
+html:has(> body.hub) { color-scheme: light; background: #bfe3f0; }
+.hub {
+  --display: "Secular One", "Heebo", system-ui, sans-serif;
+  --text: "Heebo", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --sea: #bfe3f0;
+  --sea-light: #d9f0f8;
+  --wave: #6fb0cc;
+  --land: #f6e8c3;
+  --hill: #ead19a;
+  --dune: #c9a866;
+  --tree: #8fc46a;
+  --leaf: #4e8a3a;
+  --trunk: #8a5a2b;
+  --lake: #6fc0e0;
+  --ink: #18324a;            /* outlines, shadows and text on light surfaces */
+  --ink-soft: #3f586d;
+  --on-sea: #18324a;
+  --on-sea-soft: #2b4a63;
+  --bar: #e5dac2;            /* the same sand as the installed app's theme colour */
+  --bar-text: #18324a;
+  --bar-soft: #46535c;
+  --bubble: #ffffff;
+  --done: #ffe17a;
+  --won: #1f8a52;
+  --lost: #5b6b7b;
+  --cta: #ffd23f;
+  --focus: #0b5cc4;
+  --trail: #18324a;
+  --trail-glow: rgba(255, 255, 255, .6);
+  --sun: #ffd34d;
+  --ray: #e9a21f;
+  --glow: transparent;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* Night: a deep sea, the land under moonlight, and the stops lit like lanterns. */
+  html:has(> body.hub) { color-scheme: dark; background: #0d2240; }
+  .hub {
+    --sea: #0d2240;
+    --sea-light: #16335a;
+    --wave: #2f5b8c;
+    --land: #433a2b;
+    --hill: #4f4532;
+    --dune: #7c6a47;
+    --tree: #3e6b45;
+    --leaf: #6fa25e;
+    --trunk: #a67a4a;
+    --lake: #1f5e8c;
+    --ink: #050c18;
+    --ink-soft: #3f586d;
+    --on-sea: #e6eef7;
+    --on-sea-soft: #b9cadb;
+    --bar: #0f2440;
+    --bar-text: #f1f5fa;
+    --bar-soft: #b9cadb;
+    --bubble: #fff8e3;
+    --done: #ffd75e;
+    --cta: #ffd23f;
+    --focus: #ffd23f;
+    --trail: #f3e3b0;
+    --trail-glow: rgba(0, 0, 0, .35);
+    --glow: rgba(255, 210, 110, .32);
+  }
+}
+
+.hub *, .hub *::before, .hub *::after { box-sizing: border-box; }
+.hub [hidden] { display: none !important; }
+html.deck-open { overflow: hidden; }
+body.hub {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--sea);
+  color: var(--on-sea);
+  font: 16px/1.5 var(--text);
+  overflow-x: clip;
+  -webkit-tap-highlight-color: transparent;
+}
+.hub h1, .hub h2, .hub h3, .hub p { margin: 0; }
+.hub :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.hub .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ---------- the top bar ---------- */
+
+.hub .bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: calc(8px + env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) 8px max(16px, env(safe-area-inset-left));
+  background: var(--bar);
+  color: var(--bar-text);
+  border-bottom: 2.5px solid var(--ink);
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--ink) 18%, transparent);
+}
+.hub .bar h1 { font: 400 26px/1.05 var(--display); letter-spacing: -.01em; white-space: nowrap; }
+.hub .bar-date { font-size: 12.5px; font-weight: 500; color: var(--bar-soft); white-space: nowrap; }
+.hub .bar-stats { display: flex; gap: 6px; flex-shrink: 0; }
+.hub .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  border: 2px solid var(--ink);
+  border-radius: 99px;
+  background: #fff;
+  color: #18324a;
+  box-shadow: 0 2.5px 0 var(--ink);
+  font-size: 13.5px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.hub .chip-ring {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: conic-gradient(var(--won) calc(var(--done, 0) * 360deg), #d9e1e8 0);
+  -webkit-mask: radial-gradient(circle, transparent 3.5px, #000 4px);
+  mask: radial-gradient(circle, transparent 3.5px, #000 4px);
+}
+.hub .chip-icon { width: 15px; height: 15px; fill: #e2552b; }
+
+/* ---------- the intro and the call to action ---------- */
+
+.hub .sea { width: min(100%, 600px); margin: 0 auto; }
+.hub .intro { padding: 22px 16px 6px; text-align: center; position: relative; z-index: 2; }
+.hub .intro-title { font: 400 clamp(21px, 6vw, 25px)/1.2 var(--display); color: var(--on-sea); text-wrap: balance; }
+.hub .intro-lede { margin-top: 4px; font-size: 15px; font-weight: 500; color: var(--on-sea-soft); }
+.hub .cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(100%, 340px);
+  min-height: 58px;
+  margin-top: 14px;
+  padding: 8px 20px;
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  background: var(--cta);
+  color: #18324a;
+  box-shadow: 0 5px 0 var(--ink), 0 0 26px var(--glow);
+  font: 400 20px/1.15 var(--display);
+  cursor: pointer;
+  transition: transform .12s, box-shadow .12s;
+}
+.hub .cta:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--ink); }
+.hub .cta-icon { width: 22px; height: 22px; fill: currentColor; flex-shrink: 0; }
+.hub .cta[data-done="all"] { background: #fff; }
+
+/* ---------- the map ---------- */
+
+.hub .map { position: relative; width: 100%; max-width: 560px; margin: 4px auto 0; aspect-ratio: 179.2 / 414; }
+.hub .map-art { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.hub .noscript { position: absolute; top: 20%; inset-inline: 0; text-align: center; font-weight: 700; }
+
+.hub .m-land { fill: var(--land); stroke: var(--ink); stroke-width: 1.35; stroke-linejoin: round; }
+.hub .m-land-shadow { fill: var(--ink); }
+.hub .m-lake { fill: var(--lake); stroke: var(--ink); stroke-width: .9; }
+.hub .m-lake-wave { fill: none; stroke: #fff; stroke-width: .6; stroke-linecap: round; opacity: .8; }
+.hub .m-river { fill: none; stroke: var(--lake); stroke-width: 1.5; stroke-linecap: round; }
+.hub .m-wave { fill: none; stroke: var(--wave); stroke-width: 1.1; stroke-linecap: round; }
+.hub .m-tree { fill: var(--tree); stroke: var(--ink); stroke-width: .7; }
+.hub .m-hill { fill: var(--hill); stroke: var(--ink); stroke-width: .7; stroke-linejoin: round; }
+.hub .m-dune { fill: none; stroke: var(--dune); stroke-width: .9; stroke-linecap: round; }
+.hub .m-trunk { fill: none; stroke: var(--trunk); stroke-width: 1.1; stroke-linecap: round; }
+.hub .m-leaf { fill: none; stroke: var(--leaf); stroke-width: 1.2; stroke-linecap: round; }
+.hub .m-hull { fill: #e2483d; stroke: var(--ink); stroke-width: .6; stroke-linejoin: round; }
+.hub .m-sail, .hub .m-sail2 { fill: #fff; stroke: var(--ink); stroke-width: .6; stroke-linejoin: round; }
+.hub .m-compass circle { fill: var(--sea-light); stroke: var(--ink); stroke-width: .7; }
+.hub .m-compass path { fill: var(--ink); }
+.hub .m-compass text { font: 6.5px var(--display); fill: var(--on-sea); }
+.hub .m-crater ellipse { fill: var(--hill); stroke: var(--ink); stroke-width: .7; }
+.hub .m-crater .m-crater-floor { fill: var(--land); stroke: var(--dune); stroke-width: .5; stroke-dasharray: 1.2 1.4; }
+.hub .m-sun circle { fill: var(--sun); stroke: var(--ink); stroke-width: .7; }
+.hub .m-sun path { stroke: var(--ray); stroke-width: 1.1; stroke-linecap: round; }
+.hub .m-moon { display: none; }
+.hub .m-moon path { fill: #fff2c2; stroke: var(--ink); stroke-width: .6; }
+.hub .m-star { fill: #fff2c2; }
+@media (prefers-color-scheme: dark) {
+  .hub .m-sun { display: none; }
+  .hub .m-moon { display: inline; }
+  .hub .m-lake-wave { opacity: .45; }
+  .hub .m-sail, .hub .m-sail2 { fill: #e9eef4; }
+  .hub .m-land { stroke: #cdb98a; stroke-width: 1.1; }
+  .hub .m-land-shadow { fill: #040a14; }
+}
+
+.hub .m-trail-under { fill: none; stroke: var(--trail-glow); stroke-width: 3.4; stroke-linecap: round; }
+.hub .m-trail { fill: none; stroke: var(--trail); stroke-width: 1.5; stroke-linecap: round; stroke-dasharray: 0 4.2; }
+.hub .m-trail-reveal { fill: none; stroke: #fff; stroke-width: 12; }
+.hub .m-leg { fill: none; stroke: var(--trail); stroke-width: 1; stroke-linecap: round; stroke-dasharray: 2.6 3.2; opacity: .55; }
+.hub .is-drawing .m-trail-reveal { stroke-dasharray: 1 1; animation: hub-trail-draw 1.5s .15s cubic-bezier(.45, 0, .3, 1) both; }
+.hub .is-drawing .m-trail-under, .hub .is-drawing .m-leg { animation: hub-fade-in .6s 1.3s both; }
+@keyframes hub-trail-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes hub-fade-in { from { opacity: 0; } }
+
+/* ---------- the stops ---------- */
+
+.hub .pins { position: absolute; inset: 0; margin: 0; padding: 0; list-style: none; }
+.hub .pin { position: absolute; width: 0; height: 0; }
+.hub .pins.is-entering .pin { animation: hub-pin-drop .5s calc(.25s + var(--i) * .11s) cubic-bezier(.3, 1.45, .55, 1) backwards; }
+@keyframes hub-pin-drop { from { opacity: 0; transform: translateY(-34px); } 60% { opacity: 1; } }
+
+.hub .pin-dot {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 2.5px 0 var(--ink), 0 0 14px var(--glow);
+}
+.hub .pin[data-status="won"] .pin-dot, .hub .pin[data-status="lost"] .pin-dot { background: var(--done); }
+
+/* The place a game "lives", written on the map beside its dot, on the side away from the label. */
+.hub .pin-place {
+  position: absolute;
+  top: -10px;
+  padding: 0 6px;
+  border: 1.5px solid var(--ink);
+  border-radius: 7px;
+  background: var(--land);
+  font-size: 11.5px;
+  font-weight: 700;
+  line-height: 17px;
+  white-space: nowrap;
+  color: #18324a;
+  pointer-events: none;
+}
+.hub .pin[data-side="left"] .pin-place { left: 15px; }
+.hub .pin[data-side="right"] .pin-place { right: 15px; }
+/* The northernmost stop has no room beside it: its place goes under the dot. */
+.hub .pin[data-game="nekuda"] .pin-place { top: 34px; left: auto; right: auto; transform: translateX(-32%); }
+@media (prefers-color-scheme: dark) {
+  .hub .pin-place { background: #e9dcb6; }
+}
+
+.hub .game-link {
+  position: absolute;
+  top: 0;
+  display: block;
+  color: #18324a;
+  text-decoration: none;
+  border-radius: 16px;
+  transform: translate(var(--nudge, 0px), -50%);
+  -webkit-touch-callout: none;
+}
+.hub .pin[data-side="left"] .game-link { right: 15px; }
+.hub .pin[data-side="right"] .game-link { left: 15px; }
+.hub .game-link:focus-visible { outline-offset: 4px; }
+
+.hub .game-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 6px 11px 6px 8px;
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  background: var(--bubble);
+  box-shadow: 0 4px 0 var(--ink), 0 0 20px var(--glow);
+  white-space: nowrap;
+  transition: transform .14s, box-shadow .14s;
+}
+.hub .game-link:hover .game-card { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink), 0 0 22px var(--glow); }
+.hub .game-link:active .game-card { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+/* The bubble's tail points at the dot. */
+.hub .game-card::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 6px);
+  width: 11px;
+  height: 11px;
+  background: inherit;
+  border: 2.5px solid var(--ink);
+  border-width: 2.5px 2.5px 0 0;
+}
+.hub .pin[data-side="left"] .game-card::after { right: -7.5px; transform: rotate(45deg); }
+.hub .pin[data-side="right"] .game-card::after { left: -7.5px; transform: rotate(-135deg); }
+
+.hub .pin-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--accent);
+}
+.hub .pin-mark { width: 22px; height: 22px; fill: none; stroke: #fff; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round; }
+.hub .pin-mark .solid { fill: #fff; stroke: none; }
+.hub .pin-text { display: flex; flex-direction: column; min-width: 0; }
+.hub .game-name { font: 400 16.5px/1.15 var(--display); color: #18324a; }
+.hub .game-status { font-size: 12.5px; font-weight: 700; line-height: 1.3; color: #3f586d; }
+.hub .game-status-detail { color: #18324a; font-weight: 800; }
+
+.hub .pin[data-status="won"] .game-card, .hub .pin[data-status="lost"] .game-card { background: var(--done); }
+.hub .pin[data-status="won"] .game-status, .hub .pin[data-status="lost"] .game-status { color: #3a3a1f; }
+.hub .pin[data-status="playing"] .game-status-label { color: #a1460b; }
+.hub .pin[data-status="party"] .game-card { border-style: dashed; background: #fff1e4; }
+
+.hub .pin-badge {
+  position: absolute;
+  top: -11px;
+  width: 24px;
+  height: 24px;
+  padding: 3px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  background: var(--won);
+}
+.hub .pin[data-status="lost"] .pin-badge { background: var(--lost); }
+.hub .pin[data-side="left"] .pin-badge { left: -10px; }
+.hub .pin[data-side="right"] .pin-badge { right: -10px; }
+.hub .pin-badge.is-news { animation: hub-badge-pop .5s 1s cubic-bezier(.3, 1.6, .5, 1) backwards; }
+@keyframes hub-badge-pop { from { transform: scale(2.4) rotate(-20deg); opacity: 0; } }
+
+/* Today's next unplayed stop bobs gently and its dot pulses. */
+.hub .pin.is-next .game-link { animation: hub-bob 2.6s 2s ease-in-out infinite; }
+.hub .pin.is-next .pin-dot::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 2.5px solid var(--accent);
+  border-radius: 50%;
+  animation: hub-pulse 2s 2s ease-out infinite;
+  opacity: 0;
+}
+@keyframes hub-bob { 50% { translate: 0 -5px; } }
+@keyframes hub-pulse { 0% { opacity: .9; transform: scale(.6); } 100% { opacity: 0; transform: scale(1.7); } }
+
+@media (prefers-color-scheme: dark) {
+  .hub .pin-dot { background: var(--accent-dark); }
+  .hub .pin.is-next .pin-dot::after { border-color: var(--accent-dark); }
+}
+
+/* ---------- under the map ---------- */
+
+.hub .next-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: min(100% - 32px, 340px);
+  margin: 26px auto 0;
+  padding: 12px 16px;
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  background: var(--bubble);
+  color: #18324a;
+  box-shadow: 0 4px 0 var(--ink);
+  font-weight: 700;
+}
+.hub .next-icon { width: 24px; height: 24px; fill: none; stroke: #18324a; stroke-width: 2.2; stroke-linecap: round; flex-shrink: 0; }
+.hub #countdown { font: 400 21px/1 var(--display); font-variant-numeric: tabular-nums; margin-inline-start: 2px; }
+.hub .foot { padding: 18px 16px calc(22px + env(safe-area-inset-bottom)); text-align: center; font-size: 13px; color: var(--on-sea-soft); }
+
+/* ---------- toast (shared/ui.js shareResult) ---------- */
+
+.hub .toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  z-index: 50;
+  max-width: calc(100vw - 32px);
+  padding: 10px 18px;
+  border: 2px solid #050c18;
+  border-radius: 14px;
+  background: #18324a;
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 4px 0 #050c18;
+  opacity: 0;
+  transform: translate(-50%, 16px);
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+}
+.hub .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- the story deck ---------- */
+
+.hub .deck {
+  width: min(100%, 480px);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0 auto;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  border: 0;
+  background: #0e1b2c;
+  color: #fff;
+  overflow: hidden;
+}
+.hub .deck[open] { display: flex; flex-direction: column; }
+.deck::backdrop { background: rgba(5, 12, 24, .72); }
+.hub .deck :focus-visible { outline-color: #ffd23f; }
+.hub .deck-top { padding: 12px 14px 0; }
+.hub .deck-bars { display: flex; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.hub .deck-bars li { flex: 1; height: 4px; border-radius: 2px; background: rgba(255, 255, 255, .28); }
+.hub .deck-bars li[data-state="done"] { background: #fff; }
+.hub .deck-bars li[data-state="current"] { background: #ffd23f; }
+.hub .deck-head { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.hub .deck-title { font: 400 19px/1.2 var(--display); }
+.hub .deck-count { flex: 1; font-size: 14px; font-weight: 500; color: #c9d6e4; }
+.hub .deck-close, .hub .deck-step {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  cursor: pointer;
+}
+.hub .deck-close svg, .hub .deck-step svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.hub .deck-step:disabled { opacity: .3; cursor: default; }
+.hub .deck-intro {
+  margin: 10px 16px 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #ffd23f;
+  color: #18324a;
+  font-weight: 800;
+  font-size: 15px;
+}
+.hub .deck-stage { flex: 1; display: grid; min-height: 0; padding: 12px 14px 4px; touch-action: pan-y; }
+.hub .deck-nav { display: flex; align-items: center; gap: 10px; padding: 6px 14px 14px; }
+.hub .deck-hint { flex: 1; text-align: center; font-size: 14px; color: #c9d6e4; }
+
+.hub .story {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 18px 18px 18px;
+  border: 3px solid #050c18;
+  border-radius: 26px;
+  background: radial-gradient(rgba(255, 255, 255, .1) 1.6px, transparent 1.8px) 0 0 / 20px 20px, var(--accent);
+  box-shadow: 0 6px 0 #050c18;
+  color: #fff;
+  overflow-y: auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.hub .story.from-next { animation: hub-slide-from-left .32s cubic-bezier(.2, .8, .3, 1); }
+.hub .story.from-prev { animation: hub-slide-from-right .32s cubic-bezier(.2, .8, .3, 1); }
+@keyframes hub-slide-from-left { from { transform: translateX(-56px) rotate(-1.5deg); opacity: 0; } }
+@keyframes hub-slide-from-right { from { transform: translateX(56px) rotate(1.5deg); opacity: 0; } }
+.hub .story-meta { align-self: flex-start; padding: 3px 12px; border-radius: 99px; background: rgba(0, 0, 0, .28); font-size: 14px; font-weight: 700; }
+.hub .story-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 8px 0 18px; }
+.hub .story-art {
+  display: grid;
+  place-items: center;
+  width: clamp(96px, 26vh, 190px);
+  aspect-ratio: 1;
+  margin: 0 auto clamp(12px, 3.5vh, 28px);
+  border: 3px solid #050c18;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 6px 0 #050c18;
+  transform: rotate(-4deg);
+}
+.hub .story-mark { width: 62%; height: 62%; fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.hub .story-mark .solid { fill: var(--accent); stroke: none; }
+.hub .story-name { font: 400 clamp(34px, 11vw, 46px)/1.05 var(--display); text-shadow: 0 3px 0 rgba(0, 0, 0, .22); }
+.hub .story-pitch { margin-top: 6px; font-size: 17px; font-weight: 500; line-height: 1.4; }
+.hub .story-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 14px; }
+.hub .story-chips span { padding: 3px 12px; border-radius: 99px; background: rgba(0, 0, 0, .28); font-size: 14px; font-weight: 700; }
+.hub .story-chips .is-playing { background: #ffd23f; color: #18324a; }
+.hub .story-start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  margin-top: auto;
+  padding: 8px 18px;
+  border: 3px solid #050c18;
+  border-radius: 18px;
+  background: #fff;
+  color: #18324a;
+  box-shadow: 0 5px 0 #050c18;
+  font: 400 22px/1.1 var(--display);
+  text-decoration: none;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.hub .story-start:active { transform: translateY(3px); box-shadow: 0 2px 0 #050c18; }
+.hub .story-start svg { width: 22px; height: 22px; fill: currentColor; }
+.hub .story-start svg.line { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.hub .story-done { --accent: #ffd23f; color: #18324a; text-align: center; }
+.hub .done-art { margin: 4px auto 10px; width: 84px; flex-shrink: 0; }
+@media (max-height: 700px) {
+  .hub .done-art { display: none; }
+  .hub .day-results li { padding-block: 2px; }
+  .hub .day-next { margin: 10px 0; }
+}
+.hub .story-done .story-mark { stroke: #1f8a52; stroke-width: 3; }
+.hub .story-done .story-name { font-size: clamp(28px, 8.4vw, 36px); text-shadow: none; }
+.hub .day-results { display: grid; gap: 5px; margin: 12px 0 0; padding: 0; list-style: none; text-align: start; }
+.hub .day-results li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 8px;
+  border: 2px solid #18324a;
+  border-radius: 12px;
+  background: #fff;
+}
+.hub .day-mark { width: 26px; height: 26px; padding: 3px; border-radius: 8px; background: var(--accent); fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.hub .day-mark .solid { fill: #fff; stroke: none; }
+.hub .day-name { flex: 1; font-weight: 800; font-size: 15px; }
+.hub .day-score { font-weight: 800; font-size: 15px; }
+.hub .day-results li[data-status="lost"] .day-score { color: #5b6b7b; }
+.hub .day-next { margin: 14px 0; font-weight: 700; }
+.hub #deck-countdown { font: 400 20px/1 var(--display); font-variant-numeric: tabular-nums; }
+.hub .day-actions { display: grid; gap: 8px; margin-top: auto; }
+.hub .story-done .story-start { background: #18324a; color: #fff; }
+.hub .day-wa { justify-self: center; padding: 6px 10px; color: #18324a; font-weight: 800; }
+
+/* ---------- desktop: the map stays a phone-wide column in a wide sea ---------- */
+
+@media (min-width: 700px) {
+  .hub .bar { padding-inline: max(24px, calc(50% - 300px)); }
+  .hub .intro { padding-top: 34px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hub *, .hub *::before, .hub *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- install as an app (shared/hub-install.js) ---------- */
+
+.hub .install-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 340px);
+  margin: 14px auto 0;
+  padding: 10px 12px;
+  text-align: start;
+  border: 2.5px solid var(--ink);
+  border-radius: 18px;
+  background: var(--bubble);
+  color: #18324a;
+  box-shadow: 0 4px 0 var(--ink);
+}
+.hub .install-icon { width: 30px; height: 30px; flex-shrink: 0; fill: none; stroke: #18324a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hub .install-text { flex: 1; min-width: 0; }
+.hub .install-text h2 { font: 400 17px/1.2 var(--display); }
+.hub .install-text p { margin-top: 2px; font-size: 13px; line-height: 1.35; color: #3f586d; }
+.hub .install-btn {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 2.5px solid var(--ink);
+  border-radius: 14px;
+  background: #d9f0f8;   /* secondary to the yellow "play" button above it */
+  color: #18324a;
+  box-shadow: 0 3px 0 var(--ink);
+  font: 400 17px/1 var(--display);
+  cursor: pointer;
+}
+.hub .install-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.hub .install-btn.wide { width: 100%; background: var(--sun); }
+
+.hub .ios-sheet {
+  width: min(92vw, 380px);
+  padding: 22px 20px 18px;
+  border: 2.5px solid var(--ink);
+  border-radius: 20px;
+  background: var(--bubble);
+  color: #18324a;
+  box-shadow: 0 6px 0 var(--ink);
+}
+.hub .ios-sheet::backdrop { background: rgba(5, 12, 24, .55); }
+.hub .ios-sheet h2 { font: 400 23px/1.2 var(--display); margin-bottom: 10px; }
+.hub .ios-sheet ol { margin: 0; padding-inline-start: 22px; display: grid; gap: 10px; font-size: 15.5px; }
+.hub .ios-glyph { display: inline-block; width: 22px; height: 22px; vertical-align: -5px; fill: none; stroke: #1a73e8; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.hub .ios-note { margin-top: 14px; font-size: 13.5px; color: #3f586d; }
+.hub .ios-sheet form { margin-top: 16px; }

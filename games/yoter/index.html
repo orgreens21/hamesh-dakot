@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="yoter">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>יותר או פחות – חמש דקות</title>
+  <meta name="description" content="עשרה סיבובים ביום: איפה גרים יותר אנשים, איזה הר גבוה יותר, איזה סרט יצא קודם? נחשו יותר או פחות וגלו את המספר.">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="יותר או פחות – חמש דקות">
+  <meta property="og:description" content="עשרה סיבובים ביום, נושא חדש כל יום. נחשו יותר או פחות וגלו את המספר.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/yoter/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <div class="mode-banner" id="mode-banner" hidden>
+        <p><b>מוות פתאומי</b> · אימון שלא נספר בסטטיסטיקה</p>
+        <label class="theme-pick">
+          <span>נושא</span>
+          <select id="theme-select"></select>
+        </label>
+        <button class="link" id="back-to-daily" type="button">חזרה לחידה היומית</button>
+      </div>
+
+      <div class="brief">
+        <p class="kicker" id="theme-kicker"></p>
+        <h2 class="theme-title" id="theme-title"></h2>
+      </div>
+
+      <ol class="pips" id="pips" aria-label="הסיבובים של היום"></ol>
+      <p class="run" id="run" hidden></p>
+
+      <div class="duel fx-tilt" id="duel">
+        <article class="card fx-paper" id="card-known">
+          <h3 class="card-name" id="known-name"></h3>
+          <p class="card-value" id="known-value"></p>
+        </article>
+        <p class="verdict fx-layer" id="verdict" role="status" aria-live="polite"></p>
+        <article class="card fx-paper" id="card-hidden">
+          <h3 class="card-name" id="hidden-name"></h3>
+          <p class="card-value" id="hidden-value"></p>
+        </article>
+      </div>
+
+      <div class="answer-bar" id="answer-bar">
+        <button class="btn primary answer" id="more-btn" type="button"></button>
+        <button class="btn primary answer" id="less-btn" type="button"></button>
+      </div>
+
+      <section id="end" class="paper" hidden aria-live="polite"></section>
+
+      <section class="recap" id="recap" hidden>
+        <h3>השרשרת של היום</h3>
+        <ol id="recap-list"></ol>
+      </section>
+
+      <button class="link practice-link" id="practice-link" type="button">רוצים עוד? נסו מוות פתאומי</button>
+    </main>
+
+    <footer class="foot">
+      <p>הנתונים: <a href="https://www.wikidata.org" target="_blank" rel="noopener">ויקינתונים</a> (Wikidata, רישיון CC0), נכון ל־<span id="source-date"></span>. ייתכנו הבדלים קלים ממקורות אחרים.</p>
+      <a href="../../">חמש דקות – כל המשחקים</a>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>לכל יום יש נושא אחד ו<b>עשרה סיבובים</b>. בכל סיבוב מופיעים שני פריטים: המספר של הראשון גלוי, ושל השני מוסתר.</p>
+    <p>נחשו אם המספר המוסתר <b>גדול יותר</b> או <b>קטן יותר</b>. אחרי הגילוי הפריט השני הופך לגלוי, ומולו מגיע פריט חדש.</p>
+    <p>גם אחרי טעות ממשיכים עד הסוף. <b>7 מתוך 10</b> ומעלה שומרים על הרצף היומי.</p>
+    <p class="muted">במקלדת: חץ למעלה ליותר, חץ למטה לפחות. נושא חדש כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

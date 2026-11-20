@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="nekuda">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>נקודת ציון – משחק הניווט היומי של ישראל</title>
+  <meta name="description" content="כל יום יישוב אחד בישראל. שישה ניחושים. אחרי כל ניחוש מקבלים מרחק וכיוון. כמה טוב אתם מכירים את הארץ?">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:title" content="נקודת ציון – משחק הניווט היומי">
+  <meta property="og:description" content="כל יום יישוב אחד בישראל. שישה ניחושים, מרחק וכיוון. תצליחו לנווט?">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/nekuda/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+
+      <div class="search" id="search">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input id="guess-input" type="text" inputmode="search" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="הקלידו שם של יישוב…" role="combobox" aria-expanded="false" aria-controls="suggestions" aria-autocomplete="list" aria-label="ניחוש יישוב">
+        <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+      </div>
+
+      <ul class="hints" id="hints" aria-label="רמזים"></ul>
+
+      <ol class="guesses fx-paper" id="guesses" aria-label="הניחושים שלך"></ol>
+
+      <div class="map-wrap fx-paper fx-tilt" id="map-wrap" dir="ltr">
+        <svg id="map" class="map" role="img" aria-label="מפת היישובים"></svg>
+      </div>
+
+      <section class="end fx-paper" id="end" hidden aria-live="polite">
+        <p class="end-stamp" id="end-stamp"></p>
+        <h2 class="end-title" id="end-title" tabindex="-1"></h2>
+        <p class="end-sub" id="end-sub"></p>
+        <ol class="trail" id="end-trail" aria-hidden="true"></ol>
+        <p class="end-streak" id="end-streak" hidden></p>
+        <div class="end-actions">
+          <button class="btn primary" id="share-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3.5M7.5 8 12 3.5 16.5 8M5 13v6.5h14V13"/></svg>שיתוף התוצאה
+          </button>
+          <a class="btn whatsapp" id="whatsapp-btn" target="_blank" rel="noopener">שליחה בוואטסאפ</a>
+        </div>
+        <p class="next" id="next-wrap">החידה הבאה בעוד <span id="countdown" dir="ltr">--:--:--</span></p>
+        <button class="btn ghost" id="practice-btn">עוד סיבוב לאימון</button>
+      </section>
+    </main>
+
+    <footer class="foot">נתוני היישובים: ויקינתונים · <button class="link" id="help-link">איך משחקים?</button> · <a href="../../">חמש דקות – כל המשחקים</a></footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>כל יום מסתתר יישוב אחד בישראל. יש לכם <b>שישה ניחושים</b> למצוא אותו.</p>
+    <p>אחרי כל ניחוש תקבלו <b>מרחק</b> ו<b>מצפן</b> שמראה לאן לנווט. על המפה יסומן מעגל: היישוב נמצא איפשהו עליו. לחיצה על ניחוש קודם מחזירה את המעגל שלו למפה.</p>
+    <div class="guess example" style="--pct: 58%; --heat: var(--mid)" aria-hidden="true">
+      <div class="body"><span class="name">חיפה</span><span class="km"><span class="len">82 ק״מ</span><span class="dir">דרום</span></span></div>
+      <span class="n">1</span>
+      <span class="arrow"><svg viewBox="0 0 36 36" style="transform: rotate(180deg)"><path class="needle-n" d="M18 4.5 22.5 18h-9Z"/><path class="needle-s" d="M18 31.5 22.5 18h-9Z"/></svg></span>
+    </div>
+    <p class="muted">כלומר: היישוב נמצא 82 ק״מ דרומית לחיפה. הפס הצבעוני מתארך ככל שמתקרבים.</p>
+    <p>נתקעתם? רמזים נפתחים אחרי הניחוש השני, השלישי והרביעי.</p>
+    <p class="muted">חידה חדשה כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

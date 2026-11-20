@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="tzir">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>על הציר – חמש דקות</title>
+  <meta name="description" content="חידת כרונולוגיה יומית: שישה אירועים, ציר זמן אחד. מקמו כל אירוע במקום הנכון בין האירועים שכבר על הציר.">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="על הציר – חמש דקות">
+  <meta property="og:description" content="מה קרה קודם? סדרו את אירועי היום על ציר הזמן.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/tzir/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+
+      <!-- Pinned while the timeline scrolls underneath, so the event in hand is always in view. -->
+      <section class="dock" id="dock" aria-label="האירוע שממקמים עכשיו">
+        <div class="dock-row">
+          <p class="kicker" id="progress"></p>
+          <p class="lives" id="lives" role="img"></p>
+        </div>
+        <div class="card" id="card">
+          <p class="card-text" id="card-text"></p>
+        </div>
+        <p class="feedback" id="feedback" aria-live="polite"></p>
+      </section>
+
+      <section class="axis" aria-label="ציר הזמן">
+        <p class="axis-end">מוקדם יותר</p>
+        <ol class="timeline" id="timeline"></ol>
+        <p class="axis-end">מאוחר יותר</p>
+      </section>
+
+      <section id="end" class="paper" hidden aria-live="polite"></section>
+      <p class="practice-offer" id="practice-offer"><button type="button" class="link" id="practice-link">רוצים להתאמן? סיבוב אימון, בלי לגעת בסטטיסטיקה</button></p>
+    </main>
+
+    <footer class="foot">
+      <p>השנים לפי <a href="https://www.wikidata.org/" target="_blank" rel="noopener">ויקינתונים (Wikidata)</a><span id="source-date"></span>. הניסוחים שלנו.</p>
+      <a href="../../">חמש דקות – כל המשחקים</a>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>על הציר מחכה אירוע אחד, והשנה שלו גלויה. <b>שישה אירועים</b> נוספים יגיעו אחד אחד.</p>
+    <p>מקמו כל אירוע במקום הנכון: לפני, אחרי או בין האירועים שכבר על הציר. הקישו על <b>"כאן"</b> במקום המתאים, או גררו אליו את הכרטיס.</p>
+    <p>צדקתם? השנה נחשפת והאירוע נשאר במקומו. טעיתם? האירוע עובר למקום הנכון, ואתם מאבדים אחד מ<b>שלושת החיים</b>.</p>
+    <p class="muted">חידה חדשה כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

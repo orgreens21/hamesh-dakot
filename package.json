@@ -1,0 +1,19 @@
+{
+  "name": "hamesh-dakot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "חמש דקות: a hub of short daily Hebrew games. Static site, no build step.",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "node --test \"tests/*.logic.test.mjs\"",
+    "test:e2e": "node tests/run-e2e.mjs",
+    "build:data": "node scripts/build-data.mjs",
+    "build:assets": "node scripts/build-assets.mjs",
+    "build:fonts": "node scripts/build-fonts.mjs",
+    "build:sw": "node scripts/build-sw.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.50.0"
+  }
+}

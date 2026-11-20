@@ -1,0 +1,645 @@
+/* חמש דקות: the puzzle page of a newspaper. Every game shares this paper, ink and type;
+   each one gets its own accent colour. Game-specific styles live in games/<slug>/style.css. */
+:root {
+  color-scheme: light dark;
+  --paper: #f1ead9;
+  --sheet: #faf6ea;
+  --ink: #1e2328;
+  --ink-soft: #5c5e54;
+  --rule: #d5cab1;
+  --rule-strong: #b9ac8e;
+  /* Signal colours, for fills and strokes. Every one of them holds 4.5:1 under --on-color; only --far,
+     --found and --close are also dark enough to be small text on paper. */
+  --far: #2c5f9e;
+  --mid: #a06b0a;
+  --near: #c94f18;
+  --close: #c22f25;
+  --found: #1c7346;
+  --on-color: #ffffff;
+  /* The game's own colour. Ink until a [data-game] rule below (or the game's stylesheet) says otherwise. */
+  --accent: var(--ink);
+  --on-accent: var(--paper);
+  --display: "Frank Ruhl Libre", "David Libre", "Times New Roman", serif;
+  --text: Heebo, "Assistant", "Arial Hebrew", Arial, system-ui, sans-serif;
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --lift: 0 2px 4px rgba(46, 38, 20, .08), 0 14px 34px rgba(46, 38, 20, .16);
+  /* Depth kit (see "depth and motion kit" at the end of this file). */
+  --brand: #c22f25;
+  --desk: #e5dac2;
+  --shadow-rest: 0 1px 1px rgba(46, 38, 20, .14), 0 2px 5px -1px rgba(46, 38, 20, .16);
+  --shadow-raised: 0 1px 1px rgba(46, 38, 20, .1), 0 7px 12px -4px rgba(46, 38, 20, .2), 0 20px 30px -14px rgba(46, 38, 20, .34);
+  --shadow-pressed: inset 0 1px 3px rgba(46, 38, 20, .34);
+  --edge: inset 0 1px 0 rgba(255, 255, 255, .6);
+  --ease-spring: cubic-bezier(.3, 1.5, .5, 1);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .24 0 0 0 0 .19 0 0 0 0 .1 0 0 0 .5 -.19'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  /* The same page under a dim lamp. */
+  :root {
+    --paper: #12171c;
+    --sheet: #1a2129;
+    --ink: #ece6d6;
+    --ink-soft: #a5a193;
+    --rule: #2f3841;
+    --rule-strong: #46515c;
+    --far: #5d92d6;
+    --mid: #d9a233;
+    --near: #ee7a3a;
+    --close: #ee5548;
+    --found: #45b57c;
+    --on-color: #12171c;
+    --lift: 0 2px 4px rgba(0, 0, 0, .3), 0 14px 34px rgba(0, 0, 0, .45);
+    --brand: #ee5548;
+    --desk: #0b0f13;
+    --shadow-rest: 0 1px 1px rgba(0, 0, 0, .5), 0 2px 5px -1px rgba(0, 0, 0, .5);
+    --shadow-raised: 0 1px 1px rgba(0, 0, 0, .4), 0 7px 12px -4px rgba(0, 0, 0, .55), 0 20px 30px -14px rgba(0, 0, 0, .8);
+    --shadow-pressed: inset 0 1px 3px rgba(0, 0, 0, .7);
+    --edge: inset 0 1px 0 rgba(255, 255, 255, .07);
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .9 0 0 0 0 .87 0 0 0 0 .8 0 0 0 .2 -.075'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Accents, one per game: at least 4.5:1 against --paper and --sheet as text, and under --on-accent
+   as a fill, in both themes. Mirrored in shared/registry.js; a test keeps the two in step. */
+[data-game] { --on-accent: var(--on-color); }
+[data-game="nekuda"] { --accent: #c22f25; }
+[data-game="beerech"] { --accent: #1c7346; }
+[data-game="arba"] { --accent: #6b3fa0; }
+[data-game="mitchaze"] { --accent: #b83d0b; }
+[data-game="tzir"] { --accent: #2c5f9e; }
+[data-game="herkev"] { --accent: #0f766e; }
+[data-game="yoter"] { --accent: #8f5f08; }
+@media (prefers-color-scheme: dark) {
+  [data-game="nekuda"] { --accent: #ee5548; }
+  [data-game="beerech"] { --accent: #45b57c; }
+  [data-game="arba"] { --accent: #b08ae6; }
+  [data-game="mitchaze"] { --accent: #f0783c; }
+  [data-game="tzir"] { --accent: #6a9fe0; }
+  [data-game="herkev"] { --accent: #35b5a8; }
+  [data-game="yoter"] { --accent: #e0a83a; }
+}
+
+/* ---------- reset ---------- */
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scrollbar-color: var(--rule-strong) transparent; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: 16px;
+  line-height: 1.45;
+  caret-color: var(--accent);
+  -webkit-tap-highlight-color: transparent;
+}
+::selection { background: color-mix(in srgb, var(--accent) 28%, transparent); }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* ---------- page column ---------- */
+
+.app {
+  max-width: 480px;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 0 16px calc(12px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+}
+.app > main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-rows: min-content;
+  gap: 12px;
+  align-content: start;
+}
+
+/* Until the page's script has drawn the game, what the HTML holds is only its empty frame. It stays
+   unseen (but in place, and focusable) so that on a slow connection nothing appears half-built and
+   then jumps. shared/ui.js adds .is-ready; without script the page keeps its <noscript> note. */
+html:not(.is-ready) .app > main > :not(noscript), html:not(.is-ready) .app > .foot { opacity: 0; }
+html.is-ready .app > main, html.is-ready .app > .foot { animation: fx-page-in .22s ease-out; }
+
+/* ---------- header (rendered by mountHeader in shared/ui.js) ---------- */
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  /* Reserved before the script fills it in, so the page does not jump. */
+  min-height: 70px;
+  padding: 12px 0 10px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 12px;
+}
+.top .back { margin-inline-start: -10px; flex: none; }
+.top-actions { display: flex; flex: none; margin-inline-end: -8px; }
+.brand { flex: 1; min-width: 0; }
+.brand h1 {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--display);
+  font-size: clamp(23px, 7vw, 29px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.brand-mark { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent); stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.brand-mark .solid { fill: var(--accent); stroke: none; }
+.puzzle-label { margin: 3px 0 0; min-height: 19px; font-size: 13px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+.icon { width: 1.25em; height: 1.25em; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.icon .solid { fill: currentColor; stroke: none; }
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  display: grid;
+  place-items: center;
+  transition: background .15s;
+}
+.icon-btn svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; }
+.icon-btn .solid { fill: currentColor; stroke: none; }
+
+/* ---------- small text pieces ---------- */
+
+.display { font-family: var(--display); font-weight: 700; }
+.muted { color: var(--ink-soft); font-size: 14px; }
+.kicker { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--accent); }
+.rule { border: 0; border-top: 1px solid var(--rule-strong); margin: 0; }
+.rule.strong { border-top: 2px solid var(--ink); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.mode-banner {
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px dashed var(--rule-strong);
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+}
+/* A way back to today's puzzle inside the note is ink like the rest of it, not the browser's link blue. */
+.mode-banner a { color: inherit; text-underline-offset: 3px; }
+
+/* ---------- text field + suggestion list ---------- */
+
+.search { position: relative; z-index: 5; }
+.search-icon {
+  position: absolute;
+  inset-inline-start: 14px;
+  top: 16px;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.field, .search input {
+  width: 100%;
+  height: 54px;
+  padding-inline: 14px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--sheet);
+  font-size: 17px;
+  font-weight: 500;
+  outline: none;
+  transition: box-shadow .2s var(--ease);
+}
+.search input { padding-inline-start: 46px; }
+.field:focus, .search input:focus { box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 16%, transparent); }
+.field:disabled, .search input:disabled { border-color: var(--rule-strong); background: transparent; }
+.field::placeholder, .search input::placeholder { color: var(--ink-soft); font-weight: 400; opacity: 1; }
+.suggestions {
+  position: absolute;
+  inset-inline: 0;
+  top: 60px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: var(--sheet);
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  box-shadow: var(--lift);
+  max-height: 46dvh;
+  overflow-y: auto;
+  animation: drop .18s var(--ease);
+}
+.suggestions li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 700;
+}
+.suggestions li small { font-family: var(--text); font-weight: 400; color: var(--ink-soft); font-size: 13px; white-space: nowrap; }
+.suggestions li[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.suggestions li[aria-selected="true"] small { color: inherit; opacity: .75; }
+.suggestions li.used { text-decoration: line-through; text-decoration-thickness: 1.5px; }
+.suggestions li.used:not([aria-selected="true"]) { color: var(--ink-soft); }
+.suggestions .none { font-family: var(--text); font-size: 15px; font-weight: 400; color: var(--ink-soft); cursor: default; }
+
+/* ---------- hints: one ruled strip, like a map legend ---------- */
+
+.hints {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block: 1px solid var(--rule-strong);
+}
+.hints li { min-width: 0; padding: 7px 8px; text-align: center; font-size: 12px; line-height: 1.3; color: var(--ink-soft); }
+.hints li + li { border-inline-start: 1px solid var(--rule); }
+.hints li b {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hints li.open b { font-size: 15px; font-weight: 700; color: var(--ink); animation: reveal .5s var(--ease); }
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 0 14px;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  transition: transform .15s var(--ease), background .15s, color .15s;
+}
+.btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.btn:active { transform: scale(.97); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.accent { background: var(--accent); color: var(--on-accent); }
+.btn.whatsapp { background: #157a43; color: #fff; }
+.btn.ghost { width: 100%; background: transparent; border-color: var(--ink); color: var(--ink); }
+.btn.block { width: 100%; }
+.btn.small { min-height: 40px; font-size: 14px; padding: 0 12px; }
+.btn:disabled { background: transparent; border-color: var(--rule-strong); color: var(--ink-soft); transform: none; }
+/* Hover fills only where a pointer can hover, and only on buttons that can be pressed. On a touch
+   screen :hover sticks to whatever lies under the last tap, so a button that appeared under the
+   thumb looked pressed, and a disabled or .picked one lost its own look. */
+@media (hover: hover) {
+  .icon-btn:hover { background: color-mix(in srgb, var(--ink) 9%, transparent); }
+  .btn.primary:not(:disabled):hover { background: color-mix(in srgb, var(--ink) 86%, var(--paper)); }
+  .btn.accent:not(:disabled):hover { background: color-mix(in srgb, var(--accent) 88%, var(--ink)); }
+  .btn.whatsapp:not(:disabled):hover { background: #126a3a; }
+  .btn.ghost:not(:disabled):hover { background: var(--ink); color: var(--paper); }
+}
+
+.link { border: 0; background: none; padding: 0; color: inherit; text-decoration: underline; text-underline-offset: 3px; font-size: inherit; }
+
+/* A tappable answer: a word, an option, a card to pick. State goes on with aria-pressed or a class. */
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 8px 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--sheet);
+  color: var(--ink);
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition: transform .15s var(--ease), background .15s, color .15s, border-color .15s;
+}
+.tile:active:not(:disabled) { transform: scale(.97); }
+.tile[aria-pressed="true"], .tile.picked { background: var(--ink); color: var(--paper); }
+.tile.right { background: var(--found); border-color: var(--found); color: var(--on-color); }
+.tile.wrong { background: var(--close); border-color: var(--close); color: var(--on-color); }
+.tile:disabled:not(.right):not(.wrong):not(.picked) { border-color: var(--rule-strong); color: var(--ink-soft); background: transparent; }
+
+/* ---------- end of game (rendered by renderEnd in shared/ui.js, or written by hand) ---------- */
+
+.end { padding: 18px 0 4px; border-top: 2px solid var(--ink); margin-top: 4px; text-align: center; animation: unfold .6s var(--ease); }
+.end-title { margin: 0; font-family: var(--display); font-size: 31px; font-weight: 900; line-height: 1.1; text-wrap: balance; }
+/* The title takes the focus when a game ends (so a keyboard or screen-reader player lands on the
+   result); it is not a control, and a ring around a headline would only look like a mistake. */
+.end-title:focus { outline: none; }
+.end-sub { margin: 6px 0 0; font-size: 17px; color: var(--ink-soft); }
+.end-sub a, .end-sub b {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.end-sub a { text-decoration-color: var(--found); text-decoration-thickness: 2.5px; text-underline-offset: 4px; }
+.end-streak { margin: 8px 0 0; font-size: 14px; font-weight: 700; color: var(--found); }
+.end-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: 16px; }
+/* Two labels side by side in 328px: tighter padding and a size that follows the screen keep each on one line. */
+.end-actions .btn { padding-inline: 8px; gap: 6px; font-size: clamp(14px, 4.2vw, 16px); white-space: nowrap; }
+.next { margin: 14px 0 10px; font-size: 14px; color: var(--ink-soft); }
+.next span { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.end > .btn + .btn { margin-top: 8px; }
+/* The result as a sheet of its own, with the score stamped at its head:
+   <section id="end" class="paper">, then stamp() into a <p class="end-stamp"> put first. */
+.end.paper { margin-top: 6px; padding: 20px 16px 12px; border-top: 0; border-radius: 10px; background: var(--sheet) var(--grain); box-shadow: var(--shadow-raised), var(--edge); }
+.end-stamp { margin: 0 0 12px; }
+.end.paper .end-stamp { line-height: 1; }
+.end.paper .end-stamp .fx-stamp.big { font-size: 38px; font-variant-numeric: tabular-nums; }
+
+.foot { padding: 20px 0 4px; text-align: center; font-size: 12px; color: var(--ink-soft); }
+.foot a { color: inherit; text-underline-offset: 3px; }
+
+/* ---------- dialogs ---------- */
+
+.sheet {
+  width: min(92vw, 420px);
+  border: 1.5px solid var(--ink);
+  border-radius: 10px;
+  padding: 22px 20px 0;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: var(--lift);
+}
+.sheet[open] { animation: unfold .35s var(--ease); }
+.sheet::backdrop { background: rgba(18, 16, 10, .55); }
+.sheet h2 { margin: 0 0 12px; font-family: var(--display); font-size: 27px; font-weight: 900; line-height: 1.1; }
+.sheet h3 { margin: 22px 0 8px; font-size: 14px; font-weight: 700; color: var(--ink-soft); }
+.sheet p { margin: 0 0 10px; }
+.sheet form { margin-top: 18px; }
+/* On a short phone the rules are taller than the screen. The dialog opens at its top (wireDialog)
+   and the button that closes it stays pinned to the bottom edge, over a fade of the paper. The
+   dialog's bottom padding is carried by that form, so nothing shows through under the button. */
+.sheet > form:last-child { position: sticky; bottom: 0; z-index: 1; margin: 6px -20px 0; padding: 12px 20px 18px; background: linear-gradient(to bottom, transparent, var(--paper) 12px); }
+.sheet:not(:has(> form:last-child)) { padding-bottom: 18px; }
+.sheet form .btn { width: 100%; }
+.sheet .example { margin: 14px 0 10px; border-top: 1px solid var(--rule-strong); }
+
+/* ---------- stats (rendered by renderStats in shared/ui.js) ---------- */
+
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; border-block: 1px solid var(--rule-strong); }
+.stat-grid div { padding: 10px 2px; }
+.stat-grid div + div { border-inline-start: 1px solid var(--rule); }
+.stat-grid b { display: block; font-family: var(--display); font-size: 32px; font-weight: 900; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stat-grid span { font-size: 12px; color: var(--ink-soft); }
+.stat-dist { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; }
+.stat-dist li { display: grid; grid-template-columns: max(14px, var(--dist-label, 14px)) 1fr; gap: 8px; align-items: center; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stat-dist .bar { min-width: 26px; width: var(--w); padding: 2px 8px; border-radius: 2px; background: var(--rule-strong); color: var(--ink); text-align: end; }
+.stat-dist .bar.today { background: var(--found); color: var(--on-color); }
+
+/* ---------- toast (rendered by toast in shared/ui.js) ---------- */
+
+.toast {
+  position: fixed;
+  inset-inline: 0;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  margin: 0 auto;
+  width: max-content;
+  max-width: 88vw;
+  padding: 11px 18px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 500;
+  font-size: 15px;
+  box-shadow: var(--lift);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .25s var(--ease), transform .25s var(--ease);
+  z-index: 50;
+}
+.toast.show { opacity: 1; transform: none; }
+
+/* ---------- wide screens: the column becomes a sheet lying on a desk ---------- */
+
+@media (min-width: 760px) {
+  body { background: color-mix(in srgb, var(--paper) 90%, var(--ink)); }
+  .app { max-width: 560px; padding-inline: 36px; border-inline: 1.5px solid var(--ink); }
+}
+
+/* ---------- motion ---------- */
+
+.shake { animation: shake .4s var(--ease); }
+.pop { animation: pop .35s var(--ease); }
+
+@keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes reveal { from { opacity: 0; filter: blur(6px); transform: translateY(4px); } }
+@keyframes grow { from { width: 0; } }
+@keyframes unfold { from { opacity: 0; clip-path: inset(0 0 100% 0); transform: translateY(-8px); } to { clip-path: inset(-40px); } }
+@keyframes shake { 20% { transform: translateX(6px); } 40% { transform: translateX(-6px); } 60% { transform: translateX(4px); } 80% { transform: translateX(-4px); } }
+@keyframes pop { from { transform: scale(.9); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+
+/* ==========================================================================================
+   Depth and motion kit. Classes here, behaviour in shared/fx.js, usage in games/README.md.
+   The page is paper lying on a desk: things lift, press, flip and get stamped. Everything
+   below starts from its finished state, so with motion switched off the page is complete.
+   ========================================================================================== */
+
+:root, [data-game] {
+  --accent-deep: color-mix(in srgb, var(--accent) 66%, #000);
+  --accent-pale: color-mix(in srgb, var(--accent) 16%, var(--sheet));
+}
+
+/* Paper grain on every page: one small tile, rasterised once. */
+body, .app { background-image: var(--grain); }
+
+/* ---------- paper surfaces ---------- */
+
+.fx-paper { background: var(--sheet) var(--grain); border-radius: 10px; box-shadow: var(--shadow-rest), var(--edge); }
+.fx-lift { transition: transform .25s var(--ease), box-shadow .25s var(--ease); }
+@media (hover: hover) {
+  .fx-lift:hover { transform: translateY(-3px); box-shadow: var(--shadow-raised), var(--edge); }
+}
+/* A folded corner at the bottom end of a sheet. --fx-corner-bg is whatever lies under the sheet. */
+.fx-corner { position: relative; }
+.fx-corner::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(to bottom right, var(--sheet) 8%, color-mix(in srgb, var(--sheet) 80%, var(--ink)) 50%, var(--fx-corner-bg, var(--paper)) 50%);
+  border-start-start-radius: 4px;
+}
+[dir="rtl"] .fx-corner::after { background: linear-gradient(to bottom left, var(--sheet) 8%, color-mix(in srgb, var(--sheet) 80%, var(--ink)) 50%, var(--fx-corner-bg, var(--paper)) 50%); }
+
+/* ---------- press: a key that sinks into the page ---------- */
+
+.fx-press { box-shadow: var(--shadow-rest); transition: transform .12s var(--ease), box-shadow .12s var(--ease), background .15s, color .15s, border-color .15s; }
+.fx-press:active:not(:disabled) { transform: translateY(2px) scale(.985); box-shadow: var(--shadow-pressed); }
+/* Filled buttons get the same feel everywhere. Outlined ones stay flat, like print. */
+.btn.primary:not(:disabled), .btn.accent:not(:disabled), .btn.whatsapp:not(:disabled) { box-shadow: var(--shadow-rest); transition: transform .12s var(--ease), box-shadow .12s var(--ease), background .15s, color .15s; }
+.btn.primary:not(:disabled):active, .btn.accent:not(:disabled):active, .btn.whatsapp:not(:disabled):active { transform: translateY(2px) scale(.985); box-shadow: var(--shadow-pressed); }
+
+/* ---------- tilt: fx.tilt(element) writes --fx-tx / --fx-ty, each from -1 to 1 ---------- */
+
+.fx-tilt {
+  transform: perspective(var(--fx-perspective, 800px)) rotateX(calc(var(--fx-ty, 0) * -1 * var(--fx-max, 7deg))) rotateY(calc(var(--fx-tx, 0) * var(--fx-max, 7deg)));
+  transform-style: preserve-3d;
+  transition: transform .6s var(--ease);
+}
+.fx-tilting, .fx-tilting .fx-tilt { transition-duration: .14s; }
+/* A child that floats above the tilted surface. */
+.fx-layer { transform: translateZ(var(--fx-z, 20px)); }
+
+/* ---------- flip: .fx-flip > .fx-flip-inner > .fx-face.fx-front + .fx-face.fx-back ---------- */
+
+/* :where() keeps the default display at zero specificity: a flip that is a grid or flex item of its own just says so. */
+:where(.fx-flip) { display: block; }
+.fx-flip { perspective: 900px; }
+.fx-flip-inner { display: grid; height: 100%; transform-style: preserve-3d; transition: transform .65s var(--ease); }
+.fx-flip.is-flipped > .fx-flip-inner, .fx-flip[aria-pressed="true"] > .fx-flip-inner { transform: rotateY(180deg); }
+.fx-face { grid-area: 1 / 1; min-width: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.fx-back { transform: rotateY(180deg); }
+/* Belt and braces: the face that is turned away is also switched off outright, so a browser that
+   does not cull back faces (WebKit when it paints without the compositor) still shows the right
+   side of the card. The face that arrives is switched on as the turn starts and the one that leaves
+   is switched off only after the card has passed edge-on, so nothing blinks where culling works. */
+.fx-front { transition: visibility 0s linear 0s; }
+.fx-back { visibility: hidden; transition: visibility 0s linear .4s; }
+.fx-flip:is(.is-flipped, [aria-pressed="true"]) > .fx-flip-inner > .fx-front { visibility: hidden; transition-delay: .4s; }
+.fx-flip:is(.is-flipped, [aria-pressed="true"]) > .fx-flip-inner > .fx-back { visibility: visible; transition-delay: 0s; }
+
+/* ---------- stamp: a rubber stamp, slightly crooked, with worn ink ---------- */
+
+.fx-stamp {
+  display: inline-flex;
+  align-items: center;
+  gap: .3em;
+  padding: .16em .55em .12em;
+  border: .13em solid currentColor;
+  border-radius: .32em;
+  color: var(--stamp-color, var(--found));
+  font-family: var(--text);
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  rotate: var(--stamp-angle, -5deg);
+  -webkit-mask-image: var(--stamp-wear);
+  mask-image: var(--stamp-wear);
+  --stamp-wear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -5 3.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)'/%3E%3C/svg%3E");
+}
+.fx-stamp[data-tone="close"] { --stamp-color: var(--close); }
+.fx-stamp[data-tone="ink"] { --stamp-color: var(--ink-soft); }
+.fx-stamp[data-tone="accent"] { --stamp-color: var(--accent); }
+.fx-stamp .icon { width: 1.05em; height: 1.05em; stroke-width: 2.8; }
+.fx-stamp.big { font-family: var(--display); font-size: 30px; font-weight: 900; padding: .1em .5em .06em; }
+.fx-stamp-in { animation: fx-stamp .42s cubic-bezier(.2, .9, .3, 1.25) backwards; }
+
+/* ---------- enter: children of .fx-enter rise in one after another ---------- */
+
+.fx-enter > * { animation: fx-rise .55s var(--ease) backwards; animation-delay: calc(var(--fx-i, 0) * 55ms); }
+.fx-enter > :nth-child(2) { --fx-i: 1; }
+.fx-enter > :nth-child(3) { --fx-i: 2; }
+.fx-enter > :nth-child(4) { --fx-i: 3; }
+.fx-enter > :nth-child(5) { --fx-i: 4; }
+.fx-enter > :nth-child(6) { --fx-i: 5; }
+.fx-enter > :nth-child(7) { --fx-i: 6; }
+.fx-enter > :nth-child(n + 8) { --fx-i: 7; }
+
+.fx-count { font-variant-numeric: tabular-nums; }
+
+/* The canvas fx.celebrate() draws on. */
+.fx-confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 60; }
+
+/* ---------- game emblems (shared/emblems.js): layered drawings with real depth ---------- */
+
+.emblem { position: relative; display: block; flex: none; width: var(--emblem-size, 64px); height: var(--emblem-size, 64px); perspective: 420px; }
+.emblem-stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--fx-ty, 0) * -1 * var(--emblem-tilt, 16deg))) rotateY(calc(var(--fx-tx, 0) * var(--emblem-tilt, 16deg)));
+  transition: transform .6s var(--ease);
+}
+.fx-tilting .emblem-stage { transition-duration: .14s; }
+.emblem-layer { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: translateZ(calc(var(--z) * var(--emblem-depth, 9px))); }
+.em-a { fill: var(--accent); }
+.em-d { fill: var(--accent-deep); }
+.em-p { fill: var(--accent-pale); }
+.em-s { fill: var(--sheet); }
+.em-i { fill: var(--ink); }
+.em-sh { fill: #1a1408; opacity: .16; }
+.em-o { stroke: var(--ink); stroke-width: 1.6; }
+.em-l, .em-la, .em-ls { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.em-la { stroke: var(--accent); }
+.em-ls { stroke: var(--sheet); }
+@media (prefers-color-scheme: dark) { .em-sh { fill: #000; opacity: .5; } }
+
+/* Each emblem has one small move of its own. It plays on hover or focus of the link or button
+   around it, or when .is-playing is put on the emblem. */
+:is(a, button):is(:hover, :focus-visible) .emblem .emblem-layer, .emblem.is-playing .emblem-layer { animation: .8s var(--ease-spring) both; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="nekuda"] .l2, [data-emblem="nekuda"].is-playing .l2 { animation-name: em-hop; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="nekuda"] .l1, [data-emblem="nekuda"].is-playing .l1 { animation-name: em-pulse; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="beerech"] :is(.l1, .l2), [data-emblem="beerech"].is-playing :is(.l1, .l2) { animation-name: em-swing; transform-origin: 32% 56%; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="arba"] .l1, [data-emblem="arba"].is-playing .l1 { animation-name: em-slide; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="arba"] .l2, [data-emblem="arba"].is-playing .l2 { animation-name: em-hop; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="mitchaze"] .l2, [data-emblem="mitchaze"].is-playing .l2 { animation-name: em-peek; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="tzir"] .l2, [data-emblem="tzir"].is-playing .l2 { animation-name: em-place; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="herkev"] .l2, [data-emblem="herkev"].is-playing .l2 { animation-name: em-hop; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="herkev"] .l1, [data-emblem="herkev"].is-playing .l1 { animation-name: em-pulse; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="yoter"] .l2, [data-emblem="yoter"].is-playing .l2 { animation-name: em-up; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="yoter"] .l1, [data-emblem="yoter"].is-playing .l1 { animation-name: em-down; }
+
+@keyframes em-hop { 35% { translate: 0 -14%; } 70% { translate: 0 2%; } }
+@keyframes em-pulse { 40% { scale: 1.12; } }
+@keyframes em-swing { 25% { rotate: 11deg; } 55% { rotate: -7deg; } 80% { rotate: 3deg; } }
+@keyframes em-slide { 40% { translate: -7% 0; } }
+@keyframes em-peek { 45% { translate: 0 -16%; rotate: -7deg; } }
+@keyframes em-place { 30% { translate: 0 -12%; rotate: 4deg; } 70% { translate: 0 3%; } }
+@keyframes em-up { 40% { translate: 0 -12%; } }
+@keyframes em-down { 40% { translate: 0 12%; } }
+
+@keyframes fx-stamp { from { opacity: 0; scale: 2.3; } 55% { opacity: 1; scale: .93; } }
+@keyframes fx-rise { from { opacity: 0; translate: 0 16px; } }
+@keyframes fx-page-in { from { opacity: 0; } }
+
+/* ---------- moving between pages: every page fades in on its paper; fx.leaveTo() covers the
+   page being left with a sheet of the same paper first, so the two join up. (Cross-document
+   view transitions were tried and dropped: Chrome aborts them at random when the next page
+   loads its script as a module, and logs an error each time.) ---------- */
+
+.app { animation: fx-page-in .34s ease-out backwards; }
+.fx-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: var(--paper) var(--grain);
+  clip-path: circle(0 at var(--fx-x, 50%) var(--fx-y, 50%));
+  transition: clip-path .42s cubic-bezier(.6, 0, .3, 1);
+  pointer-events: none;
+}
+.fx-cover.is-on { clip-path: circle(150vmax at var(--fx-x, 50%) var(--fx-y, 50%)); }
+
+/* Must stay last: with motion switched off nothing animates, including everything above. */
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

@@ -1,0 +1,246 @@
+/* Only what is special to צומת. Paper, ink, type, buttons, dialogs, the search field, the end panel
+   and the toast all come from shared/base.css. */
+
+/* Chip colours are fixed (a club's kit, a flag colour), so the chip needs its own outline to keep a
+   white or a black half visible on either paper. The board is the accent darkened; its lines and the
+   empty slots are drawn in chalk white, which holds 3:1 against it in both themes. */
+:root {
+  --chip-edge: #1e2328;
+  --board: color-mix(in srgb, var(--accent) 84%, #000);
+  --chalk: rgba(255, 255, 255, .62);
+  --chalk-strong: #fff;
+  --chalk-faint: rgba(255, 255, 255, .26);
+  --red-card: #d8362b;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --chip-edge: #a5a193; --board: color-mix(in srgb, var(--accent) 40%, #0b0f13); --chalk: rgba(255, 255, 255, .5); --red-card: #ee5548; }
+}
+
+/* Stamps start large before they land; they must not widen the page. */
+.app { overflow-x: clip; }
+
+/* ---------- the board: criteria on the paper, a board under the nine cells ---------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, .92fr) repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* The board: three roads across and three down, crossing under the nine cells (each cell is a
+   junction). The empty slots are see-through, so the roads disappear as stickers cover them. */
+.board {
+  position: relative;
+  grid-area: 2 / 2 / 5 / 5;
+  margin: -6px;
+  border-radius: 12px;
+  --road: linear-gradient(var(--chalk-faint), var(--chalk-faint));
+  background:
+    var(--road) 0 calc(16.66% + 6px) / 100% 1.5px no-repeat,
+    var(--road) 0 50% / 100% 1.5px no-repeat,
+    var(--road) 0 calc(83.33% - 6px) / 100% 1.5px no-repeat,
+    var(--road) calc(16.66% + 6px) 0 / 1.5px 100% no-repeat,
+    var(--road) 50% 0 / 1.5px 100% no-repeat,
+    var(--road) calc(83.33% - 6px) 0 / 1.5px 100% no-repeat,
+    var(--board);
+  box-shadow: var(--shadow-raised), inset 0 0 0 1.5px rgba(0, 0, 0, .25);
+  overflow: hidden;
+}
+
+/* Today's topic, above the board. */
+.topic {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  margin: 2px 0 10px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: var(--sheet) var(--grain);
+  box-shadow: var(--shadow-rest), var(--edge);
+}
+.topic-icon { flex: none; width: 26px; height: 26px; color: var(--accent); }
+.topic-kicker { font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+.topic-name { font-family: var(--display); font-size: 21px; font-weight: 900; line-height: 1.15; color: var(--accent); }
+.topic-error { flex-basis: 100%; font-size: 14px; font-weight: 700; color: var(--close); }
+.help-today { padding: 8px 10px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 10%, transparent); }
+
+.corner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 2px 8px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--ink-soft);
+}
+.corner b {
+  font-family: var(--display);
+  font-size: 34px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 1px;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.head.col { justify-content: flex-end; padding-bottom: 12px; }
+.head.row { justify-content: center; padding-inline-end: 6px; }
+
+/* A two-colour criterion (a club, a flag colour) is an enamel badge: a lit top edge, a dark lower edge, a shadow on the paper. */
+.chip {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--chip-edge);
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
+  box-shadow: var(--shadow-rest), inset 0 1.5px 0 rgba(255, 255, 255, .5), inset 0 -2.5px 0 rgba(0, 0, 0, .2);
+  rotate: -4deg;
+}
+.chip-icon { flex: none; width: 26px; height: 26px; color: var(--accent); }
+
+/* A cell is a card with two sides (the shared .fx-flip): the slot on the board in front, the
+   answer's sticker on the back. */
+.cell {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+.cell:disabled { cursor: default; }
+.cell:focus-visible { outline: 3px solid var(--chalk-strong); outline-offset: -3px; }
+.cell .fx-flip-inner { transition-duration: .7s; }
+.cell .fx-face { display: grid; place-items: center; border-radius: 7px; }
+
+.slot {
+  position: relative;
+  border: 1.5px dashed var(--chalk);
+  background: rgba(0, 0, 0, .14);
+  color: var(--chalk-strong);
+  transition: background-color .15s, transform .12s var(--ease);
+}
+.slot .icon { width: 24px; height: 24px; }
+@media (hover: hover) { .cell:not(:disabled):hover .slot { background: rgba(255, 255, 255, .16); border-style: solid; } }
+.cell:not(:disabled):active .slot { transform: scale(.95); background: rgba(0, 0, 0, .28); }
+.cell.missed .slot { border-color: rgba(255, 255, 255, .28); background: rgba(0, 0, 0, .2); color: var(--chalk); }
+
+/* The sticker: a white frame, a tinted face, put down slightly crooked. The margin keeps the leaning
+   corners inside the cell. */
+.sticker {
+  margin: 3px;
+  padding: 3px;
+  border: 3px solid var(--sheet);
+  background: var(--accent-pale) var(--grain);
+  box-shadow: var(--shadow-rest);
+  rotate: var(--lean, 0deg);
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+/* Under the dim lamp the frame would be as dark as the board; it stays the light edge of a sticker. */
+@media (prefers-color-scheme: dark) {
+  .sticker { border-color: color-mix(in srgb, var(--ink) 58%, var(--sheet)); background-color: color-mix(in srgb, var(--accent) 24%, var(--sheet)); }
+}
+
+/* Wrong guesses spent on a cell: small red tabs. */
+.misses { position: absolute; inset-block-start: 5px; inset-inline-start: 5px; display: flex; gap: 3px; }
+.misses i { width: 8px; height: 11px; border-radius: 1.5px; background: var(--red-card); box-shadow: 0 0 0 1px rgba(255, 255, 255, .85), 0 1px 2px rgba(0, 0, 0, .4); rotate: 8deg; }
+.misses i.new { animation: herkev-card .5s var(--ease-spring) backwards; }
+@keyframes herkev-card { from { opacity: 0; transform: translateY(-18px) rotate(-40deg) scale(1.8); } }
+
+/* ---------- the nine guesses as a row of counters ---------- */
+
+.tokens { display: flex; justify-content: center; align-items: center; gap: 7px; margin: 12px 0 0; padding: 0; list-style: none; }
+.tokens li {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sheet) var(--grain);
+  box-shadow: var(--shadow-rest), var(--edge), inset 0 0 0 1.5px var(--rule-strong);
+}
+.tokens li.spent { box-shadow: var(--shadow-pressed); }
+.tokens li.hit { background: var(--found); color: var(--on-color); }
+.tokens li.hit .icon { width: 13px; height: 13px; stroke-width: 3.2; }
+.tokens li.miss { width: 15px; height: 21px; margin-inline: 3.5px; border-radius: 2.5px; background: var(--red-card); box-shadow: var(--shadow-rest); rotate: 8deg; }
+.tokens li.new { animation: pop .4s var(--ease-spring); }
+
+.under-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: 14px; color: var(--ink-soft); }
+.under-grid .link { min-height: 44px; }
+.under-grid .link.armed { color: var(--close); font-weight: 700; }
+
+/* ---------- the guess dialog ---------- */
+
+/* Pinned near the top so the phone keyboard does not cover the suggestions. */
+#guess-dialog { margin-top: max(12px, 5dvh); }
+.guess-criteria { margin: 8px 0 14px; padding: 0; list-style: none; border-block: 1px solid var(--rule-strong); }
+.guess-criteria li { display: grid; grid-template-columns: 22px 1fr; align-items: center; column-gap: 10px; padding: 8px 0; }
+.guess-criteria li + li { border-top: 1px solid var(--rule); }
+.guess-criteria b { font-family: var(--display); font-size: 19px; line-height: 1.15; }
+.guess-criteria small { grid-column: 2; font-size: 13px; color: var(--ink-soft); }
+
+/* Inside a dialog the list is part of the flow: a floating layer would be clipped by the dialog. */
+.sheet .suggestions { position: static; margin-top: 6px; box-shadow: none; max-height: 34dvh; animation: none; }
+.guess-note { min-height: 21px; margin: 8px 0 0; font-size: 14px; font-weight: 700; color: var(--close); }
+.guess-note:empty { min-height: 0; margin: 0; }
+.guess-tried { margin: 8px 0 0; }
+#guess-dialog form { margin-top: 12px; }
+
+/* ---------- the end: a sheet of its own, stamped with the score ---------- */
+
+
+/* The game's emblem heads the rules, as it heads its card on the front page. */
+.sheet > .emblem { --emblem-size: 72px; margin: -4px auto 8px; }
+
+/* ---------- after the game: who else fitted ---------- */
+
+.answers { padding: 14px 14px 10px; border-radius: 10px; background: var(--sheet) var(--grain); box-shadow: var(--shadow-rest), var(--edge); }
+.answers-title { margin: 0; font-family: var(--display); font-size: 22px; font-weight: 900; }
+.answers-list { margin: 8px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--rule-strong); }
+.answers-list li { padding: 9px 0; border-bottom: 1px solid var(--rule); }
+.answer-head { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+.answer-head .icon { width: 18px; height: 18px; }
+.answer-head .icon.hit { color: var(--found); }
+.answer-head .icon.miss { color: var(--close); }
+.answer-names { margin: 3px 0 0; font-family: var(--display); font-size: 16.5px; line-height: 1.35; }
+.answer-names b { color: var(--found); }
+.answer-names .more { font-family: var(--text); font-size: 13px; color: var(--ink-soft); white-space: nowrap; }
+.answers-note { margin: 8px 0 0; font-size: 12.5px; }
+
+/* ---------- archive ---------- */
+
+.archive-list { margin: 0; padding: 0; list-style: none; max-height: 46dvh; overflow-y: auto; border-block: 1px solid var(--rule-strong); }
+.archive-list li + li { border-top: 1px solid var(--rule); }
+.archive-list a { display: flex; justify-content: space-between; align-items: center; min-height: 46px; padding: 0 4px; color: inherit; text-decoration: none; font-weight: 500; }
+.archive-list a:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.archive-list a b { font-family: var(--display); font-size: 18px; }
+
+.foot p { margin: 0 0 8px; line-height: 1.5; }

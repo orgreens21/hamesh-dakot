@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="beerech">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>בערך – חמש דקות</title>
+  <meta name="description" content="כמה זה עולה בסופר? חמישה מוצרים ביום, נחשו את המחיר וגלו כמה קרוב הייתם.">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="בערך – חמש דקות">
+  <meta property="og:description" content="כמה זה עולה בסופר? חמישה מוצרים ביום, נחשו את המחיר.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/beerech/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+
+      <ol class="steps" id="steps" aria-label="התקדמות"></ol>
+
+      <section class="card" id="card" aria-labelledby="product-name">
+        <!-- A shelf tag hanging from a pin: it swings in, leans with the pointer, and turns over to show the price. -->
+        <div class="tag-hang" id="tag-hang">
+          <svg class="string" viewBox="0 0 24 40" aria-hidden="true"><path d="M12 6v28"/><circle cx="12" cy="6" r="4.5"/></svg>
+          <div class="tag-tilt fx-tilt">
+            <div class="tag fx-flip" id="tag">
+              <div class="fx-flip-inner">
+                <div class="fx-face fx-front tag-face">
+                  <i class="hole" aria-hidden="true"></i>
+                  <div class="item">
+                    <div class="art fx-layer" id="art" aria-hidden="true"></div>
+                    <div class="what">
+                      <p class="kicker" id="card-kicker"></p>
+                      <h2 class="product" id="product-name"></h2>
+                      <p class="size" id="product-size"></p>
+                    </div>
+                  </div>
+                  <p class="slot" aria-hidden="true"><span>המחיר על המדף</span><b dir="ltr">₪ ?</b></p>
+                </div>
+                <div class="fx-face fx-back tag-face">
+                  <i class="hole" aria-hidden="true"></i>
+                  <div class="reveal" id="reveal" hidden aria-live="polite">
+                    <p class="back-name" id="back-name"></p>
+                    <p class="real"><span class="real-label">המחיר על המדף</span><b id="real-price" dir="ltr"></b></p>
+                    <div class="result">
+                      <p class="verdict" id="verdict"></p>
+                      <p class="points fx-stamp" id="points"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="guess-form" id="guess-form" novalidate>
+          <label class="ask" for="guess-input">כמה זה עולה?</label>
+          <div class="price-field" id="price-field" dir="ltr">
+            <span class="shekel" aria-hidden="true">₪</span>
+            <input class="field" id="guess-input" type="text" inputmode="decimal" enterkeyhint="done" autocomplete="off"
+                   maxlength="8" placeholder="0.00" aria-describedby="guess-error">
+          </div>
+          <p class="error" id="guess-error" role="alert"></p>
+          <button class="btn accent block" id="guess-btn" type="submit">זה המחיר</button>
+        </form>
+
+        <div class="after" id="after" hidden>
+          <!-- Where the guess fell: the real price sits in the middle, the shaded stretch is worth points. -->
+          <div class="gauge" id="gauge" dir="ltr" aria-hidden="true">
+            <div class="track">
+              <i class="zone"></i><i class="zone bull"></i>
+              <span class="mark real"><b>המחיר</b></span>
+              <span class="mark you" id="gauge-you"><b>אתם</b></span>
+            </div>
+            <p class="ends"><span>זול יותר</span><span>יקר יותר</span></p>
+          </div>
+          <p class="diff" id="diff"></p>
+          <button class="btn primary block" id="next-btn" type="button"></button>
+        </div>
+      </section>
+
+      <section id="end" class="fx-paper" hidden aria-live="polite"></section>
+
+      <section class="log-wrap" id="log-wrap" hidden>
+        <div class="receipt" id="receipt">
+          <h3 class="log-title" id="log-title"></h3>
+          <ol class="log" id="log"></ol>
+          <p class="log-total"><span id="log-total-label"></span><b id="log-total" dir="ltr"></b></p>
+          <p class="receipt-foot" id="receipt-foot" hidden><i class="barcode" aria-hidden="true"></i><span id="receipt-thanks"></span></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span id="source-line"></span><br>
+      <button class="link" id="practice-link" type="button">סיבוב אימון</button> · <button class="link" id="help-link" type="button">איך משחקים?</button> · <a href="../../">חמש דקות – כל המשחקים</a>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>כל יום מחכים לכם <b>חמישה מוצרים</b> מהסופר. לכל אחד מהם הקלידו כמה הוא עולה לדעתכם, בשקלים.</p>
+    <p>אחרי כל ניחוש תראו את <b>המחיר האמיתי</b>, בכמה אחוזים טעיתם וכמה נקודות קיבלתם.</p>
+    <ul class="legend" aria-label="מקרא הצבעים">
+      <li><i class="sq bull"></i>90 ומעלה</li>
+      <li><i class="sq near"></i>70–89</li>
+      <li><i class="sq mid"></i>40–69</li>
+      <li><i class="sq far"></i>פחות מ־40</li>
+    </ul>
+    <p>כל מוצר שווה עד 100 נקודות: כל אחוז של טעות מוריד שתי נקודות, כך שטעות של 50% ומעלה שווה אפס.</p>
+    <p class="muted">250 נקודות ומעלה מתוך 500 נחשבות הצלחה ושומרות על הרצף. חידה חדשה כל יום בחצות.</p>
+    <p class="muted" id="help-source"></p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, לקופה</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>חמש דקות – כיווני עיצוב ללובי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=Rubik:wght@500;700;800;900&family=Secular+One&family=Frank+Ruhl+Libre:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --page: #ecebe7; --text: #16181b; --soft: #5b6066; }
+  @media (prefers-color-scheme: dark) { :root { --page: #121416; --text: #eceef0; --soft: #9aa1a8; } }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--text); font: 16px/1.5 Heebo, system-ui, sans-serif; }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 36px 20px 80px; }
+  h1 { font: 900 34px/1.15 Heebo, sans-serif; margin: 0 0 8px; }
+  .lede { color: var(--soft); max-width: 70ch; margin: 0 0 30px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 40px 28px; }
+  .concept > h2 { font: 800 21px/1.2 Heebo, sans-serif; margin: 14px 0 4px; }
+  .concept > p { margin: 0; color: var(--soft); font-size: 14.5px; max-width: 46ch; }
+  .concept > p b { color: var(--text); }
+  .phone { width: 340px; height: 700px; border-radius: 34px; border: 9px solid #0d0e10; overflow: hidden; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,.22); margin: 0 auto; }
+  .screen { position: absolute; inset: 0; overflow-y: auto; scrollbar-width: none; }
+  .screen::-webkit-scrollbar { display: none; }
+  svg.i { display: block; }
+
+  /* ---------- A. Bento: bold colour blocks ---------- */
+  .a { background: #f6f3ee; font-family: Rubik, Heebo, sans-serif; color: #141414; padding: 18px 14px 24px; }
+  .a-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .a-logo { font: 900 26px/1 Rubik, sans-serif; letter-spacing: -.02em; }
+  .a-streak { display: flex; align-items: center; gap: 5px; background: #141414; color: #fff; border-radius: 99px; padding: 5px 11px; font-weight: 700; font-size: 14px; }
+  .a-date { font-size: 14px; color: #6a6660; margin: 2px 0 14px; }
+  .a-bento { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .a-tile { position: relative; border-radius: 22px; padding: 14px; min-height: 150px; color: #fff; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end; }
+  .a-tile.big { grid-column: span 2; min-height: 190px; }
+  .a-tile h3 { margin: 0; font: 800 21px/1.05 Rubik, sans-serif; }
+  .a-tile .t { font-size: 12.5px; opacity: .92; margin-top: 3px; line-height: 1.3; }
+  .a-tile.big .t, .a-tile.big h3 { max-width: 58%; }
+  .a-tile .art { position: absolute; top: 10px; left: 10px; width: 74px; height: 74px; }
+  .a-tile.big .art { width: 120px; height: 120px; top: 14px; left: 14px; }
+  .a-tile .badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.95); color: #141414; font-size: 11.5px; font-weight: 700; border-radius: 99px; padding: 3px 9px; }
+  .a-tile .badge.done { background: #141414; color: #fff; }
+  .a-tile .play { align-self: flex-start; margin-top: 10px; background: #fff; color: #141414; font-weight: 800; font-size: 14px; border-radius: 99px; padding: 7px 16px; }
+
+  /* ---------- B. Stories: one game at a time ---------- */
+  .b { background: #0e1b2c; color: #fff; font-family: Heebo, sans-serif; display: flex; flex-direction: column; }
+  .b-bars { display: flex; gap: 4px; padding: 14px 14px 0; }
+  .b-bars i { flex: 1; height: 3.5px; border-radius: 2px; background: rgba(255,255,255,.28); }
+  .b-bars i.on { background: #fff; }
+  .b-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 0; font-size: 14px; }
+  .b-head b { font-size: 16px; }
+  .b-card { flex: 1; margin: 14px 14px 0; border-radius: 26px; background: #2c5f9e; position: relative; overflow: hidden; display: flex; flex-direction: column; padding: 22px 20px; }
+  .b-card .art { margin: 18px auto 0; width: 210px; height: 210px; }
+  .b-card .num { font-size: 13px; opacity: .8; font-weight: 500; }
+  .b-card h3 { font: 900 40px/1 Heebo, sans-serif; margin: 6px 0 6px; }
+  .b-card p { margin: 0; font-size: 16px; opacity: .92; }
+  .b-card .meta { margin-top: auto; display: flex; gap: 8px; font-size: 13px; }
+  .b-card .meta span { background: rgba(255,255,255,.18); border-radius: 99px; padding: 4px 10px; }
+  .b-cta { margin: 14px; height: 56px; border-radius: 18px; background: #fff; color: #0e1b2c; font-weight: 900; font-size: 19px; display: grid; place-items: center; }
+  .b-next { text-align: center; font-size: 13px; opacity: .7; padding-bottom: 14px; }
+  .b-peek { position: absolute; left: -8px; top: 50%; width: 22px; height: 160px; transform: translateY(-50%); border-radius: 0 12px 12px 0; background: #6b3fa0; }
+
+  /* ---------- C. Map of Israel ---------- */
+  .c { background: #bfe3f0; font-family: "Secular One", Heebo, sans-serif; color: #18324a; }
+  .c-top { position: sticky; top: 0; z-index: 2; padding: 14px 16px 10px; background: linear-gradient(#bfe3f0 70%, rgba(191,227,240,0)); display: flex; justify-content: space-between; align-items: center; }
+  .c-top .logo { font-size: 27px; line-height: 1; }
+  .c-top .pill { font-family: Heebo; font-weight: 700; font-size: 13px; background: #fff; border-radius: 99px; padding: 5px 11px; box-shadow: 0 2px 0 #18324a; }
+  .c-map { position: relative; height: 900px; }
+  .c-map svg.land { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .c-pin { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(50%, -100%); }
+  .c-pin .bubble { background: #fff; border: 2.5px solid #18324a; border-radius: 16px; padding: 6px 10px 5px; display: flex; align-items: center; gap: 7px; box-shadow: 0 4px 0 #18324a; white-space: nowrap; font-size: 15px; }
+  .c-pin .bubble i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; }
+  .c-pin .stem { width: 2.5px; height: 14px; background: #18324a; }
+  .c-pin .dot { width: 10px; height: 10px; border-radius: 50%; background: #18324a; }
+  .c-pin.done .bubble { background: #ffe680; }
+  .c-pin small { font-family: Heebo; font-size: 11px; display: block; color: #4b6276; line-height: 1; }
+
+  /* ---------- D. Clean app ---------- */
+  .d { background: #fff; font-family: Heebo, sans-serif; color: #111; padding: 22px 18px 24px; }
+  @media (prefers-color-scheme: dark) { .d.auto { background: #0b0b0c; color: #f2f2f2; } }
+  .d-hello { font-size: 15px; color: #6b6b6b; }
+  .d-title { font: 900 32px/1.05 Heebo, sans-serif; margin: 2px 0 16px; letter-spacing: -.01em; }
+  .d-ring { display: flex; align-items: center; gap: 14px; background: #f3f3f5; border-radius: 22px; padding: 14px 16px; margin-bottom: 20px; }
+  .d-ring b { font-size: 17px; display: block; }
+  .d-ring span { font-size: 13px; color: #6b6b6b; }
+  .d-sec { font-size: 13px; font-weight: 700; color: #8a8a8a; margin: 0 4px 8px; }
+  .d-list { display: grid; gap: 2px; }
+  .d-row { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 13px; padding: 9px 4px; border-bottom: 1px solid #efefef; }
+  .d-row .ic { width: 52px; height: 52px; border-radius: 15px; display: grid; place-items: center; }
+  .d-row h3 { margin: 0; font-size: 17px; font-weight: 800; }
+  .d-row p { margin: 0; font-size: 13px; color: #6b6b6b; line-height: 1.3; }
+  .d-row .go { font-size: 13px; font-weight: 800; border-radius: 99px; padding: 6px 13px; background: #111; color: #fff; }
+  .d-row .go.done { background: #e9f7ef; color: #13703f; }
+
+  /* ---------- E. Arcade night ---------- */
+  .e { background: #14102a; color: #fff; font-family: Rubik, Heebo, sans-serif; padding: 16px 14px 24px; }
+  .e-top { display: flex; justify-content: space-between; align-items: center; }
+  .e-logo { font: 900 27px/1 Rubik, sans-serif; color: #ffd84a; text-shadow: 0 3px 0 #b23a7a; }
+  .e-coins { display: flex; gap: 6px; font-weight: 800; font-size: 14px; align-items: center; }
+  .e-coins i { width: 18px; height: 18px; border-radius: 50%; background: #ffd84a; box-shadow: inset 0 -3px 0 #d39b16; }
+  .e-hero { margin: 16px 0 14px; border-radius: 22px; padding: 16px; background: #ff5f8a; box-shadow: 0 6px 0 #a42452; position: relative; overflow: hidden; }
+  .e-hero h3 { margin: 0; font: 900 24px/1.05 Rubik, sans-serif; }
+  .e-hero p { margin: 4px 0 12px; font-size: 13.5px; max-width: 18ch; }
+  .e-hero .btn { display: inline-block; background: #ffd84a; color: #3a1d00; font-weight: 900; border-radius: 14px; padding: 9px 18px; box-shadow: 0 4px 0 #c08a0f; }
+  .e-hero .art { position: absolute; left: 6px; bottom: -6px; width: 128px; height: 128px; }
+  .e-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .e-box { border-radius: 18px; padding: 12px; min-height: 132px; position: relative; display: flex; flex-direction: column; justify-content: flex-end; }
+  .e-box h3 { margin: 0; font: 800 17px/1.1 Rubik, sans-serif; }
+  .e-box .art { position: absolute; top: 8px; left: 8px; width: 60px; height: 60px; }
+  .e-box .star { position: absolute; top: 10px; right: 10px; font-size: 11px; font-weight: 800; background: rgba(0,0,0,.28); padding: 2px 8px; border-radius: 99px; }
+  .e-streak { margin-top: 14px; display: flex; gap: 6px; justify-content: center; }
+  .e-streak i { width: 30px; height: 30px; border-radius: 9px; background: #2a2350; display: grid; place-items: center; font-size: 11px; font-style: normal; font-weight: 800; }
+  .e-streak i.on { background: #4be3a0; color: #0f3326; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>חמש דקות · כיווני עיצוב ללובי</h1>
+  <p class="lede">Five hub directions that are deliberately different from the current paper-on-desk design, and from each other. Static mockups at phone size, with the real games; all of them are scrollable. Tell me which one (or which parts of which) to build.</p>
+  <div class="grid">
+
+    <!-- A -->
+    <section class="concept">
+      <div class="phone"><div class="screen a">
+        <div class="a-top"><div class="a-logo">חמש דקות</div><div class="a-streak"><svg class="i" width="14" height="14" viewBox="0 0 24 24"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-3-1-6 1-9Z" fill="#ffb43a"/></svg>רצף 6</div></div>
+        <div class="a-date">שבת, 14 בנובמבר · 2 מתוך 6 הושלמו</div>
+        <div class="a-bento">
+          <div class="a-tile big" style="background:#e2483d">
+            <span class="badge">חדש היום</span>
+            <svg class="art" viewBox="0 0 100 100"><ellipse cx="50" cy="82" rx="38" ry="10" fill="none" stroke="#fff" stroke-width="3" opacity=".5"/><ellipse cx="50" cy="82" rx="22" ry="6" fill="none" stroke="#fff" stroke-width="3" opacity=".8"/><path d="M50 82C34 60 28 50 28 38a22 22 0 0 1 44 0c0 12-6 22-22 44Z" fill="#fff"/><circle cx="50" cy="38" r="8" fill="#e2483d"/></svg>
+            <h3>נקודת ציון</h3><div class="t">מצאו את היישוב הנסתר לפי מרחק וכיוון</div><span class="play">לשחק</span>
+          </div>
+          <div class="a-tile" style="background:#1f8a52"><span class="badge done">412</span>
+            <svg class="art" viewBox="0 0 100 100"><path d="M18 40 48 14h34v34L52 78Z" fill="#fff"/><circle cx="68" cy="28" r="6" fill="#1f8a52"/></svg>
+            <h3>בערך</h3><div class="t">נחשו את המחיר</div></div>
+          <div class="a-tile" style="background:#7444b8"><span class="badge">חדש</span>
+            <svg class="art" viewBox="0 0 100 100"><g fill="#fff"><rect x="8" y="8" width="38" height="38" rx="8"/><rect x="54" y="8" width="38" height="38" rx="8" opacity=".6"/><rect x="8" y="54" width="38" height="38" rx="8" opacity=".6"/><rect x="54" y="54" width="38" height="38" rx="8"/></g></svg>
+            <h3>ארבע על ארבע</h3><div class="t">ארבע קבוצות נסתרות</div></div>
+          <div class="a-tile" style="background:#2c66b3"><span class="badge">חדש</span>
+            <svg class="art" viewBox="0 0 100 100"><path d="M10 74h80" stroke="#fff" stroke-width="5" stroke-linecap="round"/><g fill="#fff"><rect x="12" y="28" width="22" height="30" rx="4"/><rect x="40" y="16" width="22" height="42" rx="4" opacity=".7"/><rect x="68" y="34" width="22" height="24" rx="4"/></g></svg>
+            <h3>על הציר</h3><div class="t">סדרו לפי הזמן</div></div>
+          <div class="a-tile" style="background:#0f7d72"><span class="badge done">7/9</span>
+            <svg class="art" viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="10" fill="none" stroke="#fff" stroke-width="5"/><path d="M50 10v80M10 50h80" stroke="#fff" stroke-width="4"/><circle cx="50" cy="50" r="12" fill="none" stroke="#fff" stroke-width="4"/></svg>
+            <h3>צומת</h3><div class="t">נושא חדש כל יום</div></div>
+          <div class="a-tile" style="background:#d48a10"><span class="badge">חדש</span>
+            <svg class="art" viewBox="0 0 100 100"><path d="M30 86V40H14L36 12l22 28H42v46Z" fill="#fff"/><path d="M70 14v46h16L64 88 42 60h16V14Z" fill="#fff" opacity=".65"/></svg>
+            <h3>יותר או פחות</h3><div class="t">מה גדול יותר?</div></div>
+          <div class="a-tile big" style="background:#141414">
+            <svg class="art" viewBox="0 0 100 100"><rect x="22" y="14" width="56" height="74" rx="8" fill="#ff7a3d"/><path d="M30 46c6-8 14-8 20 0 6-8 14-8 20 0-4 8-12 10-20 4-8 6-16 4-20-4Z" fill="#141414"/></svg>
+            <h3>המתחזה</h3><div class="t">משחק חברה לכל הקבוצה. טלפון אחד, 3–12 שחקנים</div><span class="play">פתחו משחק</span>
+          </div>
+        </div>
+      </div></div>
+      <h2>א. בנטו צבעוני</h2>
+      <p><b>Like a console home screen.</b> Each game is a big saturated colour block with a bold illustration; today's main game gets the wide tile. Loud, instantly scannable, strong in a WhatsApp preview. Risk: looks like many other casual-game sites.</p>
+    </section>
+
+    <!-- B -->
+    <section class="concept">
+      <div class="phone"><div class="screen b">
+        <div class="b-bars"><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+        <div class="b-head"><b>חמש דקות</b><span>3 מתוך 7 · רצף 6</span></div>
+        <div class="b-card">
+          <div class="b-peek"></div>
+          <span class="num">משחק 4 · חידה #1</span>
+          <h3>על הציר</h3>
+          <p>שבעה אירועים. ציר זמן אחד. כמה תצליחו לסדר?</p>
+          <svg class="art" viewBox="0 0 200 200"><path d="M100 10v180" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".5"/><g><rect x="22" y="26" width="120" height="38" rx="9" fill="#fff"/><rect x="34" y="38" width="70" height="7" rx="3" fill="#2c5f9e"/><rect x="34" y="50" width="44" height="6" rx="3" fill="#2c5f9e" opacity=".5"/></g><g transform="rotate(-6 120 110)"><rect x="66" y="88" width="120" height="42" rx="9" fill="#ffd84a"/><rect x="80" y="101" width="80" height="7" rx="3" fill="#1d2a3a"/><rect x="80" y="113" width="50" height="6" rx="3" fill="#1d2a3a" opacity=".5"/></g><g><rect x="22" y="148" width="120" height="38" rx="9" fill="#fff"/><rect x="34" y="160" width="62" height="7" rx="3" fill="#2c5f9e"/></g></svg>
+          <div class="meta"><span>כ־3 דקות</span><span>3 חיים</span></div>
+        </div>
+        <div class="b-cta">בואו נתחיל</div>
+        <div class="b-next">החליקו לבא בתור: צומת</div>
+      </div></div>
+      <h2>ב. סטוריז: משחק אחד בכל פעם</h2>
+      <p><b>Built for the phone habit people already have.</b> The hub is a full-screen deck you swipe through like Instagram stories; progress bars at the top fill as you finish today's games, and it auto-advances to the next unplayed one. Turns "seven games" into one five-minute ritual. Risk: less overview at a glance.</p>
+    </section>
+
+    <!-- C -->
+    <section class="concept">
+      <div class="phone"><div class="screen c">
+        <div class="c-top"><span class="logo">חמש דקות</span><span class="pill">2/6 היום · רצף 6</span></div>
+        <div class="c-map">
+          <svg class="land" viewBox="0 0 322 900" preserveAspectRatio="none">
+            <path d="M200 20 L250 24 L262 70 L246 120 L258 170 L250 230 L262 300 L244 380 L250 440 L228 520 L214 600 L196 680 L180 760 L170 860 L150 880 L140 790 L118 700 L92 620 L60 540 L54 470 L78 400 L96 330 L120 250 L140 180 L156 110 L176 50 Z" fill="#f5e7c2" stroke="#18324a" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M232 150c8 4 10 18 2 26-8 2-12-12-2-26Z" fill="#7cc6e0" stroke="#18324a" stroke-width="2"/>
+            <path d="M236 330c8 10 6 50-4 60-8-14-6-50 4-60Z" fill="#7cc6e0" stroke="#18324a" stroke-width="2"/>
+            <g fill="#8fc46a" stroke="#18324a" stroke-width="2"><circle cx="190" cy="120" r="9"/><circle cx="204" cy="112" r="7"/><circle cx="130" cy="460" r="8"/></g>
+            <g fill="none" stroke="#18324a" stroke-width="2" stroke-dasharray="5 6" opacity=".55"><path d="M196 95 C170 200 150 230 160 300 S120 420 140 520 S170 640 170 780"/></g>
+            <g fill="#18324a" opacity=".3"><path d="M28 120l10-6 10 6-10 6Z"/><path d="M40 300l10-6 10 6-10 6Z"/></g>
+          </svg>
+          <div class="c-pin done" style="right:96px; top:120px"><div class="bubble"><i style="background:#e2483d"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M12 22C7 15 5 12 5 9a7 7 0 0 1 14 0c0 3-2 6-7 13Z" fill="#fff"/></svg></i><span>נקודת ציון<small>3/6 ✓</small></span></div><div class="stem"></div><div class="dot"></div></div>
+          <div class="c-pin" style="right:150px; top:250px"><div class="bubble"><i style="background:#0f7d72"><svg width="18" height="18" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#fff" stroke-width="2.5"/><path d="M12 3v18" stroke="#fff" stroke-width="2.5"/></svg></i><span>צומת<small>הצומת</small></span></div><div class="stem"></div><div class="dot"></div></div>
+          <div class="c-pin done" style="right:70px; top:380px"><div class="bubble"><i style="background:#1f8a52"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3 11 12 3h8v8l-9 9Z" fill="#fff"/></svg></i><span>בערך<small>412 ✓</small></span></div><div class="stem"></div><div class="dot"></div></div>
+          <div class="c-pin" style="right:170px; top:470px"><div class="bubble"><i style="background:#7444b8"><svg width="18" height="18" viewBox="0 0 24 24"><g fill="#fff"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></g></svg></i><span>ארבע על ארבע<small>בית הקפה</small></span></div><div class="stem"></div><div class="dot"></div></div>
+          <div class="c-pin" style="right:96px; top:590px"><div class="bubble"><i style="background:#2c66b3"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3 18h18M6 7h5v8H6zM13 4h5v11h-5z" fill="#fff" stroke="#fff" stroke-width="1.5"/></svg></i><span>על הציר<small>המוזיאון</small></span></div><div class="stem"></div><div class="dot"></div></div>
+          <div class="c-pin" style="right:160px; top:700px"><div class="bubble"><i style="background:#d48a10"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M8 21V9H4l6-7 6 7h-4v12Z" fill="#fff"/></svg></i><span>יותר או פחות<small>הר רמון</small></span></div><div class="stem"></div><div class="dot"></div></div>
+          <div class="c-pin" style="right:120px; top:830px"><div class="bubble"><i style="background:#141414"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M3 11c3-4 6-4 9 0 3-4 6-4 9 0-2 4-6 5-9 2-3 3-7 2-9-2Z" fill="#ff7a3d"/></svg></i><span>המתחזה<small>החוף, עם חברים</small></span></div><div class="stem"></div><div class="dot"></div></div>
+        </div>
+      </div></div>
+      <h2>ג. מפת הארץ</h2>
+      <p><b>The most "ours" option.</b> The hub is a playful illustrated map of Israel you scroll down from north to south; each game is a place on it, and a dotted trail joins today's stops. Finished games turn yellow. Nobody else can copy this one, and it explains "Israeli games" without a word. Risk: more illustration work to make it look great.</p>
+    </section>
+
+    <!-- D -->
+    <section class="concept">
+      <div class="phone"><div class="screen d">
+        <div class="d-hello">שבת שלום</div>
+        <div class="d-title">חמש דקות</div>
+        <div class="d-ring">
+          <svg width="56" height="56" viewBox="0 0 56 56"><circle cx="28" cy="28" r="23" fill="none" stroke="#e3e3e7" stroke-width="7"/><circle cx="28" cy="28" r="23" fill="none" stroke="#ff4f3a" stroke-width="7" stroke-linecap="round" stroke-dasharray="48 145" transform="rotate(-90 28 28)"/><text x="28" y="33" text-anchor="middle" font-size="15" font-weight="900" font-family="Heebo">2/6</text></svg>
+          <div><b>עוד 4 משחקים להיום</b><span>רצף של 6 ימים · שומרים עליו?</span></div>
+        </div>
+        <div class="d-sec">היום</div>
+        <div class="d-list">
+          <div class="d-row"><div class="ic" style="background:#ffe6e3"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 22C7 15 5 12 5 9a7 7 0 0 1 14 0c0 3-2 6-7 13Z" fill="#e2483d"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg></div><div><h3>נקודת ציון</h3><p>מצאו את היישוב הנסתר</p></div><span class="go">שחקו</span></div>
+          <div class="d-row"><div class="ic" style="background:#e3f5ea"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M3 11 12 3h8v8l-9 9Z" fill="#1f8a52"/><circle cx="16" cy="7" r="1.8" fill="#fff"/></svg></div><div><h3>בערך</h3><p>כמה זה עולה?</p></div><span class="go done">412 ✓</span></div>
+          <div class="d-row"><div class="ic" style="background:#efe7fa"><svg width="26" height="26" viewBox="0 0 24 24"><g fill="#7444b8"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2" opacity=".5"/><rect x="3" y="13" width="8" height="8" rx="2" opacity=".5"/><rect x="13" y="13" width="8" height="8" rx="2"/></g></svg></div><div><h3>ארבע על ארבע</h3><p>16 מילים, ארבע קבוצות</p></div><span class="go">שחקו</span></div>
+          <div class="d-row"><div class="ic" style="background:#e4eefa"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M3 19h18" stroke="#2c66b3" stroke-width="2.5" stroke-linecap="round"/><g fill="#2c66b3"><rect x="4" y="8" width="5" height="8" rx="1.5"/><rect x="10.5" y="4" width="5" height="12" rx="1.5" opacity=".6"/><rect x="17" y="10" width="4" height="6" rx="1.5"/></g></svg></div><div><h3>על הציר</h3><p>סדרו את האירועים לפי הזמן</p></div><span class="go">שחקו</span></div>
+          <div class="d-row"><div class="ic" style="background:#e0f3f1"><svg width="26" height="26" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#0f7d72" stroke-width="2.4"/><path d="M12 3v18M3 12h18" stroke="#0f7d72" stroke-width="2"/></svg></div><div><h3>צומת</h3><p>נושא חדש כל יום</p></div><span class="go done">7/9 ✓</span></div>
+          <div class="d-row"><div class="ic" style="background:#fbf0dc"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M8 21V9H4l6-7 6 7h-4v12Z" fill="#d48a10"/></svg></div><div><h3>יותר או פחות</h3><p>מה גדול יותר?</p></div><span class="go">שחקו</span></div>
+        </div>
+        <div class="d-sec" style="margin-top:18px">עם חברים</div>
+        <div class="d-row" style="border:0"><div class="ic" style="background:#fff0e6"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M3 11c3-4 6-4 9 0 3-4 6-4 9 0-2 4-6 5-9 2-3 3-7 2-9-2Z" fill="#e2622a"/></svg></div><div><h3>המתחזה</h3><p>משחק חברה, טלפון אחד</p></div><span class="go">פתחו</span></div>
+      </div></div>
+      <h2>ד. אפליקציה נקייה</h2>
+      <p><b>Calm, modern, Apple-like.</b> White space, big type, a progress ring for today, and simple rows with coloured icons; the party game sits in its own "with friends" section. Easiest to use and fastest to build. Risk: polished but not memorable.</p>
+    </section>
+
+    <!-- E -->
+    <section class="concept">
+      <div class="phone"><div class="screen e">
+        <div class="e-top"><div class="e-logo">חמש דקות</div><div class="e-coins"><i></i>2/6</div></div>
+        <div class="e-hero">
+          <h3>אתגר היום</h3><p>כל שש החידות, לפני חצות</p><span class="btn">שחקו עכשיו</span>
+          <svg class="art" viewBox="0 0 100 100"><g transform="rotate(-10 50 50)"><rect x="18" y="20" width="64" height="64" rx="12" fill="#ffd84a"/><rect x="18" y="20" width="64" height="58" rx="12" fill="#ffe680"/><path d="M50 36l5 10 11 2-8 8 2 11-10-5-10 5 2-11-8-8 11-2Z" fill="#ff5f8a"/></g></svg>
+        </div>
+        <div class="e-grid">
+          <div class="e-box" style="background:#ff6b5f;box-shadow:0 5px 0 #b43a32"><span class="star">חדש</span><svg class="art" viewBox="0 0 100 100"><path d="M50 90C30 64 22 52 22 38a28 28 0 0 1 56 0c0 14-8 26-28 52Z" fill="#fff"/><circle cx="50" cy="38" r="10" fill="#ff6b5f"/></svg><h3>נקודת ציון</h3></div>
+          <div class="e-box" style="background:#3ccf86;box-shadow:0 5px 0 #1f8a52"><span class="star">★ 412</span><svg class="art" viewBox="0 0 100 100"><path d="M14 46 50 10h36v36L50 82Z" fill="#fff"/></svg><h3>בערך</h3></div>
+          <div class="e-box" style="background:#9b6bff;box-shadow:0 5px 0 #5f36b8"><span class="star">חדש</span><svg class="art" viewBox="0 0 100 100"><g fill="#fff"><rect x="8" y="8" width="38" height="38" rx="9"/><rect x="54" y="54" width="38" height="38" rx="9"/><rect x="54" y="8" width="38" height="38" rx="9" opacity=".55"/><rect x="8" y="54" width="38" height="38" rx="9" opacity=".55"/></g></svg><h3>ארבע על ארבע</h3></div>
+          <div class="e-box" style="background:#3b8bff;box-shadow:0 5px 0 #1d55b0"><span class="star">חדש</span><svg class="art" viewBox="0 0 100 100"><g fill="#fff"><rect x="10" y="24" width="24" height="44" rx="6"/><rect x="40" y="12" width="24" height="56" rx="6" opacity=".7"/><rect x="70" y="36" width="20" height="32" rx="6"/></g><path d="M8 80h84" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg><h3>על הציר</h3></div>
+          <div class="e-box" style="background:#18b8a6;box-shadow:0 5px 0 #0c7a6e"><span class="star">★ 7/9</span><svg class="art" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="#fff"/><path d="M50 22l12 9-5 14H43l-5-14Z" fill="#18b8a6"/></svg><h3>צומת</h3></div>
+          <div class="e-box" style="background:#ffb020;box-shadow:0 5px 0 #b57400"><span class="star">חדש</span><svg class="art" viewBox="0 0 100 100"><path d="M30 88V44H14l24-32 24 32H46v44Z" fill="#fff"/></svg><h3>יותר או פחות</h3></div>
+        </div>
+        <div class="e-box" style="background:#ff7a3d;box-shadow:0 5px 0 #b44a18;margin-top:12px;min-height:90px"><span class="star">משחק חברה</span><h3>המתחזה · עם כל החבר׳ה</h3></div>
+        <div class="e-streak"><i class="on">א</i><i class="on">ב</i><i class="on">ג</i><i class="on">ד</i><i class="on">ה</i><i class="on">ו</i><i>ש</i></div>
+      </div></div>
+      <h2>ה. ארקייד לילה</h2>
+      <p><b>Playful and game-y.</b> Dark background, candy colours, chunky buttons that look pressable, a daily challenge banner, coins and a weekly streak row. Feels like a mobile game, and the strongest fit for a younger crowd. Risk: shouty; harder to keep tasteful.</p>
+    </section>
+
+  </div>
+</div>
+</body>
+</html>
