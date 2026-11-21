@@ -26,14 +26,13 @@ async function seed(page, entries) {
 const HALF_DAY = () => ({
   nekuda: { day: today('nekuda'), finished: true, won: true, summary: '3/6', stats: stats(4, today('nekuda')), progress: { guesses: ['a', 'b', 'c'] } },
   beerech: { day: today('beerech'), finished: false, won: false, stats: stats(2, today('beerech') - 1), progress: { guesses: [10] } },
-  arba: { day: today('arba'), finished: true, won: false, summary: 'X/4', stats: stats(0, today('arba') - 3), progress: {} },
+  miani: { day: today('miani'), finished: true, won: false, summary: 'X/5', stats: stats(0, today('miani') - 3), progress: { moves: [null] } },
   tzir: { day: today('tzir') - 1, finished: true, won: true, summary: '5/5', stats: stats(1, today('tzir') - 1) },
   herkev: '{not json',
-  mitchaze: { day: 1, finished: true, won: true },
 });
-const SUMMARIES = { nekuda: '3/6', beerech: 'בול!', arba: 'X/4', tzir: '5/5', herkev: '8/9', yoter: '7 מתוך 10' };
+const SUMMARIES = { nekuda: '3/6', beerech: 'בול!', miani: 'X/5', tzir: '5/5', herkev: '8/9', yoter: '7 מתוך 10', blimilim: '2/5' };
 const FULL_DAY = () => Object.fromEntries(DAILY.map((g) => [g.slug, {
-  day: today(g.slug), finished: true, won: g.slug !== 'arba', summary: SUMMARIES[g.slug], stats: stats(6, today(g.slug)), progress: { done: 1 },
+  day: today(g.slug), finished: true, won: g.slug !== 'miani', summary: SUMMARIES[g.slug], stats: stats(6, today(g.slug)), progress: { done: 1 },
 }]));
 
 const status = (page, slug) => page.locator(`.game[data-game="${slug}"]`).getAttribute('data-status');
@@ -94,17 +93,15 @@ async function lowContrast(page, root = 'body') {
 }
 
 await session.run(async () => {
-  await step('a first visit: every game is a stop on the map, all new, the party game at the end', async () => {
+  await step('a first visit: every game is a stop on the map, all new', async () => {
     const { context, page } = await open();
     assert.equal(await page.locator('h1').innerText(), 'חמש דקות');
     assert.equal(await page.locator('#games .game').count(), GAMES.length);
-    assert.deepEqual(await page.locator('.game').evaluateAll((li) => li.map((l) => l.dataset.game)), STOPS.map((g) => g.slug), 'trail order, party last');
+    assert.deepEqual(await page.locator('.game').evaluateAll((li) => li.map((l) => l.dataset.game)), STOPS.map((g) => g.slug), 'trail order');
     assert.deepEqual(await page.locator('.game-name').allInnerTexts(), STOPS.map((g) => g.name));
     assert.deepEqual(await page.locator('.game-link').evaluateAll((links) => links.map((a) => a.getAttribute('href'))), STOPS.map((g) => `games/${g.slug}/`));
     for (const g of GAMES) assert.equal(await status(page, g.slug), g.kind === 'party' ? 'party' : 'new', g.slug);
     for (const g of DAILY) assert.ok((await cardText(page, g.slug)).includes('חדש היום'), g.slug);
-    assert.ok((await cardText(page, 'mitchaze')).includes('משחק חברה'), 'the party stop says what it is');
-    assert.equal(await page.locator('.game[data-game="mitchaze"] .pin-badge').count(), 0, 'and has no daily result');
     assert.equal(await page.locator('.pin-badge').count(), 0);
     assert.equal(await page.locator('.game.is-next').getAttribute('data-game'), DAILY[0].slug, 'the first stop is next');
     assert.equal(await page.locator('#progress-text').innerText(), `0/${DAILY.length} היום`);
@@ -141,11 +138,10 @@ await session.run(async () => {
     assert.equal(await page.locator('.game[data-game="nekuda"] .pin-badge').count(), 1, 'a finished stop wears a badge');
     assert.equal(await status(page, 'beerech'), 'playing');
     assert.ok((await cardText(page, 'beerech')).includes('באמצע'));
-    assert.equal(await status(page, 'arba'), 'lost');
-    assert.ok((await cardText(page, 'arba')).includes('לא הפעם') && (await cardText(page, 'arba')).includes('X/4'));
+    assert.equal(await status(page, 'miani'), 'lost');
+    assert.ok((await cardText(page, 'miani')).includes('לא הפעם') && (await cardText(page, 'miani')).includes('X/5'));
     assert.equal(await status(page, 'tzir'), 'new', 'yesterday\'s result does not count for today');
     assert.equal(await status(page, 'herkev'), 'new', 'corrupted storage is ignored');
-    assert.equal(await status(page, 'mitchaze'), 'party', 'the party game has no daily status');
     assert.equal(await page.locator('.game.is-next').getAttribute('data-game'), 'beerech', 'the first unfinished stop is next');
     const doneBg = await page.locator('.game[data-game="nekuda"] .game-card').evaluate((c) => getComputedStyle(c).backgroundColor);
     const newBg = await page.locator('.game[data-game="tzir"] .game-card').evaluate((c) => getComputedStyle(c).backgroundColor);
@@ -167,7 +163,7 @@ await session.run(async () => {
     assert.equal(await deckOpen(page), true);
     assert.equal(await page.evaluate(() => document.getElementById('deck').contains(document.activeElement)), true, 'focus moves into the deck');
     assert.equal(await deckCard(page), 'beerech');
-    assert.deepEqual(await bars(page), ['done', 'current', 'done', 'todo', 'todo', 'todo']);
+    assert.deepEqual(await bars(page), ['done', 'current', 'done', 'todo', 'todo', 'todo', 'todo']);
     assert.ok((await page.locator('.story').innerText()).includes('בערך'));
     assert.equal(await page.locator('#story-start').innerText(), 'המשיכו לשחק', 'a game in progress is continued');
     assert.equal(await page.locator('#deck-prev').isDisabled(), true);
@@ -204,6 +200,8 @@ await session.run(async () => {
     await page.click('#deck-next');
     await page.click('#deck-next');
     assert.equal(await deckCard(page), 'yoter');
+    await page.click('#deck-next');
+    assert.equal(await deckCard(page), 'blimilim');
     assert.equal(await page.locator('#deck-next').isDisabled(), true, 'the last unplayed game is the end of the deck');
 
     // The keyboard stays inside the deck, and Escape returns it to the button that opened it.
@@ -267,7 +265,7 @@ await session.run(async () => {
     const { context, page } = await open();
     await seed(page, FULL_DAY());
     for (const g of DAILY) {
-      assert.equal(await status(page, g.slug), g.slug === 'arba' ? 'lost' : 'won', g.slug);
+      assert.equal(await status(page, g.slug), g.slug === 'miani' ? 'lost' : 'won', g.slug);
       assert.ok((await cardText(page, g.slug)).includes(SUMMARIES[g.slug]), g.slug);
     }
     assert.equal(await page.locator('.game.is-next').count(), 0, 'nothing left to bob');
@@ -285,7 +283,7 @@ await session.run(async () => {
     const lines = text.split('\n');
     assert.match(lines[0], /^חמש דקות · \d+ ב\S+ \d{4}$/, lines[0]);
     assert.equal(lines[1], `${DAILY.length}/${DAILY.length} חידות היום`);
-    DAILY.forEach((g, i) => assert.equal(lines[2 + i], `${g.slug === 'arba' ? '✗' : '✓'} ${g.name}: ${SUMMARIES[g.slug]}`));
+    DAILY.forEach((g, i) => assert.equal(lines[2 + i], `${g.slug === 'miani' ? '✗' : '✓'} ${g.name}: ${SUMMARIES[g.slug]}`));
     assert.equal(lines.at(-1), session.root, 'the link to the hub');
     assert.equal(lines.length, DAILY.length + 3, 'nothing else: no answers');
     assert.ok(decodeURIComponent(await page.locator('#day-whatsapp').getAttribute('href')).includes(lines[1]));

@@ -25,9 +25,10 @@ export async function createSession({ slug, port, path = `games/${slug}/` }) {
    * A fresh browser profile (empty storage) at phone size, Hebrew locale, clipboard allowed.
    * options: any Playwright context option (colorScheme: 'dark', viewport, isMobile…) plus
    *   fixedTime  a Date the page's clock is frozen at; change it later with page.clock.setFixedTime()
+   *   setup      async (context) => {} run before the first page load (network stubs, init scripts)
    * subPath is appended to the session url: open({}, '?day=3')
    */
-  async function open({ fixedTime, ...options } = {}, subPath = '') {
+  async function open({ fixedTime, setup, ...options } = {}, subPath = '') {
     const context = await browser.newContext({
       viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true, isMobile: true, locale: 'he-IL',
       // Service workers are off by default so every test sees the files on disk and its own
@@ -38,6 +39,14 @@ export async function createSession({ slug, port, path = `games/${slug}/` }) {
     page.on('console', (m) => { if (m.type() === 'error') errors.push(`${m.text()} (${page.url()})`); });
     page.on('pageerror', (e) => errors.push(String(e)));
     if (fixedTime) await page.clock.setFixedTime(fixedTime);
+    // Tests never talk to the real leaderboard database: every page gets the switched-off config
+    // (tests/social.e2e.mjs swaps in a mock via `setup`, whose routes take precedence), and any call
+    // that still reaches a Supabase host is refused, which shows up as a console error.
+    await context.route('**/shared/config.js', (r) => r.fulfill({
+      contentType: 'text/javascript', body: "export const BACKEND = { url: '', key: '' };\n",
+    }));
+    await context.route(/^https:\/\/[^/]+\.supabase\.co\//, (r) => r.abort('blockedbyclient'));
+    if (setup) await setup(context);
     await page.goto(url + subPath);
     return { context, page };
   }
@@ -86,7 +95,8 @@ export function horizontalOverflow(page) {
 export async function shareToClipboard(page, selector = '#share-btn') {
   await page.evaluate(() => { navigator.share = undefined; });
   await page.click(selector);
-  return page.evaluate(() => navigator.clipboard.readText());
+  // The Windows clipboard hands text back with CRLF line ends; the share texts are written with LF.
+  return (await page.evaluate(() => navigator.clipboard.readText())).replace(/\r\n/g, '\n');
 }
 
 export function isDialogOpen(page, selector) {

@@ -21,7 +21,7 @@
   "shortcuts": [
     { "name": "שחקו את חידות היום", "short_name": "חידות היום", "url": "./?next=1", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
     { "name": "נקודת ציון", "url": "games/nekuda/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
-    { "name": "ארבע על ארבע", "url": "games/arba/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
-    { "name": "המתחזה", "short_name": "המתחזה", "url": "games/mitchaze/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] }
+    { "name": "מי אני?", "url": "games/miani/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] },
+    { "name": "בלי מילים", "url": "games/blimilim/", "icons": [{ "src": "assets/icon-192.png", "sizes": "192x192" }] }
   ]
 }

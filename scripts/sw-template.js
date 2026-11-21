@@ -24,6 +24,8 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
+  // Only the site's own files. Calls to the leaderboards backend (another origin, POST) are never
+  // answered from or put in the cache: they go straight to the network, and fail as such offline.
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
   const navigation = request.mode === 'navigate';
   event.respondWith(

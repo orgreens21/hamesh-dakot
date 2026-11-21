@@ -2,6 +2,7 @@
 import * as G from './game.js';
 import { israelDate, dayNumber, dateOfDay, hebrewDate, recordResult, currentStreak } from '../../shared/core.js';
 import { createStore, mountHeader, html, icon, wireDialog, renderStats, renderEnd, gameUrl } from '../../shared/ui.js';
+import { dayStatsPanel } from '../../shared/social-ui.js';
 import { tilt, stamp, celebrate } from '../../shared/fx.js';
 import { emblem } from '../../shared/emblems.js';
 
@@ -221,6 +222,8 @@ function drawEnd(fresh) {
     shareText: () => G.shareText({ day: today, items: game.items, answers: game.answers, url: gameUrl() }),
     actions: [actionButton('practice-btn', 'btn ghost', 'מוות פתאומי: כמה תצליחו ברצף?', () => startPractice(game.theme))],
   });
+  // Today's result goes to the group boards (the sudden-death practice above never does).
+  dayStatsPanel(el.end, { game: SLUG, day: today, points: G.points(game.items, game.answers), won: state.won, summary: G.summary(game.items, game.answers) });
   const node = stampEnd(`${points}/${G.ROUNDS}`, state.won ? 'found' : 'ink', fresh);
   if (fresh && state.won) setTimeout(() => celebrate({ origin: node }), CELEBRATE_AFTER);
 }

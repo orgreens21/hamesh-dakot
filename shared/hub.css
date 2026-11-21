@@ -156,6 +156,44 @@ body.hub {
 .hub .cta-icon { width: 22px; height: 22px; fill: currentColor; flex-shrink: 0; }
 .hub .cta[data-done="all"] { background: #fff; }
 
+/* Leaderboards and groups (only when shared/config.js has a backend): a smaller sticker under the CTA. */
+.hub .groups-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 340px);
+  min-height: 52px;
+  margin: 12px auto 0;
+  padding: 6px 12px 6px 10px;
+  border: 2.5px solid var(--ink);
+  border-radius: 16px;
+  background: var(--bubble);
+  color: #18324a;
+  box-shadow: 0 4px 0 var(--ink);
+  text-align: start;
+  text-decoration: none;
+  transition: transform .12s, box-shadow .12s;
+}
+.hub .groups-link:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+@media (hover: hover) { .hub .groups-link:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); } }
+.hub .groups-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 5px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: #2c5f9e;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+}
+.hub .groups-text { display: flex; flex-direction: column; flex: 1; min-width: 0; line-height: 1.2; }
+.hub .groups-text b { font: 400 17px/1.15 var(--display); }
+.hub .groups-text span { font-size: 12.5px; font-weight: 600; color: #3f586d; }
+.hub .groups-arrow { flex-shrink: 0; width: 20px; height: 20px; fill: none; stroke: #18324a; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
 /* ---------- the map ---------- */
 
 .hub .map { position: relative; width: 100%; max-width: 560px; margin: 4px auto 0; aspect-ratio: 179.2 / 414; }

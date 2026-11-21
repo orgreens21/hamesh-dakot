@@ -1,0 +1,56 @@
+/* What the two "one more clue" games (מי אני?, בלי מילים) share: the brief, the five stage counters,
+   the guess box, "one more clue", the log of misses and the answer at the end. Each game's own
+   style.css draws its stage (#stage). Loaded after base.css. */
+
+.app { overflow-x: clip; } /* the end stamp starts large before it lands */
+
+.brief { text-align: center; }
+.brief .kicker { margin: 0; }
+.prompt { margin: 2px 0 0; font-family: var(--display); font-size: clamp(28px, 8.6vw, 36px); font-weight: 900; line-height: 1.05; }
+
+/* Five numbered counters punched into the page. */
+.steps { display: flex; justify-content: center; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.steps li {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--desk);
+  box-shadow: var(--shadow-pressed);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+.steps li.now { background: var(--sheet); color: var(--ink); box-shadow: 0 0 0 2px var(--accent), var(--shadow-rest); }
+.steps li:is(.right, .wrong, .skip) { color: var(--on-color); box-shadow: var(--shadow-rest), var(--edge); }
+.steps li.right { background: var(--found); }
+.steps li.wrong { background: var(--close); }
+.steps li.skip { background: var(--ink-soft); color: var(--paper); }
+.steps li:is(.right, .wrong, .skip):has(+ .now) { animation: pop .35s var(--ease-spring); }
+
+/* The stage that has just opened rises in. */
+#stage .fresh { animation: reveal .5s var(--ease) both; }
+
+.guess-form { margin: 0; }
+.guess-form[hidden], .clue-btn[hidden] { display: none; }
+.clue-btn { min-height: 48px; gap: 8px; }
+.clue-btn .icon { width: 20px; height: 20px; }
+
+/* Misses so far, struck through like crossed-out answers on a quiz sheet. */
+.log { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; margin: 0; padding: 0; list-style: none; font-size: 15px; }
+.log li { display: inline-flex; align-items: center; gap: 4px; color: var(--ink-soft); }
+.log li.wrong span { text-decoration: line-through; text-decoration-color: var(--close); text-decoration-thickness: 2px; }
+.log .icon { width: 16px; height: 16px; stroke-width: 2.6; }
+.log li.wrong .icon { color: var(--close); }
+
+/* The answer under the end title, with an optional note on its own line. */
+.answer-line b { font-family: var(--display); font-size: 1.25em; }
+.answer-line small { display: block; margin-top: 4px; font-size: 14px; }
+
+.foot p { margin: 0 0 8px; }
+
+/* The game's emblem heads the rules, as it heads its card on the front page. */
+.sheet > .emblem { --emblem-size: 72px; margin: -4px auto 8px; }

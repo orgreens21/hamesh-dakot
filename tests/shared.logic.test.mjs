@@ -98,9 +98,10 @@ const contrast = (a, b) => {
 };
 
 test('registry is complete and consistent', () => {
-  assert.deepEqual(GAMES.map((g) => g.slug), ['nekuda', 'beerech', 'arba', 'mitchaze', 'tzir', 'herkev', 'yoter']);
-  assert.deepEqual(GAMES.map((g) => g.port), [4179, 4181, 4182, 4183, 4184, 4185, 4186]);
-  assert.deepEqual(GAMES.filter((g) => g.kind === 'party').map((g) => g.slug), ['mitchaze']);
+  assert.deepEqual(GAMES.map((g) => g.slug), ['nekuda', 'beerech', 'miani', 'tzir', 'herkev', 'yoter', 'blimilim']);
+  assert.deepEqual(GAMES.map((g) => g.port), [4179, 4181, 4182, 4184, 4185, 4186, 4183]);
+  assert.ok(GAMES.every((g) => g.kind === 'daily'), 'every game is a solo daily puzzle');
+  assert.equal(new Set(GAMES.map((g) => g.port)).size, GAMES.length);
   for (const g of GAMES) {
     assert.ok(g.name && g.tagline && g.mark.startsWith('<'), g.slug);
     assert.match(g.epoch, /^\d{4}-\d\d-\d\d$/);

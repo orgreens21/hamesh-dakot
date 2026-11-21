@@ -129,3 +129,12 @@ export function recordResult(stats, day, won, guessCount) {
 export function summary(results) {
   return `${results.some((r) => r.win) ? results.length : 'X'}/${MAX_GUESSES}`;
 }
+
+// ---------- points for the group boards (0–100, higher is better; see games/README.md) ----------
+
+/** Found in one guess: 100, then 15 less for every extra guess (25 in the sixth). Not found: 0. */
+export const POINTS_BY_GUESS = [100, 85, 70, 55, 40, 25];
+export function points(results) {
+  const n = results.length;
+  return results.some((r) => r.win) && n >= 1 && n <= MAX_GUESSES ? POINTS_BY_GUESS[n - 1] : 0;
+}

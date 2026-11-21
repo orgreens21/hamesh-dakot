@@ -64,19 +64,19 @@
 [data-game] { --on-accent: var(--on-color); }
 [data-game="nekuda"] { --accent: #c22f25; }
 [data-game="beerech"] { --accent: #1c7346; }
-[data-game="arba"] { --accent: #6b3fa0; }
-[data-game="mitchaze"] { --accent: #b83d0b; }
+[data-game="miani"] { --accent: #6b3fa0; }
 [data-game="tzir"] { --accent: #2c5f9e; }
 [data-game="herkev"] { --accent: #0f766e; }
 [data-game="yoter"] { --accent: #8f5f08; }
+[data-game="blimilim"] { --accent: #b83d0b; }
 @media (prefers-color-scheme: dark) {
   [data-game="nekuda"] { --accent: #ee5548; }
   [data-game="beerech"] { --accent: #45b57c; }
-  [data-game="arba"] { --accent: #b08ae6; }
-  [data-game="mitchaze"] { --accent: #f0783c; }
+  [data-game="miani"] { --accent: #b08ae6; }
   [data-game="tzir"] { --accent: #6a9fe0; }
   [data-game="herkev"] { --accent: #35b5a8; }
   [data-game="yoter"] { --accent: #e0a83a; }
+  [data-game="blimilim"] { --accent: #f0783c; }
 }
 
 /* ---------- reset ---------- */
@@ -373,6 +373,34 @@ html.is-ready .app > main, html.is-ready .app > .foot { animation: fx-page-in .2
 .end.paper .end-stamp { line-height: 1; }
 .end.paper .end-stamp .fx-stamp.big { font-size: 38px; font-variant-numeric: tabular-nums; }
 
+/* "How everyone did today" under a finished daily puzzle (shared/social-ui.js). Only drawn when the
+   leaderboards backend is configured. A ruled box inside the end panel, like a results table on the
+   puzzle page; the player's own bar is in the game's accent. */
+.day-stats {
+  margin: 16px 0 4px;
+  padding: 12px 14px 14px;
+  border: 1.5px solid var(--rule-strong);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--paper) 55%, transparent);
+  text-align: center;
+}
+.day-stats .kicker { letter-spacing: .02em; }
+.ds-body { min-height: 44px; display: grid; align-content: center; }
+.ds-lead { margin: 4px 0 0; font-family: var(--display); font-size: 21px; font-weight: 700; line-height: 1.25; text-wrap: balance; }
+.ds-lead.small { font-size: 18px; }
+.ds-lead b { font-size: 1.3em; font-weight: 900; color: var(--accent); font-variant-numeric: tabular-nums; }
+.ds-sub { margin: 4px 0 0; font-size: 13.5px; color: var(--ink-soft); }
+.ds-chart { margin: 14px 4px 0; }
+.ds-hist { display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); align-items: end; gap: 4px; height: 58px; margin: 0; padding: 18px 0 0; list-style: none; border-bottom: 1.5px solid var(--ink); }
+.ds-hist li { position: relative; height: max(3px, var(--h)); border-radius: 2px 2px 0 0; background: var(--rule-strong); transform-origin: bottom; animation: ds-rise .5s var(--ease) backwards; }
+@keyframes ds-rise { from { transform: scaleY(0); } }
+.ds-hist li.me { background: var(--accent); }
+.ds-you { position: absolute; bottom: calc(100% + 2px); left: 50%; translate: -50% 0; font-size: 11px; font-weight: 800; line-height: 1; color: var(--accent); white-space: nowrap; }
+.ds-axis { display: flex; justify-content: space-between; margin-top: 3px; font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+.ds-points { margin: 10px 0 0; font-size: 13px; color: var(--ink-soft); }
+.ds-points a { color: inherit; text-underline-offset: 3px; }
+.day-stats .ds-groups { width: 100%; margin-top: 10px; background: transparent; border-color: var(--ink); color: var(--ink); box-shadow: none; }
+
 .foot { padding: 20px 0 4px; text-align: center; font-size: 12px; color: var(--ink-soft); }
 .foot a { color: inherit; text-underline-offset: 3px; }
 
@@ -602,9 +630,10 @@ body, .app { background-image: var(--grain); }
 :is(a, button):is(:hover, :focus-visible) [data-emblem="nekuda"] .l2, [data-emblem="nekuda"].is-playing .l2 { animation-name: em-hop; }
 :is(a, button):is(:hover, :focus-visible) [data-emblem="nekuda"] .l1, [data-emblem="nekuda"].is-playing .l1 { animation-name: em-pulse; }
 :is(a, button):is(:hover, :focus-visible) [data-emblem="beerech"] :is(.l1, .l2), [data-emblem="beerech"].is-playing :is(.l1, .l2) { animation-name: em-swing; transform-origin: 32% 56%; }
-:is(a, button):is(:hover, :focus-visible) [data-emblem="arba"] .l1, [data-emblem="arba"].is-playing .l1 { animation-name: em-slide; }
-:is(a, button):is(:hover, :focus-visible) [data-emblem="arba"] .l2, [data-emblem="arba"].is-playing .l2 { animation-name: em-hop; }
-:is(a, button):is(:hover, :focus-visible) [data-emblem="mitchaze"] .l2, [data-emblem="mitchaze"].is-playing .l2 { animation-name: em-peek; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="miani"] .l2, [data-emblem="miani"].is-playing .l2 { animation-name: em-hop; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="miani"] .l1, [data-emblem="miani"].is-playing .l1 { animation-name: em-swing; transform-origin: 50% 90%; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="blimilim"] .l2, [data-emblem="blimilim"].is-playing .l2 { animation-name: em-peek; }
+:is(a, button):is(:hover, :focus-visible) [data-emblem="blimilim"] .l1, [data-emblem="blimilim"].is-playing .l1 { animation-name: em-pulse; }
 :is(a, button):is(:hover, :focus-visible) [data-emblem="tzir"] .l2, [data-emblem="tzir"].is-playing .l2 { animation-name: em-place; }
 :is(a, button):is(:hover, :focus-visible) [data-emblem="herkev"] .l2, [data-emblem="herkev"].is-playing .l2 { animation-name: em-hop; }
 :is(a, button):is(:hover, :focus-visible) [data-emblem="herkev"] .l1, [data-emblem="herkev"].is-playing .l1 { animation-name: em-pulse; }

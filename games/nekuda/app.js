@@ -4,6 +4,7 @@ import { MED_COAST, LAKES, JORDAN_RIVER } from './mapshapes.js';
 import { dateOfDay, hebrewDate } from '../../shared/core.js';
 import { tilt, stamp, celebrate, countUp } from '../../shared/fx.js';
 import { createStore, mountHeader, html, svg, toast, shareResult, whatsappLink, gameUrl, startCountdown, wireDialog, renderStats } from '../../shared/ui.js';
+import { dayStatsPanel } from '../../shared/social-ui.js';
 
 const TITLE = 'נקודת ציון';
 
@@ -336,6 +337,10 @@ function renderEnd(animate) {
   if (shareable) el.whatsappBtn.href = whatsappLink(buildShareText());
   el.nextWrap.hidden = game.mode === 'practice';
   el.practiceBtn.textContent = game.mode === 'practice' ? 'עוד סיבוב' : 'עוד סיבוב לאימון';
+  // Today's result goes to the group boards; archive and practice rounds never do.
+  dayStatsPanel(el.end, game.mode === 'daily'
+    ? { game: 'nekuda', day: game.day, points: G.points(game.results), won: isWon(), summary: G.summary(game.results) }
+    : null);
 }
 
 function renderPuzzleLabel() {

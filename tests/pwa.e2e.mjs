@@ -40,7 +40,7 @@ await run(async () => {
     // Query strings (archive days, the "next" deck) are the same cached page.
     await page.goto(`${root}?next=1`);
     await page.waitForFunction(() => document.getElementById('deck').open, null, { timeout: 10000 });
-    await page.goto(`${root}games/arba/?day=1`);
+    await page.goto(`${root}games/nekuda/?day=1`);
     await page.waitForSelector('.top .back');
 
     // An address the site doesn't have falls back to the hub instead of the browser's offline page.
@@ -53,7 +53,7 @@ await run(async () => {
     const { context, page } = await open(withSW);
     await waitForOfflineReady(page);
     await context.setOffline(true);
-    await page.goto(`${root}games/mitchaze/`);
+    await page.goto(`${root}games/blimilim/`);
     await page.waitForSelector('.top .back');
     await page.goto(root);
     await page.waitForSelector('#games li', { state: 'attached' });

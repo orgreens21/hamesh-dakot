@@ -2,17 +2,18 @@
 // Strategy: everything the site needs is cached on install, then served from the cache,
 // so the games work offline and open instantly. A new deploy changes VERSION, the browser
 // notices the changed sw.js, caches the new files and drops the old ones.
-const VERSION = 'b04ef5e03183';
+const VERSION = 'a967d030a5ad';
 const CACHE = 'hamesh-dakot-' + VERSION;
 const FILES = [
  "./",
- "games/arba/",
  "games/beerech/",
+ "games/blimilim/",
  "games/herkev/",
- "games/mitchaze/",
+ "games/miani/",
  "games/nekuda/",
  "games/tzir/",
  "games/yoter/",
+ "groups/",
  "assets/fonts/frank-ruhl-libre-hebrew-0.woff2",
  "assets/fonts/frank-ruhl-libre-latin-1.woff2",
  "assets/fonts/heebo-hebrew-2.woff2",
@@ -25,17 +26,17 @@ const FILES = [
  "assets/icon-maskable-512.png",
  "assets/icon.svg",
  "assets/og.png",
- "games/arba/app.js",
- "games/arba/data.js",
- "games/arba/game.js",
- "games/arba/index.html",
- "games/arba/style.css",
  "games/beerech/app.js",
  "games/beerech/art.js",
  "games/beerech/data.js",
  "games/beerech/game.js",
  "games/beerech/index.html",
  "games/beerech/style.css",
+ "games/blimilim/app.js",
+ "games/blimilim/data.js",
+ "games/blimilim/game.js",
+ "games/blimilim/index.html",
+ "games/blimilim/style.css",
  "games/herkev/app.js",
  "games/herkev/data/countries.js",
  "games/herkev/data/football.js",
@@ -48,11 +49,11 @@ const FILES = [
  "games/herkev/rules.js",
  "games/herkev/style.css",
  "games/herkev/topics.js",
- "games/mitchaze/app.js",
- "games/mitchaze/game.js",
- "games/mitchaze/index.html",
- "games/mitchaze/style.css",
- "games/mitchaze/words.js",
+ "games/miani/app.js",
+ "games/miani/data.js",
+ "games/miani/game.js",
+ "games/miani/index.html",
+ "games/miani/style.css",
  "games/nekuda/app.js",
  "games/nekuda/data.js",
  "games/nekuda/game.js",
@@ -69,10 +70,14 @@ const FILES = [
  "games/yoter/game.js",
  "games/yoter/index.html",
  "games/yoter/style.css",
+ "groups/app.js",
+ "groups/index.html",
+ "groups/style.css",
  "index.html",
  "manifest.webmanifest",
  "robots.txt",
  "shared/base.css",
+ "shared/config.js",
  "shared/core.js",
  "shared/emblems.js",
  "shared/fonts.css",
@@ -84,6 +89,11 @@ const FILES = [
  "shared/hub.js",
  "shared/pwa.js",
  "shared/registry.js",
+ "shared/reveal-ui.js",
+ "shared/reveal.css",
+ "shared/reveal.js",
+ "shared/social-ui.js",
+ "shared/social.js",
  "shared/ui.js"
 ];
 
@@ -105,6 +115,8 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
+  // Only the site's own files. Calls to the leaderboards backend (another origin, POST) are never
+  // answered from or put in the cache: they go straight to the network, and fail as such offline.
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
   const navigation = request.mode === 'navigate';
   event.respondWith(

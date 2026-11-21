@@ -2,6 +2,7 @@
 import * as G from './game.js';
 import { israelDate, dayNumber, dateOfDay, hebrewDate, recordResult, currentStreak } from '../../shared/core.js';
 import { createStore, mountHeader, html, svg, icon, wireDialog, renderStats, renderEnd, gameUrl } from '../../shared/ui.js';
+import { dayStatsPanel } from '../../shared/social-ui.js';
 import { stamp, celebrate } from '../../shared/fx.js';
 import { emblem } from '../../shared/emblems.js';
 
@@ -208,6 +209,8 @@ function renderEndPanel(over) {
     countdown: mode === 'daily',
     actions: [again],
   });
+  // Today's result goes to the group boards; practice rounds never do.
+  dayStatsPanel(el.end, mode === 'daily' ? { game: SLUG, day: today, points: G.points(results), won, summary: G.summary(results) } : null);
   // The score is stamped on the sheet. It only slams down (and the paper only flies) at the moment the
   // game ends, not when a finished game is opened again.
   const holder = html('p', 'end-stamp');

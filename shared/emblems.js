@@ -12,13 +12,8 @@ const TAG = 'M38 30h38a7 7 0 0 1 7 7v26a7 7 0 0 1-7 7H38L17 50Z';
 const TURN = 'rotate(-14 48 50)';
 const UP = 'M66 9 87 34H75.5v25h-19V34H45Z';
 const DOWN = 'M30 87 9 62h11.5V37h19v25H51Z';
-const MASK = 'M21 38c5-9 17-10 27-3 10-7 22-6 27 3-1 11-10 16-18 13-4-1.5-7-4-9-8-2 4-5 6.5-9 8-8 3-17-2-18-13Z';
 const PIN = 'M48 71C41 57 28 49 28 34a20 20 0 0 1 40 0c0 15-13 23-20 37Z';
 
-// Sixteen word tiles: 17px squares, 3px apart.
-const cell = (i) => 9.5 + i * 20;
-const tile = (col, row, cls, dy = 0) => `<rect class="${cls}" x="${cell(col)}" y="${cell(row) - 2 + dy}" width="17" height="17" rx="3.5"/>`;
-const tiles = (rows, cls, dy) => rows.flatMap((row) => [0, 1, 2, 3].map((col) => tile(col, row, cls, dy))).join('');
 
 export const EMBLEMS = {
   // A map pin standing in the middle of distance rings.
@@ -33,17 +28,11 @@ export const EMBLEMS = {
     `<g transform="${TURN}"><path class="em-d" d="${TAG}" transform="translate(0 3)"/><path class="em-a" d="${TAG}"/><path class="em-ls" d="M41 35.5h34.5a2 2 0 0 1 2 2v25a2 2 0 0 1-2 2H41L26 50Z" stroke-width="1.3" stroke-dasharray="3 3.5" opacity=".55"/><circle class="em-s" cx="31" cy="50" r="4.2"/></g>`,
     `<g transform="${TURN}"><path class="em-ls" stroke-width="5" d="M46.5 45c4-4.5 8-4.5 12 0s8 4.5 12 0M46.5 56.5c4-4.5 8-4.5 12 0s8 4.5 12 0"/></g>`,
   ],
-  // Sixteen tiles; one group of four found, one tile picked up.
-  arba: [
-    `${tiles([0, 2, 3], 'em-s em-o')}<rect class="em-sh" x="9.5" y="32" width="77" height="17" rx="3.5"/>`,
-    `${tiles([1], 'em-d', 3)}${tiles([1], 'em-a')}`,
-    `${tile(1, 2, 'em-sh', 5)}<g transform="rotate(-7 38 56)">${tile(1, 2, 'em-d', 0)}${tile(1, 2, 'em-i', -3)}</g>`,
-  ],
-  // A hand of cards; the one in front wears a mask.
-  mitchaze: [
-    `<ellipse class="em-sh" cx="48" cy="85" rx="27" ry="4"/><rect class="em-s em-o" x="31" y="25" width="34" height="50" rx="5" transform="rotate(-14 48 112)"/><rect class="em-s em-o" x="31" y="25" width="34" height="50" rx="5" transform="rotate(14 48 112)"/>`,
-    `<rect class="em-d" x="29" y="23" width="38" height="56" rx="5.5"/><rect class="em-a" x="29" y="20" width="38" height="56" rx="5.5"/><rect class="em-ls" x="33.5" y="24.5" width="29" height="47" rx="2.5" stroke-width="1.3" opacity=".5"/>`,
-    `<path class="em-sh" d="${MASK}" transform="translate(1 5)"/><path class="em-i" d="${MASK}"/><ellipse class="em-a" cx="36" cy="41.5" rx="5.5" ry="3.4" transform="rotate(8 36 41.5)"/><ellipse class="em-a" cx="60" cy="41.5" rx="5.5" ry="3.4" transform="rotate(-8 60 41.5)"/>`,
+  // An index card of clue lines, and the question it asks.
+  miani: [
+    `<rect class="em-sh" x="20" y="22" width="52" height="64" rx="5" transform="rotate(-9 46 54)"/><rect class="em-s em-o" x="16" y="16" width="52" height="64" rx="5" transform="rotate(-9 42 48)"/>`,
+    `<rect class="em-d" x="26" y="19" width="52" height="64" rx="5"/><rect class="em-a" x="26" y="16" width="52" height="64" rx="5"/><path class="em-ls" d="M34 30h36M34 40h28M34 50h32M34 60h18" stroke-width="3"/>`,
+    `<circle class="em-sh" cx="71" cy="72" r="15"/><circle class="em-s em-o" cx="68" cy="67" r="15"/><path class="em-la" d="M63 63a5 5 0 1 1 7 4.6c-1.4.7-2 1.6-2 3" stroke-width="3"/><circle class="em-a" cx="68" cy="75.5" r="2.1"/>`,
   ],
   // Events on a time axis; the middle one is being put in its place.
   tzir: [
@@ -62,6 +51,12 @@ export const EMBLEMS = {
     `<path class="em-sh" d="${UP}" transform="translate(5 8)"/><path class="em-sh" d="${DOWN}" transform="translate(4 5)"/>`,
     `<path class="em-i" d="${DOWN}" transform="translate(0 3)" opacity=".55"/><path class="em-s em-o" d="${DOWN}" stroke-linejoin="round"/>`,
     `<path class="em-d" d="${UP}" transform="translate(0 3.5)"/><path class="em-a" d="${UP}"/>`,
+  ],
+  // Picture tiles: one face down, one smiling up at you.
+  blimilim: [
+    `<rect class="em-sh" x="13" y="42" width="30" height="30" rx="6"/><rect class="em-s em-o" x="8" y="33" width="30" height="30" rx="6" transform="rotate(-10 23 48)"/><path class="em-l" d="M17 52c3 2.5 7 2.5 10 0M18 44h.1M27 44h.1" stroke-width="3" transform="rotate(-10 23 48)"/>`,
+    `<rect class="em-d" x="58" y="34" width="30" height="30" rx="6" transform="rotate(9 73 49)"/><rect class="em-a" x="58" y="30" width="30" height="30" rx="6" transform="rotate(9 73 45)"/><path class="em-ls" d="M69 41a4 4 0 1 1 5.5 3.7c-1 .5-1.5 1.2-1.5 2.3M73 52.5h.1" stroke-width="2.8" transform="rotate(9 73 45)"/>`,
+    `<rect class="em-sh" x="34" y="40" width="34" height="34" rx="7"/><rect class="em-d" x="31" y="35" width="34" height="34" rx="7"/><rect class="em-s em-o" x="31" y="31" width="34" height="34" rx="7"/><circle class="em-a" cx="42" cy="44" r="3"/><circle class="em-a" cx="54" cy="44" r="3"/><path class="em-la" d="M40 53c4.5 4.5 11.5 4.5 16 0" stroke-width="3"/>`,
   ],
 };
 

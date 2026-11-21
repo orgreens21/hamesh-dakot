@@ -17,14 +17,9 @@ export const GAMES = [
     mark: '<path d="M4 11.5c3.3-4.6 6.7-4.6 10 0s6.7 4.6 10 0M4 19.5c3.3-4.6 6.7-4.6 10 0s6.7 4.6 10 0"/>',
   },
   {
-    slug: 'arba', name: 'ארבע על ארבע', tagline: '16 מילים, ארבע קבוצות נסתרות',
+    slug: 'miani', name: 'מי אני?', tagline: 'חמישה רמזים, תשובה ישראלית אחת',
     kind: 'daily', accent: '#6b3fa0', accentDark: '#b08ae6', epoch: DEFAULT_EPOCH, port: 4182,
-    mark: '<rect x="4" y="4" width="8.5" height="8.5" rx="1.5"/><rect class="solid" x="15.5" y="4" width="8.5" height="8.5" rx="1.5"/><rect x="4" y="15.5" width="8.5" height="8.5" rx="1.5"/><rect x="15.5" y="15.5" width="8.5" height="8.5" rx="1.5"/>',
-  },
-  {
-    slug: 'mitchaze', name: 'המתחזה', tagline: 'משחק חברה: כולם מכירים את המילה, חוץ מאחד',
-    kind: 'party', accent: '#b83d0b', accentDark: '#f0783c', epoch: DEFAULT_EPOCH, port: 4183,
-    mark: '<circle cx="7" cy="9" r="3.2"/><circle cx="21" cy="9" r="3.2"/><circle class="solid" cx="14" cy="20" r="4.5"/>',
+    mark: '<circle cx="14" cy="14" r="10.5"/><path d="M10.6 11.2a3.5 3.5 0 1 1 4.9 3.2c-1 .5-1.5 1.2-1.5 2.4"/><circle class="solid" cx="14" cy="20.2" r="1.6"/>',
   },
   {
     slug: 'tzir', name: 'על הציר', tagline: 'סדרו את האירועים לפי הזמן',
@@ -40,6 +35,11 @@ export const GAMES = [
     slug: 'yoter', name: 'יותר או פחות', tagline: 'מה גדול יותר?',
     kind: 'daily', accent: '#8f5f08', accentDark: '#e0a83a', epoch: DEFAULT_EPOCH, port: 4186,
     mark: '<path d="M5.5 12 14 4.5 22.5 12"/><path d="M5.5 16 14 23.5 22.5 16"/>',
+  },
+  {
+    slug: 'blimilim', name: 'בלי מילים', tagline: 'סרט, סדרה או שיר ישראלי, רק באימוג׳י',
+    kind: 'daily', accent: '#b83d0b', accentDark: '#f0783c', epoch: DEFAULT_EPOCH, port: 4183,
+    mark: '<rect x="4" y="4" width="20" height="20" rx="4.5"/><circle class="solid" cx="10.5" cy="12" r="1.7"/><circle class="solid" cx="17.5" cy="12" r="1.7"/><path d="M9.5 16.5c2.5 2.6 6.5 2.6 9 0"/>',
   },
 ];
 

@@ -1,0 +1,24 @@
+/* Only what is special to מי אני?: the clue sheet. Everything shared with בלי מילים is in
+   shared/reveal.css; paper, ink, buttons and dialogs come from shared/base.css. */
+
+/* Five ruled lines on an index card, filled in one at a time. */
+.clues { margin: 0; padding: 6px 14px; list-style: none; border-top: 5px solid var(--accent); border-radius: 10px; }
+.clue {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 8px;
+  min-height: 48px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.clue:last-child { border-bottom: 0; }
+.clue-n { font-family: var(--display); font-size: 20px; font-weight: 900; color: var(--accent); text-align: center; font-variant-numeric: tabular-nums; }
+.clue-text { font-family: var(--display); font-size: clamp(17px, 4.9vw, 19px); font-weight: 500; line-height: 1.35; text-wrap: pretty; }
+/* A clue still to come is an empty dotted line. */
+.clue.locked .clue-n { color: var(--rule-strong); }
+.clue.locked .clue-text { align-self: end; height: 1px; margin-bottom: 6px; border-bottom: 2px dotted var(--rule-strong); }
+
+@media (max-height: 700px) {
+  .clue { min-height: 42px; padding: 7px 0; }
+}

@@ -146,3 +146,8 @@ export function shareText({ day, guesses, round, url }) {
   const squares = scores(guesses, round).map((s) => SQUARE[grade(s)]).join('');
   return [`${NAME} #${day} · ${summary(guesses, round)}`, squares, url].join('\n');
 }
+
+// ---------- points for the group boards (0–100, higher is better; see games/README.md) ----------
+
+/** The day's total out of 500, divided by five. */
+export const points = (guesses, round) => Math.round(total(guesses, round) / ROUND_SIZE);

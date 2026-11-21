@@ -197,3 +197,8 @@ export function shareText({ day, items, answers, url }) {
   const squares = results(items, answers).map((ok) => (ok ? '🟩' : '🟥')).join('');
   return [`${NAME} #${day} ${summary(items, answers)}`, squares, url].join('\n');
 }
+
+// ---------- points for the group boards (0–100, higher is better; see games/README.md) ----------
+
+/** Ten points for every right answer of the day's ten. The sudden-death practice never counts. */
+export const points = (items, answers) => score(items, answers.slice(0, ROUNDS)) * 10;

@@ -10,15 +10,15 @@ import { GAMES, SITE } from '../shared/registry.js';
 import * as nekuda from '../games/nekuda/game.js';
 import { LOCALITIES } from '../games/nekuda/data.js';
 import * as beerech from '../games/beerech/game.js';
-import * as arba from '../games/arba/game.js';
-import * as mitchaze from '../games/mitchaze/game.js';
+import * as miani from '../games/miani/game.js';
+import * as blimilim from '../games/blimilim/game.js';
 import * as tzir from '../games/tzir/game.js';
 import * as herkev from '../games/herkev/game.js';
 import * as yoter from '../games/yoter/game.js';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const read = (path) => readFileSync(join(ROOT, path), 'utf8');
-const PAGES = ['index.html', ...GAMES.map((g) => `games/${g.slug}/index.html`), 'games/_template/index.html', 'brand/index.html'];
+const PAGES = ['index.html', ...GAMES.map((g) => `games/${g.slug}/index.html`), 'games/_template/index.html', 'brand/index.html', 'groups/index.html'];
 
 // ---------- the clock ----------
 
@@ -94,11 +94,13 @@ test('every share text has the game name, the day number and the link, and never
     check('beerech', beerech.shareText({ day, guesses, round, url }), round.flatMap((p) => [p.name, beerech.formatPrice(p.price)]));
   }
 
-  const puzzle = arba.puzzleForDay(day);
-  const group = (n) => [0, 1, 2, 3].map((i) => n * 4 + i);
-  const wrong = [[8, 9, 10, 12], [8, 9, 10, 13], [8, 9, 10, 14], [8, 9, 10, 15]];
-  for (const guesses of [[group(0), group(1), group(2), group(3)], [wrong[0], group(0), group(1), group(2), group(3)], [group(0), ...wrong]]) {
-    check('arba', arba.shareText({ day, guesses, url }), [...puzzle.words, ...puzzle.groups.map((g) => g.title)]);
+  for (const [slug, G] of [['miani', miani], ['blimilim', blimilim]]) {
+    const puzzle = G.puzzleForDay(day);
+    const wrong = G.ENTRIES.filter((e) => e.name !== puzzle.answer).slice(0, 5).map((e) => e.name);
+    const secrets = [puzzle.answer, ...wrong, ...(puzzle.clues || []), ...(puzzle.emoji || []), puzzle.hint].filter(Boolean);
+    for (const moves of [[puzzle.answer], [wrong[0], null, puzzle.answer], [null, ...wrong.slice(0, 4)]]) {
+      check(slug, G.shareText({ day, puzzle, moves, url }), secrets);
+    }
   }
 
   const timeline = tzir.puzzleForDay(day);
@@ -121,8 +123,6 @@ test('every share text has the game name, the day number and the link, and never
     check('yoter', yoter.shareText({ day, items: chain.items, answers, url }), chain.items.flatMap((item) => [item.name, yoter.formatValue(chain.theme, item.value)]));
   }
 
-  const invite = mitchaze.inviteText(url);
-  assert.ok(invite.includes(name('mitchaze')) && invite.trim().endsWith(url), 'the party game invites with its name and link');
 });
 
 // ---------- files: everything is relative and everything exists ----------
@@ -132,7 +132,7 @@ const walk = (dir) => readdirSync(join(ROOT, dir)).flatMap((entry) => {
   if (statSync(join(ROOT, path)).isDirectory()) return walk(path);
   return [path];
 });
-const SOURCES = ['index.html', 'manifest.webmanifest', ...walk('shared'), ...walk('games'), ...walk('brand')].filter((p) => /\.(html|css|js|webmanifest)$/.test(p));
+const SOURCES = ['index.html', 'manifest.webmanifest', ...walk('shared'), ...walk('games'), ...walk('brand'), ...walk('groups')].filter((p) => /\.(html|css|js|webmanifest)$/.test(p));
 // %23 is an escaped #: a filter reference inside an inline SVG image, not a file.
 const isLocal = (ref) => !/^(https?:|data:|mailto:|tel:|#|%23|\?|javascript:)/.test(ref) && !ref.includes('${');
 
@@ -214,7 +214,7 @@ test('the manifest, the icons and robots.txt describe the hub', () => {
 
 test('link previews (WhatsApp, Facebook) get an absolute image address and a page address', async () => {
   const { readFile } = await import('node:fs/promises');
-  for (const page of ['index.html', ...['nekuda', 'beerech', 'arba', 'mitchaze', 'tzir', 'herkev', 'yoter'].map((s) => `games/${s}/index.html`)]) {
+  for (const page of ['index.html', ...['nekuda', 'beerech', 'miani', 'tzir', 'herkev', 'yoter', 'blimilim'].map((s) => `games/${s}/index.html`)]) {
     const html = await readFile(new URL('../' + page, import.meta.url), 'utf8');
     assert.match(html, /property="og:image" content="https:\/\/[^"]+\/assets\/og\.png"/, page);
     assert.match(html, /property="og:url" content="https:\/\/[^"]+"/, page);

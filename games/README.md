@@ -33,18 +33,18 @@ test port and the header mark. You do not add or change anything there.
 |---|---|---|---|---|
 | nekuda | נקודת ציון | daily | `#c22f25` / `#ee5548` | 4179 |
 | beerech | בערך | daily | `#1c7346` / `#45b57c` | 4181 |
-| arba | ארבע על ארבע | daily | `#6b3fa0` / `#b08ae6` | 4182 |
-| mitchaze | המתחזה | party | `#b83d0b` / `#f0783c` | 4183 |
+| miani | מי אני? | daily | `#6b3fa0` / `#b08ae6` | 4182 |
 | tzir | על הציר | daily | `#2c5f9e` / `#6a9fe0` | 4184 |
 | herkev | צומת | daily | `#0f766e` / `#35b5a8` | 4185 |
 | yoter | יותר או פחות | daily | `#8f5f08` / `#e0a83a` | 4186 |
+| blimilim | בלי מילים | daily | `#b83d0b` / `#f0783c` | 4183 |
 
-(4180 is the template's port, 4187 the hub's, 4188 and 4189 belong to `tests/site.e2e.mjs`.)
+(4180 is the template's port, 4187 the hub's, 4188 and 4189 belong to `tests/site.e2e.mjs` and `tests/pwa.e2e.mjs`, 4190 to `tests/social.e2e.mjs`.)
 
 Every accent has at least 4.5:1 contrast against `--paper` and `--sheet` as text, and under
 `--on-accent` as a fill, in both themes; a test enforces it. To get there, three light accents were
-darkened from the first draft of the palette: beerech `#1f7a4d` → `#1c7346`, mitchaze `#c2410c` →
-`#b83d0b`, yoter `#b3780c` → `#8f5f08`. Use `var(--accent)`, never the hex.
+darkened from the first draft of the palette: beerech `#1f7a4d` → `#1c7346`, `#c2410c` → `#b83d0b`
+(now בלי מילים), yoter `#b3780c` → `#8f5f08`. Use `var(--accent)`, never the hex.
 
 ## 3. Page skeleton
 
@@ -210,6 +210,28 @@ export const puzzleForDay = (day) => pickDaily(POOL, day);
   when the game has enough content for it. Label the mode clearly (`.mode-banner`) and offer a way
   back to today's puzzle.
 
+## 7a. Points for the group boards
+
+When the site has a leaderboards backend (README.md, "Leaderboards and groups"), every finished
+**daily** puzzle is sent as 0–100 points, higher is better. Each scored game exports a pure
+`points(...)` from its `game.js` (same arguments as its `summary`), tested in
+`tests/social.logic.test.mjs`, and explained to players on `groups/` (keep the two in step):
+
+| game | `points(...)` | rule |
+|---|---|---|
+| nekuda | `points(results)` | found in guess N: 100, 85, 70, 55, 40, 25; not found: 0 |
+| beerech | `points(guesses, round)` | the day's total (0–500) / 5 |
+| miani, blimilim | `points(puzzle, moves)` | found at stage N: 100, 80, 60, 40, 20; not found: 0 (shared/reveal.js) |
+| tzir | `points(results)` | round(100 × placed right / 6) |
+| herkev | `points(grid, guesses)` | round(100 × cells filled / 9) (the topic must be loaded) |
+| yoter | `points(items, answers)` | 10 × right answers of the day's ten |
+
+The end panel calls `dayStatsPanel(container, { game, day, points, won, summary })` from
+`shared/social-ui.js` right after `renderEnd`, and `dayStatsPanel(container, null)` for archive and
+practice rounds. It sends the result (once per game and day, queued offline) and shows how everyone
+did; with no backend configured it draws nothing. A new scored game also needs a row in the `games`
+table of `supabase/setup.sql` and its slug in `SCORED_GAMES` in `shared/social.js`.
+
 ## 8. Styles
 
 `shared/base.css` gives you the paper-and-ink look. Your `style.css` adds only what is special to your
@@ -331,8 +353,12 @@ Rules that keep it fast and honest:
       Hebrew `aria-label`s where there is no text. The result is in an `aria-live="polite"` region.
 - [ ] No console errors or warnings from your code.
 
-The party game (`mitchaze`) has no daily puzzle: it skips the daily store fields, stats, streak and
-countdown, and calls `mountHeader` without `onStats`. Everything else applies.
+A party game (there is none at the moment) would have no daily puzzle: it skips the daily store
+fields, stats, streak and countdown, and calls `mountHeader` without `onStats`. Everything else applies.
+
+**One more clue** games: `miani` and `blimilim` share their rules (`shared/reveal.js`), interface
+(`shared/reveal-ui.js`), styles (`shared/reveal.css`) and browser scenarios (`tests/reveal-shared.mjs`).
+A third game of that kind needs only its data, a `drawStage` function and its page.
 
 ## 10. Tests
 

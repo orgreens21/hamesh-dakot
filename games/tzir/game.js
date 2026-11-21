@@ -180,3 +180,8 @@ export function shareText({ day, results, url }) {
   const marks = Array.from({ length: ROUNDS }, (_, i) => (i >= results.length ? '⬜' : results[i] ? '🟩' : '🟥')).join('');
   return [`${NAME} #${day} ${summary(results)}`, marks, url].join('\n');
 }
+
+// ---------- points for the group boards (0–100, higher is better; see games/README.md) ----------
+
+/** The share of the six events placed right: 100 for all six, about 17 for each. */
+export const points = (results) => Math.round((score(results) * 100) / ROUNDS);

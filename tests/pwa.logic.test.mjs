@@ -22,7 +22,7 @@ test('the offline cache holds every page, script and asset, and nothing players 
     assert.ok(!/_template\/|README\.md$|build-data\.mjs$|candidates\.mjs$/.test(f), `${f} should not be cached`);
   }
   const sw = await read('sw.js');
-  for (const slug of ['nekuda', 'beerech', 'arba', 'mitchaze', 'tzir', 'herkev', 'yoter']) {
+  for (const slug of ['nekuda', 'beerech', 'miani', 'tzir', 'herkev', 'yoter', 'blimilim']) {
     assert.ok(sw.includes(`"games/${slug}/"`), `the ${slug} page address is cached`);
   }
 });

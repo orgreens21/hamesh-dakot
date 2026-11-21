@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>הקבוצות שלי – חמש דקות</title>
+  <meta name="description" content="טבלה משותפת לחמש דקות: פותחים קבוצה, שולחים קישור לחברים ולמשפחה, ורואים מי הכי טוב היום, השבוע ובכלל.">
+  <meta name="theme-color" content="#e5dac2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f2440" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="הצטרפו לקבוצה שלי בחמש דקות">
+  <meta property="og:description" content="משחקים יומיים קצרים בעברית, וטבלה משותפת לחברים ולמשפחה.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../assets/icon-180.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="stylesheet" href="../shared/fonts.css">
+  <link rel="stylesheet" href="../shared/hub.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body class="hub groups">
+  <header class="bar">
+    <a class="bar-back" href="../" aria-label="חזרה לכל המשחקים">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg>
+    </a>
+    <div class="bar-name">
+      <h1>הקבוצות</h1>
+      <p class="bar-date">חמש דקות</p>
+    </div>
+    <button class="chip me-chip" id="me-chip" type="button" hidden aria-label="שינוי הכינוי">
+      <svg class="chip-icon me-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.8-4 3.6-6 7.2-6s6.4 2 7.2 6"/></svg>
+      <span id="me-name"></span>
+    </button>
+  </header>
+
+  <main class="sea grp-main" id="main">
+    <p class="grp-status" id="status" role="status" aria-live="polite">טוען…</p>
+
+    <!-- Shown when shared/config.js has no backend: the page exists but there is nothing to show. -->
+    <section class="grp-view" id="view-off" hidden aria-labelledby="off-title">
+      <div class="grp-card grp-empty">
+        <h2 id="off-title">הקבוצות עוד לא פתוחות</h2>
+        <p>בינתיים אפשר לשחק בכל המשחקים ולשתף תוצאות בוואטסאפ.</p>
+        <a class="grp-btn primary" href="../">לכל המשחקים</a>
+      </div>
+    </section>
+
+    <!-- An invite link (?join=CODE). -->
+    <section class="grp-view" id="view-join" hidden aria-labelledby="join-title">
+      <div class="grp-card grp-invite-card">
+        <p class="grp-kicker">הוזמנתם לקבוצה</p>
+        <h2 id="join-title">הצטרפות לקבוצה</h2>
+        <p class="grp-code-line">קוד: <bdi class="grp-code" id="join-code"></bdi></p>
+        <form id="join-form" class="grp-form" novalidate>
+          <div id="join-nick-wrap">
+            <label for="join-nick">איך יקראו לכם בטבלה?</label>
+            <input class="grp-field" id="join-nick" name="nickname" autocomplete="nickname" maxlength="20" placeholder="כינוי, למשל: דנה מהעבודה" aria-describedby="join-error">
+          </div>
+          <p class="grp-error" id="join-error" role="alert"></p>
+          <button class="grp-btn primary" id="join-btn" type="submit">הצטרפות</button>
+        </form>
+        <p class="grp-note">חברי הקבוצה יראו את הכינוי שלכם ואת הנקודות היומיות. לא יותר.</p>
+      </div>
+      <a class="grp-text-link" href="./">לא עכשיו</a>
+    </section>
+
+    <!-- My groups. -->
+    <section class="grp-view" id="view-home" hidden aria-labelledby="home-title">
+      <h2 class="grp-title" id="home-title">הקבוצות שלי</h2>
+      <p class="grp-lede">משחקים כל אחד בטלפון שלו, ורואים מי הכי טוב היום ומי מוביל השבוע.</p>
+
+      <form class="grp-card grp-form" id="nick-form" novalidate>
+        <label for="nick-input">הכינוי שלכם בטבלאות</label>
+        <div class="grp-row">
+          <input class="grp-field" id="nick-input" name="nickname" autocomplete="nickname" maxlength="20" placeholder="למשל: אבא, נועה, הדוד מחיפה" aria-describedby="nick-error">
+          <button class="grp-btn" id="nick-btn" type="submit">שמירה</button>
+        </div>
+        <p class="grp-error" id="nick-error" role="alert"></p>
+      </form>
+
+      <ul class="grp-list" id="group-list" aria-label="הקבוצות שלי"></ul>
+      <div class="grp-card grp-empty" id="groups-empty" hidden>
+        <svg class="grp-empty-art" viewBox="0 0 64 48" aria-hidden="true"><rect x="6" y="10" width="52" height="32" rx="6"/><path d="M14 20h18M14 28h28M14 34h12"/><circle class="solid" cx="48" cy="12" r="7"/></svg>
+        <p><b>עוד אין לכם קבוצה.</b> פתחו אחת ושלחו את הקישור למשפחה או לחברים בוואטסאפ.</p>
+      </div>
+
+      <form class="grp-card grp-form" id="create-form" novalidate>
+        <label for="create-input">קבוצה חדשה</label>
+        <div class="grp-row">
+          <input class="grp-field" id="create-input" name="name" maxlength="30" placeholder="שם, למשל: המשפחה" aria-describedby="create-error">
+          <button class="grp-btn primary" id="create-btn" type="submit">פתיחה</button>
+        </div>
+        <p class="grp-error" id="create-error" role="alert"></p>
+      </form>
+
+      <form class="grp-card grp-form" id="code-form" novalidate>
+        <label for="code-input">קיבלתם קוד?</label>
+        <div class="grp-row">
+          <input class="grp-field grp-code-input" id="code-input" name="code" maxlength="80" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="6 תווים" dir="ltr" aria-describedby="code-error">
+          <button class="grp-btn" id="code-btn" type="submit">הצטרפות</button>
+        </div>
+        <p class="grp-error" id="code-error" role="alert"></p>
+      </form>
+    </section>
+
+    <!-- One group's board. -->
+    <section class="grp-view" id="view-board" hidden aria-labelledby="board-title">
+      <button class="grp-text-link grp-back" id="board-back" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9.5 5 7 7-7 7"/></svg>כל הקבוצות
+      </button>
+      <h2 class="grp-title" id="board-title" tabindex="-1"></h2>
+      <p class="grp-lede" id="board-sub"></p>
+
+      <div class="grp-tabs" role="group" aria-label="תקופה">
+        <button type="button" class="grp-tab" data-period="day" aria-pressed="true">היום</button>
+        <button type="button" class="grp-tab" data-period="week" aria-pressed="false">השבוע</button>
+        <button type="button" class="grp-tab" data-period="all" aria-pressed="false">הכול</button>
+      </div>
+      <p class="grp-period" id="board-period"></p>
+      <ol class="grp-board" id="board" aria-labelledby="board-title" aria-busy="false"></ol>
+      <p class="grp-waiting" id="board-waiting" hidden></p>
+
+      <div class="grp-card grp-share" id="invite">
+        <h3>מזמינים עוד חברים</h3>
+        <p>הקוד של הקבוצה: <bdi class="grp-code" id="invite-code"></bdi></p>
+        <div class="grp-share-row">
+          <a class="grp-btn whatsapp" id="invite-whatsapp" target="_blank" rel="noopener">שליחה בוואטסאפ</a>
+          <button class="grp-btn" id="invite-copy" type="button">העתקת קישור</button>
+        </div>
+        <button class="grp-btn wide" id="invite-share" type="button" hidden>שיתוף…</button>
+      </div>
+
+      <button class="grp-text-link grp-danger" id="leave-btn" type="button">יציאה מהקבוצה</button>
+    </section>
+
+    <section class="grp-card grp-info" id="points" aria-labelledby="points-title">
+      <h2 id="points-title">איך סופרים נקודות</h2>
+      <p>כל משחק יומי נותן בין 0 ל־100 נקודות. נספרת רק החידה של היום, בפעם הראשונה שמסיימים אותה. ארכיון ואימונים לא נספרים.</p>
+      <dl class="grp-rules">
+        <div><dt>נקודת ציון</dt><dd>100 בניחוש הראשון, ו־15 פחות על כל ניחוש נוסף (25 בשישי). לא מצאתם: 0.</dd></div>
+        <div><dt>בערך</dt><dd>סך הנקודות של היום (עד 500) חלקי 5.</dd></div>
+        <div><dt>מי אני?</dt><dd>100 ברמז הראשון, ו־20 פחות על כל רמז נוסף (20 בחמישי). לא גיליתם: 0.</dd></div>
+        <div><dt>על הציר</dt><dd>100 כששישה אירועים במקום, בערך 17 לכל אירוע.</dd></div>
+        <div><dt>צומת</dt><dd>100 לרשת מלאה, בערך 11 לכל משבצת.</dd></div>
+        <div><dt>יותר או פחות</dt><dd>10 לכל תשובה נכונה.</dd></div>
+        <div><dt>בלי מילים</dt><dd>100 בשלב הראשון, ו־20 פחות על כל שלב נוסף (20 בחמישי). לא זיהיתם: 0.</dd></div>
+      </dl>
+      <p>הטבלה של היום מחברת את כל המשחקים ששיחקתם היום (עד 700). השבוע הוא מיום ראשון עד שבת.</p>
+    </section>
+
+    <section class="grp-card grp-info" id="privacy" aria-labelledby="privacy-title">
+      <h2 id="privacy-title">מה נשמר</h2>
+      <p>מספר מזהה אקראי שנוצר בדפדפן הזה, הכינוי אם בחרתם, והנקודות של כל משחק יומי. בלי אימייל, בלי טלפון ובלי שם אמיתי.</p>
+      <p>הכינוי והנקודות גלויים רק לחברי הקבוצות שלכם. מה שכולם רואים (״עשיתם יותר טוב מ־…״) הוא ספירה בלי שמות.</p>
+      <button class="grp-text-link grp-danger" id="forget-btn" type="button" hidden>מחיקת הנתונים שלי</button>
+    </section>
+  </main>
+
+  <footer class="foot">ההתקדמות נשמרת בדפדפן שלכם. תוצאות היום נשלחות בלי שם, לסטטיסטיקה של כולם ולקבוצות שהצטרפתם אליהן.</footer>
+
+  <dialog class="ios-sheet grp-dialog" id="confirm" aria-labelledby="confirm-title">
+    <h2 id="confirm-title"></h2>
+    <p id="confirm-text"></p>
+    <form method="dialog" class="grp-dialog-actions">
+      <button class="grp-btn" value="cancel" type="submit">ביטול</button>
+      <button class="grp-btn danger" id="confirm-ok" value="ok" type="submit"></button>
+    </form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

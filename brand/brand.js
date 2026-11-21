@@ -59,8 +59,8 @@ async function renderSwatches() {
 }
 
 const HINTS = {
-  nekuda: 'סיכה וטבעות מרחק', beerech: 'תווית מחיר', arba: '16 אריחים, רביעייה אחת',
-  mitchaze: 'קלף במסכה', tzir: 'אירועים על ציר', herkev: 'רשת של דרכים, משבצת בצומת', yoter: 'חץ למעלה, חץ למטה',
+  nekuda: 'סיכה וטבעות מרחק', beerech: 'תווית מחיר', miani: 'כרטיס רמזים וסימן שאלה',
+  blimilim: 'אריחי אימוג׳י, אחד הפוך', tzir: 'אירועים על ציר', herkev: 'רשת של דרכים, משבצת בצומת', yoter: 'חץ למעלה, חץ למטה',
 };
 
 function renderAccents() {
@@ -117,7 +117,7 @@ function renderParts() {
     sampleCard('tzir', 'new', 'חדש היום'),
     sampleCard('beerech', 'playing', 'באמצע משחק', '', 2),
     sampleCard('nekuda', 'won', 'נפתר', '3/6', 4),
-    sampleCard('arba', 'lost', 'לא הפעם', 'X/4'),
+    sampleCard('miani', 'lost', 'לא הפעם', 'X/5'),
   );
   renderEnd(document.getElementById('end-sample'), {
     title: 'מצאתם!',

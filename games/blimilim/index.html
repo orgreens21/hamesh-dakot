@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="blimilim">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>בלי מילים – חמש דקות</title>
+  <meta name="description" content="סרט, סדרה, שיר או ספר ישראלי, בשישה אימוג׳י. כמה סמלים תצטרכו כדי לזהות? חידה חדשה כל יום.">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="בלי מילים – חמש דקות">
+  <meta property="og:description" content="סרט, סדרה או שיר ישראלי בשישה אימוג׳י. גדלתם כאן? תזהו.">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/blimilim/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="../../shared/reveal.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+
+      <div class="brief">
+        <p class="kicker" id="kicker"></p>
+        <h2 class="prompt">מה זה?</h2>
+      </div>
+
+      <ol class="steps" id="steps" aria-label="השלבים"></ol>
+
+      <div class="stage fx-paper fx-enter" id="stage" aria-label="הסמלים" aria-live="polite"></div>
+
+      <form class="search guess-form" id="guess-form" autocomplete="off">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input id="guess-input" type="text" inputmode="search" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="איך זה נקרא? הקלידו…" role="combobox" aria-expanded="false" aria-controls="suggestions" aria-autocomplete="list" aria-label="הניחוש שלכם">
+        <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+      </form>
+
+      <button class="btn ghost clue-btn" id="skip-btn" type="button"></button>
+
+      <ul class="log" id="log" aria-label="ניסיונות קודמים" hidden></ul>
+
+      <section id="end" class="paper" hidden aria-live="polite"></section>
+    </main>
+
+    <footer class="foot">
+      <p>החידות נכתבו לאתר הזה. השנים והקרדיטים נבדקו מול <a href="https://he.wikipedia.org" target="_blank" rel="noopener">ויקיפדיה העברית</a>.</p>
+      <a href="../../">חמש דקות – כל המשחקים</a>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>כל יום מסתתר <b>סרט, סדרה, שיר או ספר ילדים ישראלי</b>, מסופר רק באימוג׳י. השורה העליונה אומרת מה הוא.</p>
+    <p>בהתחלה רואים <b>שלושה סמלים</b>. הקלידו ניחוש ובחרו מהרשימה. ניחוש שגוי, או לחיצה על <b>עוד סמל</b>, פותחים את הסמל הבא.</p>
+    <p>בשלב החמישי והאחרון מופיע גם <b>רמז במילים</b>: השנה ומי עשה את זה.</p>
+    <p>ככל שתזהו מוקדם יותר, כך התוצאה טובה יותר: מ־<b>1/5</b> ועד <b>5/5</b>.</p>
+    <p class="muted">חידה חדשה כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

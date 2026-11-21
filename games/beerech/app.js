@@ -4,6 +4,7 @@ import { ART } from './art.js';
 import { israelDate, dayNumber, dateOfDay, hebrewDate, recordResult, currentStreak } from '../../shared/core.js';
 import { tilt, flip, stamp, celebrate, countUp, reducedMotion } from '../../shared/fx.js';
 import { createStore, mountHeader, html, svg, wireDialog, renderStats, renderEnd, gameUrl } from '../../shared/ui.js';
+import { dayStatsPanel } from '../../shared/social-ui.js';
 
 const SLUG = 'beerech';
 const $ = (id) => document.getElementById(id);
@@ -279,6 +280,8 @@ function renderEndPanel(over, justEnded) {
     countdown: daily,
     actions: [again],
   });
+  // Today's result goes to the group boards; practice rounds never do.
+  dayStatsPanel(el.end, daily ? { game: SLUG, day: today, points: G.points(game.guesses, game.round), won, summary: G.summary(game.guesses, game.round) } : null);
   // The same stamp the hub puts on this game's sheet.
   const holder = html('p', 'end-stamp');
   el.end.prepend(holder);

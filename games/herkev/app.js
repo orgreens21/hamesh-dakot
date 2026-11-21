@@ -4,6 +4,7 @@
 import * as G from './game.js';
 import { israelDate, dayNumber, dateOfDay, hebrewDate, recordResult, currentStreak, normalizeHebrew } from '../../shared/core.js';
 import { createStore, mountHeader, html, svg, icon, toast, wireDialog, renderStats, renderEnd, gameUrl } from '../../shared/ui.js';
+import { dayStatsPanel } from '../../shared/social-ui.js';
 import { stamp, celebrate } from '../../shared/fx.js';
 import { emblem } from '../../shared/emblems.js';
 
@@ -435,6 +436,10 @@ function render(fresh = false) {
     countdown: mode === 'daily',
     actions,
   });
+  // Today's result goes to the group boards; archive grids never do.
+  dayStatsPanel(el.end, mode === 'daily'
+    ? { game: SLUG, day, points: G.points(grid, game.guesses), won: G.isWon(grid, game.guesses), summary: G.summary(grid, game.guesses) }
+    : null);
   // The score is stamped on the sheet. It only slams down (and the paper only flies) at the moment the
   // game ends, not when a finished game is opened again.
   const holder = html('p', 'end-stamp');

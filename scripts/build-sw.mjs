@@ -7,7 +7,7 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
-const INCLUDE = ['index.html', 'manifest.webmanifest', 'robots.txt', 'assets', 'shared', 'games'];
+const INCLUDE = ['index.html', 'manifest.webmanifest', 'robots.txt', 'assets', 'shared', 'games', 'groups'];
 // Build scripts, docs and the developer template are never loaded by players.
 const SKIP = /(^|\/)(_template\/|README\.md$|build-data\.mjs$|candidates\.mjs$)/;
 

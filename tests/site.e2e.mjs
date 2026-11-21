@@ -11,7 +11,7 @@ import { dayNumber, israelDate, emptyStats } from '../shared/core.js';
 import * as N from '../games/nekuda/game.js';
 import { LOCALITIES } from '../games/nekuda/data.js';
 import * as B from '../games/beerech/game.js';
-import * as A from '../games/arba/game.js';
+import * as M from '../games/miani/game.js';
 import * as H from '../games/herkev/game.js';
 import * as Y from '../games/yoter/game.js';
 
@@ -108,10 +108,6 @@ await session.run(async () => {
       assert.equal(await page.locator('#story-start').evaluate((a) => a.href), `${base}games/${GAMES[0].slug}/`);
       await page.click('#story-start');
       await page.waitForURL(`${base}games/${GAMES[0].slug}/`);
-      // The link people paste into a group is the game's own address under the folder.
-      await page.goto(`${base}games/mitchaze/`);
-      const invite = decodeURIComponent(await page.locator('#whatsapp-btn').getAttribute('href'));
-      assert.ok(invite.trim().endsWith(`${base}games/mitchaze/`), invite);
       assert.deepEqual(missing, [], 'nothing was requested from outside the folder');
       await context.close();
     } finally {
@@ -192,11 +188,15 @@ await session.run(async () => {
     await context.close();
 
     // With a real pointer the fills are still there, but never on a disabled button.
-    const desktop = await open(DESKTOP, game('arba'));
+    // יותר או פחות switches its answer keys off while the number rolls in.
+    const desktop = await open(DESKTOP, game('yoter'));
     await closeHelp(desktop.page);
-    assert.equal(await desktop.page.locator('#submit-btn').isDisabled(), true);
-    await desktop.page.hover('#submit-btn', { force: true });
-    assert.equal(await background(desktop.page, '#submit-btn'), 'rgba(0, 0, 0, 0)', 'a disabled button stays flat');
+    await desktop.page.click('#less-btn');
+    assert.equal(await desktop.page.locator('#more-btn').isDisabled(), true);
+    await desktop.page.hover('#more-btn', { force: true });
+    // The fill fades out over a short transition once the button is switched off.
+    await desktop.page.waitForFunction(() => getComputedStyle(document.querySelector('#more-btn')).backgroundColor === 'rgba(0, 0, 0, 0)', null, { timeout: 900 })
+      .catch(() => assert.fail('a disabled button stays flat'));
     await desktop.page.click('#stats-btn');
     await desktop.page.hover('#stats-dialog .btn.ghost');
     await desktop.page.waitForFunction(() => getComputedStyle(document.querySelector('#stats-dialog .btn.ghost')).backgroundColor !== 'rgba(0, 0, 0, 0)');
@@ -245,13 +245,14 @@ await session.run(async () => {
   await step('hub on a narrow phone: a long result sits under the name inside its map label, clear of the other labels', async () => {
     const { context, page } = await open(SHORT);
     await page.evaluate(([day, stats]) => {
-      localStorage.setItem('hd:arba', JSON.stringify({ day, finished: true, won: true, summary: 'בלי טעויות', stats, progress: { guesses: [[0, 1, 2, 3]] } }));
+      localStorage.setItem('hd:miani', JSON.stringify({ day, finished: true, won: true, summary: '2/5', stats, progress: { moves: [null] } }));
+      localStorage.setItem('hd:blimilim', JSON.stringify({ day, finished: true, won: false, summary: 'X/5', stats, progress: { moves: [null] } }));
       localStorage.setItem('hd:yoter', JSON.stringify({ day, finished: true, won: false, summary: '3/10', stats, progress: { answers: ['more'] } }));
     }, [today, { ...emptyStats(4), played: 1 }]);
     await page.reload();
     // A result that is new since the last look is stamped in; measure once the stamps have landed.
     await page.waitForFunction(() => [...document.querySelectorAll('.game-status, .game')].every((el) => el.getAnimations().every((a) => a.playState === 'finished')));
-    for (const slug of ['arba', 'yoter']) {
+    for (const slug of ['miani', 'yoter', 'blimilim']) {
       const fit = await page.locator(`.game[data-game="${slug}"]`).evaluate((li) => {
         const card = li.querySelector('.game-card').getBoundingClientRect();
         const stamp = li.querySelector('.game-status').getBoundingClientRect();
@@ -262,7 +263,7 @@ await session.run(async () => {
       });
       assert.deepEqual(fit, { inside: true, overlap: false }, `${slug}: the stamp is inside its card and clear of the name`);
     }
-    assert.ok((await page.locator('.game[data-game="arba"] .game-status').innerText()).includes('בלי טעויות'));
+    assert.ok((await page.locator('.game[data-game="miani"] .game-status').innerText()).includes('2/5'));
     const clash = await page.evaluate(() => {
       const cards = [...document.querySelectorAll('.game-card')].map((c) => [c.closest('.game').dataset.game, c.getBoundingClientRect()]);
       const hit = (a, b) => a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
@@ -358,41 +359,19 @@ await session.run(async () => {
     await settled(page, '#cell-0', 'hidden/visible');
     assert.equal(await faces(page, '#cell-1'), 'visible/hidden');
     await context.close();
-
-    ({ context, page } = await open({}, game('mitchaze')));
-    await page.addStyleTag({ content: NO_CULLING });
-    await closeHelp(page);
-    await page.click('#start-btn');
-    assert.equal(await faces(page, '#card'), 'visible/hidden', 'the card lies face down, showing its back');
-    const impostors = [];
-    for (let i = 0; i < 4; i++) {
-      await page.click('#card');
-      assert.equal(await faces(page, '#card'), 'visible/visible', 'the secret side is switched on as the turn starts');
-      await settled(page, '#card', 'hidden/visible');
-      if ((await page.locator('#card-front').getAttribute('data-role')) === 'impostor') impostors.push(i);
-      await page.click('#card');
-      await settled(page, '#card', 'visible/hidden');
-      await page.click('#deal-next');
-    }
-    await page.click('#to-vote');
-    await page.click(`#vote-list .tile[data-player="${impostors[0]}"]`);
-    await page.click('#vote-confirm');
-    assert.equal(await page.locator('.unmask-back').evaluate((el) => getComputedStyle(el).visibility), 'visible', 'the reveal starts with the card face down');
-    await page.waitForFunction(() => getComputedStyle(document.querySelector('.unmask-back')).visibility === 'hidden');
-    assert.equal(await page.locator('.unmask-name').evaluate((el) => getComputedStyle(el).visibility), 'visible', 'and ends on the name');
-    await context.close();
   });
 
   await step('keyboard players keep their place: focus moves on with the game instead of dropping to the top of the page', async () => {
-    // arba: a found group disables the button that was just pressed.
-    let { context, page } = await open(DESKTOP, game('arba'));
+    // מי אני?: the clue button goes away with the game, and the result takes the focus.
+    let { context, page } = await open(DESKTOP, game('miani'));
     await page.keyboard.press('Enter');
-    for (let g = 0; g < A.GROUPS; g++) {
-      for (let i = 0; i < A.SIZE; i++) { await page.focus(`#grid .tile[data-index="${g * A.SIZE + i}"]`); await page.keyboard.press('Space'); }
-      await page.focus('#submit-btn');
+    for (let i = 0; i < M.STEPS; i++) {
+      await page.focus('#skip-btn');
       await page.keyboard.press('Enter');
-      assert.equal(await focused(page), g < A.GROUPS - 1 ? 'button.tile' : 'h2#end-title.end-title', `arba, after group ${g + 1}`);
+      await page.waitForTimeout(550); // the double-tap guard
+      if (i < M.STEPS - 1) assert.equal(await focused(page), 'button#skip-btn.btn', `miani, after clue ${i + 1}`);
     }
+    assert.equal(await focused(page), 'h2#end-title.end-title', 'miani, at the end');
     await context.close();
 
     // herkev: a filled cell is disabled; the next open one takes over.
@@ -424,7 +403,14 @@ await session.run(async () => {
     // beerech and nekuda: the last control goes away with the game; the result takes the focus.
     ({ context, page } = await open(DESKTOP, game('beerech')));
     await page.keyboard.press('Enter');
-    for (const product of B.roundForDay(today)) { await page.keyboard.type(product.price.toFixed(2)); await page.keyboard.press('Enter'); await page.keyboard.press('Enter'); }
+    for (const product of B.roundForDay(today)) {
+      // Each key waits for the page to be ready for it; typing into a card still being dealt was flaky.
+      await page.waitForFunction(() => document.activeElement?.id === 'guess-input');
+      await page.keyboard.type(product.price.toFixed(2));
+      await page.keyboard.press('Enter');
+      await page.waitForFunction(() => document.activeElement?.id === 'next-btn');
+      await page.keyboard.press('Enter');
+    }
     assert.equal(await focused(page), 'h2#end-title.end-title', 'beerech, at the end');
     await context.close();
 
@@ -435,30 +421,6 @@ await session.run(async () => {
     assert.equal(await focused(page), 'h2#end-title.end-title', 'nekuda, at the end');
     await context.close();
 
-    // mitchaze: every button that moves the round on is hidden with its own screen.
-    ({ context, page } = await open(DESKTOP, game('mitchaze')));
-    await page.keyboard.press('Enter');
-    await page.focus('#start-btn');
-    await page.keyboard.press('Enter');
-    assert.equal(await focused(page), 'h2.pass', 'mitchaze, on the deal screen');
-    const impostors = [];
-    for (let i = 0; i < 4; i++) {
-      await page.focus('#card'); await page.keyboard.press('Enter');
-      if ((await page.locator('#card-front').getAttribute('data-role')) === 'impostor') impostors.push(i);
-      await page.keyboard.press('Enter');
-      await page.focus('#deal-next'); await page.keyboard.press('Enter');
-    }
-    assert.equal(await focused(page), 'h2.pass', 'mitchaze, on the talk screen');
-    await page.focus('#to-vote'); await page.keyboard.press('Enter');
-    assert.equal(await focused(page), 'h2#vote-title.pass', 'mitchaze, on the vote screen');
-    await page.focus(`#vote-list .tile[data-player="${impostors[0]}"]`); await page.keyboard.press('Space');
-    await page.focus('#vote-confirm'); await page.keyboard.press('Enter');
-    assert.equal(await focused(page), 'h2#reveal-names.culprit', 'mitchaze, on the reveal');
-    await page.focus('#show-word'); await page.keyboard.press('Enter');
-    assert.equal(await focused(page), 'p#secret-word.secret-word', 'mitchaze, once the word is shown');
-    await page.focus('#guess-wrong'); await page.keyboard.press('Enter');
-    assert.equal(await focused(page), 'h2#winner.end-title', 'mitchaze, at the result');
-    await context.close();
   });
 
   await step('nekuda on a narrow phone: a direction that drops to its own line does not start with a stray dot', async () => {
@@ -487,56 +449,6 @@ await session.run(async () => {
     }
     assert.ok(rows.some((r) => r.wrapped), 'the test reached a direction that wraps');
     await shot(page, '04-nekuda-narrow-directions', { fullPage: true });
-    await context.close();
-  });
-
-  await step('mitchaze: three impostors with long names fit the card clear of the stamp; the score table follows names as they are typed', async () => {
-    const names = ['איתמר־אלכסנדר', 'מקסימיליאן־יו', 'אנסטסיה־ויקטו', 'עמנואל־בנימין', 'שרלוט־אליזבת', 'כריסטופר־רוב', 'אלכסנדרה־מרי'];
-    const { context, page } = await open(SHORT, game('mitchaze'));
-    await closeHelp(page);
-    while ((await page.locator('.name-input').count()) < names.length) await page.click('#add-player');
-    for (let i = 0; i < names.length; i++) await page.locator('.name-input').nth(i).fill(names[i]);
-    await page.click('#impostor-count button[data-value="3"]');
-    await page.click('#start-btn');
-    const impostors = [];
-    for (let i = 0; i < names.length; i++) {
-      await page.click('#card');
-      if ((await page.locator('#card-front').getAttribute('data-role')) === 'impostor') impostors.push(i);
-      await page.click('#card');
-      await page.click('#deal-next');
-    }
-    assert.equal(impostors.length, 3);
-    await page.click('#to-vote');
-    for (const p of impostors) await page.click(`#vote-list .tile[data-player="${p}"]`);
-    await page.click('#vote-confirm');
-    await page.waitForFunction(() => document.querySelector('#reveal-stamp .fx-stamp').getAnimations().every((a) => a.playState === 'finished'));
-    const card = await page.evaluate(() => {
-      const stamp = document.querySelector('#reveal-stamp .fx-stamp').getBoundingClientRect();
-      const face = document.querySelector('.unmask-name').getBoundingClientRect();
-      return [...document.querySelectorAll('#reveal-names span')].map((span) => {
-        const range = document.createRange();
-        range.selectNodeContents(span);
-        const rects = [...range.getClientRects()];
-        return {
-          lines: rects.length,
-          inside: rects.every((r) => r.left >= face.left && r.right <= face.right),
-          underStamp: rects.some((r) => r.right > stamp.left && r.left < stamp.right && r.bottom > stamp.top + 4 && r.top < stamp.bottom),
-        };
-      });
-    });
-    assert.deepEqual(card, Array(3).fill({ lines: 1, inside: true, underStamp: false }));
-    // The stamp already says "caught"; the same word in green under it is left to screen readers.
-    assert.equal(await page.locator('#verdict').textContent(), 'תפסתם!');
-    assert.ok((await page.locator('#verdict').boundingBox()).height <= 1, 'the caught verdict is not printed under the stamp');
-    assert.equal(await horizontalOverflow(page), 0);
-    await shot(page, '05-mitchaze-three-long-names', { settle: 200 });
-
-    await page.click('#show-word');
-    await page.click('#guess-wrong');
-    await page.click('#to-setup');
-    await page.locator('.name-input').first().fill('רוני');
-    assert.ok((await page.locator('#setup-scores .who').allInnerTexts()).includes('רוני'), 'the table on the setup screen shows the new name at once');
-    assert.equal(await page.locator('.remove-player').first().getAttribute('aria-label'), 'הסרת רוני');
     await context.close();
   });
 
@@ -578,27 +490,5 @@ await session.run(async () => {
     await tall.page.waitForSelector('#card-hidden.right');
     assert.equal(await tall.page.locator('#card-hidden .card-stamp').evaluate((s) => getComputedStyle(s).display), 'block');
     await tall.context.close();
-  });
-
-  await step('arba: the result is worded as a sentence, and the hub gets a short form', async () => {
-    const { context, page } = await open({}, game('arba'));
-    await closeHelp(page);
-    const pick = async (indexes) => { for (const i of indexes) await page.click(`#grid .tile[data-index="${i}"]`); await page.click('#submit-btn'); };
-    await pick([0, 1, 2, 4]);
-    await page.click('#clear-btn');
-    for (let g = 0; g < A.GROUPS; g++) await pick([0, 1, 2, 3].map((i) => g * A.SIZE + i));
-    assert.ok((await page.locator('#end-sub').innerText()).startsWith('פתרתם עם טעות אחת'), await page.locator('#end-sub').innerText());
-    assert.equal((await readStore(page, 'arba')).summary, 'טעות אחת');
-    await context.close();
-  });
-
-  await step('arba in the dark: the blocks stand clear of the tray they lie in', async () => {
-    const { context, page } = await open({ colorScheme: 'dark' }, game('arba'));
-    await closeHelp(page);
-    const [tile, tray] = await page.evaluate(() => [document.querySelector('#grid .tile'), document.querySelector('.tray')].map((e) => getComputedStyle(e).backgroundColor));
-    const lum = (rgb) => rgb.match(/[\d.]+/g).slice(0, 3).map((v) => v / 255).map((v) => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-    const ratio = (lum(tile) + 0.05) / (lum(tray) + 0.05);
-    assert.ok(ratio >= 1.5, `block ${tile} on tray ${tray}: ${ratio.toFixed(2)}:1`);
-    await context.close();
   });
 });

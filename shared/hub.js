@@ -1,21 +1,22 @@
 // The hub: an illustrated map of the country, scrolled north to south. Each daily game is a stop on a
-// dotted trail, with today's status read from its store; the party game waits at the southern end.
+// dotted trail, with today's status read from its store; a party game, if there is one, waits at the southern end.
 // A story deck (shared/hub-stories.js) plays through today's unplayed games one at a time.
 import { GAMES, SITE } from './registry.js';
 import { israelDate, dayNumber, dailyStatus, currentStreak, hebrewDate } from './core.js';
 import { createStore, html, svg, startCountdown } from './ui.js';
 import { drawMap, drawTrail, toPercent } from './hub-map.js';
 import { createDeck } from './hub-stories.js';
+import { social } from './social.js';
 
 // Where each game lives on the map, which side of its pin the label sits on, and a rough playing time.
 const PLACES = {
   nekuda: { at: [33.2, 35.74], side: 'left', place: 'התצפית בחרמון', minutes: 3 },
   beerech: { at: [32.79, 35.01], side: 'left', place: 'השוק בחיפה', minutes: 2 },
-  arba: { at: [32.08, 34.8], side: 'right', place: 'בית הקפה בתל אביב', minutes: 4 },
+  miani: { at: [32.08, 34.8], side: 'right', place: 'בית הקפה בתל אביב', minutes: 2 },
   tzir: { at: [31.78, 35.19], side: 'left', place: 'המוזיאון בירושלים', minutes: 3 },
   herkev: { at: [31.25, 34.8], side: 'right', place: 'הצומת בבאר שבע', minutes: 4 },
   yoter: { at: [30.6, 34.84], side: 'right', place: 'המכתש במצפה רמון', minutes: 2 },
-  mitchaze: { at: [29.62, 34.96], side: 'right', place: 'החוף באילת', minutes: 10 },
+  blimilim: { at: [29.62, 34.96], side: 'right', place: 'החוף באילת', minutes: 2 },
 };
 
 const STATUS_TEXT = { new: 'חדש היום', playing: 'באמצע', won: 'נפתר', lost: 'לא הפעם', party: 'עם חברים' };
@@ -238,6 +239,13 @@ function offerNext() {
 }
 
 document.getElementById('stories-btn').addEventListener('click', () => deck.open());
+
+// Leaderboards and groups exist only when shared/config.js points at a backend. Then the footer says
+// what leaves the browser, and importing shared/social.js has already sent anything left waiting.
+if (social.enabled) {
+  document.getElementById('groups-link').hidden = false;
+  document.getElementById('privacy-note').textContent = 'ההתקדמות נשמרת בדפדפן שלכם. תוצאות היום נשלחות בלי שם, לסטטיסטיקה של כולם ולקבוצות שהצטרפתם אליהן.';
+}
 
 render({ first: true });
 offerNext();

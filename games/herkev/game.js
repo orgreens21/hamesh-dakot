@@ -201,3 +201,8 @@ export function searchItems(index, query, limit = 8) {
   }
   return groups.flat().slice(0, limit);
 }
+
+// ---------- points for the group boards (0–100, higher is better; see games/README.md) ----------
+
+/** The share of the nine cells filled: 100 for a full grid, about 11 a cell. The topic must be loaded. */
+export const points = (grid, guesses) => Math.round((solvedCount(grid, guesses) * 100) / CELLS);

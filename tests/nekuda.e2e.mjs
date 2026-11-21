@@ -117,7 +117,7 @@ await session.run(async () => {
     // Force the clipboard path (headless Chrome has no native share sheet target).
     await page.evaluate(() => { navigator.share = undefined; });
     await page.click('#share-btn');
-    const copied = await page.evaluate(() => navigator.clipboard.readText());
+    const copied = (await page.evaluate(() => navigator.clipboard.readText())).replaceAll(String.fromCharCode(13), ''); // Windows writes CRLF
     const day = G.dayNumber(G.israelDate());
     assert.ok(copied.startsWith(`נקודת ציון #${day} 🧭 3/6\n`), copied);
     assert.ok(copied.includes('🟩🟩🟩🟩🟩 🎯') && copied.trim().endsWith(URL_BASE));

@@ -1,0 +1,34 @@
+/* Only what is special to בלי מילים: the emoji strip and the written hint. Everything shared with
+   מי אני? is in shared/reveal.css; paper, ink, buttons and dialogs come from shared/base.css. */
+
+.stage { display: grid; gap: 12px; padding: 18px 12px 14px; border-top: 5px solid var(--accent); border-radius: 10px; }
+
+/* Six cards on a strip, three across on a narrow phone and six across on a wider one. */
+.emoji-row { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.emo {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: var(--paper);
+  box-shadow: var(--shadow-rest), var(--edge);
+  font-size: clamp(28px, 9vw, 40px);
+  line-height: 1;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+/* A card still face down: the accent back of a playing card with a question mark. */
+.emo.shut {
+  background: var(--accent-pale);
+  box-shadow: var(--shadow-pressed);
+  font-family: var(--display);
+  font-size: clamp(20px, 6vw, 26px);
+  font-weight: 900;
+  color: var(--accent);
+}
+@media (max-width: 400px) {
+  .emoji-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.hint { margin: 0; min-height: 48px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; padding: 8px; border-top: 1px solid var(--rule); font-family: var(--display); font-size: 18px; font-weight: 700; text-align: center; }
+.hint.shut { font-family: var(--text); font-size: 14px; font-weight: 400; color: var(--ink-soft); }
+.hint-label { padding: 2px 8px; border-radius: 4px; background: var(--accent); color: var(--on-accent); font-family: var(--text); font-size: 13px; }

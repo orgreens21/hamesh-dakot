@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="he" dir="rtl" data-game="miani">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>מי אני? – חמש דקות</title>
+  <meta name="description" content="חמישה רמזים, תשובה ישראלית אחת: אישיות, מקום, מאכל או המצאה. כמה רמזים תצטרכו? חידה חדשה כל יום.">
+  <meta name="theme-color" content="#f1ead9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#12171c" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:site_name" content="חמש דקות">
+  <meta property="og:title" content="מי אני? – חמש דקות">
+  <meta property="og:description" content="חמישה רמזים, תשובה ישראלית אחת. כמה טוב אתם מכירים את הארץ?">
+  <meta property="og:image" content="https://orgreens21.github.io/hamesh-dakot/assets/og.png">
+  <meta property="og:url" content="https://orgreens21.github.io/hamesh-dakot/games/miani/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="../../assets/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../assets/icon-180.png">
+  <link rel="manifest" href="../../manifest.webmanifest">
+  <link rel="stylesheet" href="../../shared/fonts.css">
+  <link rel="stylesheet" href="../../shared/base.css">
+  <link rel="stylesheet" href="../../shared/reveal.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="../../shared/pwa.js"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="חמש דקות">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+  <div class="app">
+    <header class="top" id="header"></header>
+
+    <main>
+      <p class="mode-banner" id="mode-banner" hidden></p>
+
+      <div class="brief">
+        <p class="kicker" id="kicker"></p>
+        <h2 class="prompt">מי אני?</h2>
+      </div>
+
+      <ol class="steps" id="steps" aria-label="השלבים"></ol>
+
+      <ol class="clues fx-paper fx-enter" id="stage" aria-label="הרמזים" aria-live="polite"></ol>
+
+      <form class="search guess-form" id="guess-form" autocomplete="off">
+        <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+        <input id="guess-input" type="text" inputmode="search" enterkeyhint="go" autocomplete="off" autocapitalize="off" spellcheck="false"
+               placeholder="מי או מה זה? הקלידו…" role="combobox" aria-expanded="false" aria-controls="suggestions" aria-autocomplete="list" aria-label="הניחוש שלכם">
+        <ul id="suggestions" class="suggestions" role="listbox" hidden></ul>
+      </form>
+
+      <button class="btn ghost clue-btn" id="skip-btn" type="button"></button>
+
+      <ul class="log" id="log" aria-label="ניסיונות קודמים" hidden></ul>
+
+      <section id="end" class="paper" hidden aria-live="polite"></section>
+    </main>
+
+    <footer class="foot">
+      <p>החידות נכתבו לאתר הזה. העובדות נבדקו מול <a href="https://he.wikipedia.org" target="_blank" rel="noopener">ויקיפדיה העברית</a>.</p>
+      <a href="../../">חמש דקות – כל המשחקים</a>
+    </footer>
+  </div>
+
+  <dialog id="help-dialog" class="sheet">
+    <h2>איך משחקים?</h2>
+    <p>כל יום מסתתרת תשובה ישראלית אחת: <b>אישיות, מקום, מאכל, המצאה או סמל</b>. השורה העליונה אומרת מאיזה סוג היא.</p>
+    <p>יש <b>חמישה רמזים</b>, מהקשה לקל. בהתחלה רואים רק את הראשון.</p>
+    <p>הקלידו ניחוש ובחרו מהרשימה. ניחוש שגוי, או לחיצה על <b>רמז נוסף</b>, פותחים את הרמז הבא.</p>
+    <p>ככל שתגלו מוקדם יותר, כך התוצאה טובה יותר: מ־<b>1/5</b> (גאונים) ועד <b>5/5</b>.</p>
+    <p class="muted">חידה חדשה כל יום בחצות.</p>
+    <form method="dialog"><button class="btn primary" id="help-close">יאללה, מתחילים</button></form>
+  </dialog>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
